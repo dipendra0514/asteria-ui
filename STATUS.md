@@ -502,15 +502,54 @@ Order: Button → Avatar → Badge → Input → Field wrapper → Textarea → 
   Added a `progress-bar` registry.json entry. `pnpm lint`/`pnpm test`
   clean — 127 tests total across 14 files.
 
+- **Breadcrumbs** (`packages/registry/ui/breadcrumbs.tsx`) —
+  from-scratch, node `2120:15` verified (shifted-map prediction correct
+  again — two for two now). This one is a genuine composition pair:
+  `<Breadcrumbs>` (renders `<nav aria-label="Breadcrumb"><ol>`, and
+  auto-inserts a `ChevronRight` separator between consecutive children —
+  the consumer doesn't place separators manually) + `<BreadcrumbItem>`
+  (renders `<li>` wrapping either an `<a>` — `ui-sm`/`fg-secondary`,
+  `hover:fg-primary`, focus glow — or, when `current`, a non-interactive
+  `<span>` with `aria-current="page"` and `fg-primary`). Chose the
+  shadcn-style convention of making each separator its own `<li
+  role="presentation" aria-hidden="true">` between item `<li>`s — this
+  satisfies both halves of the a11y note simultaneously ("ol/li structure"
+  stays literally true since every direct child of `<ol>` is an `<li>`,
+  and "separators aria-hidden" is exactly what that gives) rather than
+  the WAI-ARIA-APG-example alternative of CSS-generated `::before`
+  separators, which wouldn't fit CLAUDE.md's Lucide-only icon rule anyway
+  since Figma's separator is a real chevron icon, not a decorative
+  character. Focus glow on link items reused the exact same
+  `shadow-glow-focus` value confirmed directly on the item's own focus
+  state.
+  Added `packages/registry/ui/__tests__/breadcrumbs.test.tsx` — 8 tests
+  (nav accessible name, links render with correct hrefs except the
+  current page, `aria-current="page"` on the current item, separator
+  count and hiddenness, no trailing separator after the last item, focus
+  glow class on links, ref forwarding, axe zero-violations for a full
+  trail). One test-authoring correction along the way: my first
+  separator-count assertion used a selector that also matched Lucide's
+  own `aria-hidden="true"` on its inner `<svg>` (not just my wrapping
+  `<li>`), so `[aria-hidden='true']` matched 4 elements instead of the
+  expected 2 — fixed by scoping the selector to `li[aria-hidden='true']`
+  specifically. Not a component bug, just an imprecise selector — worth
+  remembering that Lucide icons carry their own `aria-hidden` by default,
+  so broad `[aria-hidden]` queries in tests will double-count when an
+  icon sits inside another hidden wrapper.
+  Added a `breadcrumbs` registry.json entry. `pnpm lint`/`pnpm test`
+  clean — 135 tests total across 15 files.
+
 ## Current
 
-**Breadcrumbs** — about to start. From-scratch per CLAUDE.md. Expect node
-`2120:15` per the shifted map (now proven correct once already) — verify
-before building.
+**Tooltip** — about to start. First Radix-based **overlay** component
+tonight (distinct from the earlier Radix-based form controls) — will need
+`pnpm add @radix-ui/react-tooltip`. Expect node `2120:16` per the shifted
+map (filling what was previously the unaccounted gap in the original
+brief) — verify before building.
 
 ## Remaining
 
-Tooltip, Dropdown Menu, Modal, Tabs
+Dropdown Menu, Modal, Tabs
 
 ## Blocked
 
@@ -518,8 +557,9 @@ _(none yet)_
 
 ## Exact resume point
 
-Progress Bar is fully done, committed, and pushed (commit: `feat(ui): add
-Progress Bar`). Next action: run `get_metadata` on Figma node `2120:15`
-(fileKey `CDgfoMkj7lP3pXWJ3aOgkH`) to verify it's Breadcrumbs' canvas —
-if not, scan `2120:13` through `2120:17` per the ±2-scan protocol and log
-the correction here before writing any code.
+Breadcrumbs is fully done, committed, and pushed (commit: `feat(ui): add
+Breadcrumbs`). Next action: run `get_metadata` on Figma node `2120:16`
+(fileKey `CDgfoMkj7lP3pXWJ3aOgkH`) to verify it's Tooltip's canvas — if
+not, scan `2120:14` through `2120:18` per the ±2-scan protocol and log the
+correction here. Then `pnpm add @radix-ui/react-tooltip --filter
+@asteria-ui/registry` before writing the component.

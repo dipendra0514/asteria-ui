@@ -546,3 +546,29 @@ a `progress-bar` registry.json entry. `pnpm lint`/`pnpm test` clean, 127
 tests total across 14 files.
 
 **Status: Progress Bar complete.** Moving to Breadcrumbs next.
+
+## Overnight queue — Breadcrumbs
+
+From-scratch, node `2120:15` verified — shifted-map prediction correct
+again. A genuine composition pair: `Breadcrumbs` (nav + ol, auto-inserts
+a `ChevronRight` separator between children rather than making the
+consumer place them) and `BreadcrumbItem` (li wrapping either a link or,
+when `current`, a non-interactive span with `aria-current="page"`). Used
+the shadcn convention of making each separator its own
+`<li role="presentation" aria-hidden="true">` between item `<li>`s —
+satisfies "ol/li structure" and "separators aria-hidden" simultaneously,
+and fits better than CSS-generated separators given Figma's separator is
+a real chevron icon and CLAUDE.md requires Lucide for any icon.
+
+Test-authoring note: an early separator-count assertion used a selector
+broad enough to also match Lucide's own `aria-hidden="true"` on its inner
+`<svg>`, double-counting each separator (4 instead of 2). Fixed by scoping
+to `li[aria-hidden='true']`. Worth remembering for any future test that
+queries by `[aria-hidden]` near a Lucide icon.
+
+Added `packages/registry/ui/__tests__/breadcrumbs.test.tsx` (8 tests) and
+a `breadcrumbs` registry.json entry. `pnpm lint`/`pnpm test` clean, 135
+tests total across 15 files.
+
+**Status: Breadcrumbs complete.** Moving to Tooltip next — first
+Radix-based overlay component tonight.

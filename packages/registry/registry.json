@@ -277,6 +277,24 @@
           "type": "registry:lib"
         }
       ]
+    },
+    {
+      "name": "breadcrumbs",
+      "type": "registry:ui",
+      "title": "Breadcrumbs",
+      "description": "Navigation breadcrumb trail showing page hierarchy, composed of breadcrumb items with chevron separators.",
+      "dependencies": ["clsx", "lucide-react", "tailwind-merge"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "ui/breadcrumbs.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "lib/cn.ts",
+          "type": "registry:lib"
+        }
+      ]
     }
   ]
 }
