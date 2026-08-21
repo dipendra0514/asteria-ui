@@ -237,3 +237,35 @@ Button's `files` list, since it moved from a private function to a shared
 dependency). `pnpm lint`/`pnpm test` clean, 40 tests total across 4 files.
 
 **Status: Input complete.** Moving to Field wrapper next.
+
+## Overnight queue — Field
+
+Net new. Pulled both Field states from Figma (`2121:14986` default,
+`2121:14991` error): `flex-col gap-1.5`, label `ui-sm`/`fg-primary`, helper
+text `ui-xs`/`fg-tertiary`, error message `ui-xs`/`fg-error` — and
+confirmed helper text and error message can both be visible at once (the
+error mockup renders both), so they're independent, not an either/or toggle.
+
+**Deliberate spec-driven deviation from Dialog-style composition**: built
+Field as one component taking `label`/`description`/`error` props plus a
+single `children` control (wired via `cloneElement`), not a
+`Field`/`FieldLabel`/`FieldControl`/`FieldDescription`/`FieldError`
+compound family. Two reasons: Figma's own component properties model it
+exactly this way (props, not child slots), and a compound version would
+need every descendant to register its presence into shared context before
+`aria-describedby` could be computed without risking dangling references
+to text blocks that never actually render. The genuinely swappable part —
+the control itself (Input today, Textarea/Select later) — still composes
+in as `children`, so this isn't abandoning composition entirely, just
+scoping it to the part that's actually variant. CLAUDE.md's composition
+rule is illustrated with Dialog, a true multi-part overlay; Field's
+label/hint/error text isn't structurally swappable the same way, so a
+config-style API fits without conflicting with that rule's intent.
+
+Added `packages/registry/ui/__tests__/field.test.tsx` (8 tests) and a
+`field` registry.json entry — the first to declare `registryDependencies`
+(`["input"]`), since Field is documented as composing with Input (and
+later Textarea/Select). `pnpm lint`/`pnpm test` clean, 48 tests total
+across 5 files.
+
+**Status: Field complete.** Moving to Textarea next.

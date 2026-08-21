@@ -87,6 +87,24 @@
           "type": "registry:lib"
         }
       ]
+    },
+    {
+      "name": "field",
+      "type": "registry:ui",
+      "title": "Field",
+      "description": "Form field wrapper combining label, helper text, and error message. Compose with Input, Textarea, Select, and other form controls.",
+      "dependencies": ["clsx", "tailwind-merge"],
+      "registryDependencies": ["input"],
+      "files": [
+        {
+          "path": "ui/field.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "lib/cn.ts",
+          "type": "registry:lib"
+        }
+      ]
     }
   ]
 }

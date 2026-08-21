@@ -154,23 +154,63 @@ Order: Button → Avatar → Badge → Input → Field wrapper → Textarea → 
   be a private local function). `pnpm lint`/`pnpm test` clean — 40 tests
   total across 4 files.
 
+- **Field** (`packages/registry/ui/field.tsx`) — net new. Pulled design
+  context for both states (`2121:14986` default, `2121:14991` error):
+  `flex-col gap-1.5`, label `ui-sm`(13px, medium, `fg-primary`), helper text
+  `ui-xs`(12px, medium, `fg-tertiary`), error message also `ui-xs` but
+  `fg-error`. Error-state mockup shows helper text AND error message both
+  visible simultaneously — implemented accordingly (they're independent,
+  not mutually exclusive).
+
+  **Deliberate deviation from Dialog-style composition**: built this as a
+  single component with `label`/`description`/`error` props plus a single
+  `children` control (cloned via `React.cloneElement` to inject `id`,
+  `aria-describedby`, `aria-invalid`, `error`), rather than a
+  `Field`/`FieldLabel`/`FieldControl`/`FieldDescription`/`FieldError`
+  multi-part compound component. Reasoning: (1) Figma's own component
+  properties model Field exactly this way — `label`, `helperText`,
+  `errorMessage`, `showHelper` as props, not child slots — so this is
+  matching the actual spec, not a shortcut; (2) a compound-component
+  version would need each descendant (Label/Description/Error) to
+  register its presence into shared context before `aria-describedby` can
+  be computed correctly, which either adds real complexity (a
+  register-on-mount effect) or risks dangling `aria-describedby`
+  references to elements that never actually render — the props-based
+  version sidesteps this entirely since Field itself decides what to
+  render and always knows what exists. CLAUDE.md's composition-over-
+  configuration example is Dialog (a true multi-part overlay); Field's
+  label/hint/error text isn't structurally swappable the way Dialog's
+  trigger/content/etc. are, so the configuration-style API fits better
+  here. The one thing that IS genuinely swappable — the control itself
+  (Input vs. Textarea vs. Select) — stays as `children`, composed in.
+  Logged here rather than silently deviating from the CLAUDE.md pattern.
+
+  Added `packages/registry/ui/__tests__/field.test.tsx` — 8 tests (label
+  linked via for/id through `getByLabelText`, description wired into
+  `aria-describedby`, no `aria-describedby` when neither description nor
+  error given, error sets `aria-invalid` + wires into `aria-describedby`,
+  both description+error ids present together, no error message rendered
+  when no error given, ref forwarding, axe zero-violations across
+  default/description/error using a real `Input` as the composed child).
+  Added a `field` registry.json entry with `registryDependencies: ["input"]`
+  (first registry item to declare a registry dependency — Field is
+  documented as composing with Input/Textarea/Select, so this is honest
+  about the coupling). `pnpm lint`/`pnpm test` clean — 48 tests total
+  across 5 files.
+
 ## Current
 
-**Field wrapper** — about to start. This is the component that actually
-wires label/helper-text/error-message together with `for`/`id` and
-`aria-describedby`, composing around Input (and later Textarea, Select,
-etc. per its own Figma description: "Compose with Input, Textarea, Select,
-and other form controls"). Figma node `2120:5` already confirmed (see
-Input's completed entry above — checked both together). Need one more
-`get_design_context` pass on `2120:5`'s actual symbols (`2121:14986`
-default, `2121:14991` error) for exact label/helper-text typography and
-spacing before building — haven't pulled those yet, only the canvas
-metadata + a11y note so far.
+**Textarea** — about to start. Expect it to closely mirror Input's
+wrapper pattern (border/bg/radius/focus-within/has-invalid) but as a
+multi-line control — likely has an `autoResize` or fixed-rows property per
+CLAUDE.md's component list context. Need to verify Figma node `2120:6`
+(unverified — next after Field in the original map) before building
+anything.
 
 ## Remaining
 
-Textarea, Checkbox, Radio Group, Switch, Alert, Spinner, Divider, Skeleton,
-Progress Bar, Breadcrumbs, Tooltip, Dropdown Menu, Modal, Tabs
+Checkbox, Radio Group, Switch, Alert, Spinner, Divider, Skeleton, Progress
+Bar, Breadcrumbs, Tooltip, Dropdown Menu, Modal, Tabs
 
 ## Blocked
 
@@ -178,12 +218,8 @@ _(none yet)_
 
 ## Exact resume point
 
-Input is fully done, committed, and pushed (commit: `feat(ui): add Input`).
-Next action: pull `get_design_context` on Figma nodes `2121:14986`
-(Field/State=default) and `2121:14991` (Field/State=error) to get exact
-label/helper/error typography and spacing, then build
-`packages/registry/ui/field.tsx` (a `Field`/`FieldLabel`/`FieldDescription`/
-`FieldError` composition, or similar — decide the exact composition shape
-once the spec is in hand) wrapping around `Input` with proper `for`/`id`
-and `aria-describedby` wiring, per CLAUDE.md's "composition over
-configuration for multi-part components" rule.
+Field is fully done, committed, and pushed (commit: `feat(ui): add Field`).
+Next action: run `get_metadata` on Figma node `2120:6` (fileKey
+`CDgfoMkj7lP3pXWJ3aOgkH`) to verify it's Textarea's canvas — if the title
+doesn't match, scan `2120:4` through `2120:8` per the ±2-scan protocol and
+log the correction here before writing any code.
