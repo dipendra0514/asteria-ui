@@ -1,0 +1,59 @@
+---
+title: CLI
+description: init, add, and how the registry works.
+---
+
+The CLI surface is the contract docs and tooling share — even while the published
+binary catches up.
+
+## Commands
+
+```bash
+npx asteria-ui init            # write tokens, theme mapping, cn(), install deps
+npx asteria-ui add button      # copy one or more components into your project
+npx asteria-ui add button dialog tabs
+```
+
+### `init`
+
+Writes the token CSS, Tailwind v4 `@theme` mapping, and `cn()` helper, then
+installs `clsx`, `tailwind-merge`, and `class-variance-authority`. Safe to re-run;
+it should not overwrite local edits without prompting.
+
+### `add`
+
+Copies component source from the registry into your configured components
+directory. Dependencies listed on the registry item are installed automatically.
+Multi-name adds resolve shared deps once.
+
+## Registry
+
+Components are served as JSON from `asteria-ui.com/r/[name].json`, following the
+[shadcn registry schema](https://ui.shadcn.com/schema/registry.json). That means
+any shadcn-compatible tooling can consume Asteria components directly.
+
+### `registry.json` shape
+
+```json
+{
+  "$schema": "https://ui.shadcn.com/schema/registry.json",
+  "name": "asteria-ui",
+  "homepage": "https://asteria-ui.com",
+  "items": [
+    {
+      "name": "button",
+      "type": "registry:ui",
+      "title": "Button",
+      "description": "Interactive button for actions and form submissions.",
+      "dependencies": ["class-variance-authority", "clsx", "tailwind-merge"],
+      "files": [
+        { "path": "ui/button.tsx", "type": "registry:ui" },
+        { "path": "lib/cn.ts", "type": "registry:lib" }
+      ]
+    }
+  ]
+}
+```
+
+Each item names the files to copy and the npm packages they need. The monorepo
+source of truth lives in `packages/registry`.

@@ -1,0 +1,86 @@
+---
+title: Installation
+description: Set up Asteria UI in a Next.js, Vite, or Remix project.
+---
+
+## Prerequisites
+
+- React 19+
+- Tailwind CSS v4 (CSS-first `@theme` — no `tailwind.config.js`)
+- TypeScript (recommended)
+
+## Quick start
+
+```bash
+npx asteria-ui@latest init
+```
+
+`init` does three things:
+
+1. Writes `tokens.css` (primitives + semantic layer, light and dark) into your styles.
+2. Adds the Tailwind v4 `@theme` mapping so token utilities work (`bg-bg-primary`,
+   `text-fg-secondary`, `shadow-glow-focus`, …).
+3. Installs shared deps: `clsx`, `tailwind-merge`, `class-variance-authority`, and
+   drops in the `cn()` helper.
+
+Then add components as you need them:
+
+```bash
+npx asteria-ui add button
+```
+
+Each `add` copies the component source into your project. You own the file — no
+runtime dependency on Asteria.
+
+## Next.js (App Router)
+
+1. Run `npx asteria-ui@latest init` from the app root.
+2. Import tokens in your global CSS **after** Tailwind:
+
+```css
+@import "tailwindcss";
+@import "./tokens.css";
+@import "./theme.css";
+```
+
+3. Add components:
+
+```bash
+npx asteria-ui add button
+```
+
+4. Use them from `@/components/ui/button` (or whatever path `init` configured).
+
+## Vite
+
+Same flow. Point your main CSS at the generated `tokens.css` / `theme.css`, ensure
+Tailwind v4 is wired through `@tailwindcss/vite` or PostCSS, then `add` components
+into `src/components/ui`.
+
+## Manual copy-paste
+
+If you skip the CLI:
+
+1. Copy `tokens.css` and the `@theme` block from the docs repo into your styles.
+2. Add `cn()`:
+
+```ts
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+```
+
+3. Copy each component's source from its docs page (or the registry JSON) into
+   your codebase.
+
+## shadcn registry compatibility
+
+Asteria's registry follows the open shadcn schema, so components are also
+installable with:
+
+```bash
+npx shadcn add https://asteria-ui.com/r/button.json
+```

@@ -1,0 +1,77 @@
+---
+title: Theming
+description: The token system — primitives, semantic layer, dark mode, and brand overrides.
+---
+
+Asteria's theming is a two-layer CSS custom property system, mirrored 1:1 from the
+Figma Foundations / Colors page. Components never touch raw hex or primitive
+scales — only semantic tokens.
+
+## Layer 1 — Primitives
+
+Raw scales with no meaning attached: `--brand-50` through `--brand-950`, the same
+for `gray`, `error`, `warning`, `success`, plus spacing and radius. One mode.
+You rarely reference these in components.
+
+<BrandScale />
+
+<GrayScale />
+
+<ErrorScale />
+
+<WarningScale />
+
+<SuccessScale />
+
+## Layer 2 — Semantic
+
+Meaning-based aliases onto primitives: `--bg-primary`, `--fg-secondary`,
+`--border-default`, `--focus-ring`. **Components only ever reference semantic
+tokens.** Dark mode is a `.dark` block that remaps semantic → primitive — no
+component contains a `dark:` variant for themed colors.
+
+### Light → Dark remap
+
+| Token | Light | Dark |
+|-------|-------|------|
+| `bg/primary` | `base/white` | `gray/950` |
+| `bg/secondary` | `gray/50` | `gray/900` |
+| `bg/tertiary` | `gray/100` | `gray/800` |
+| `bg/elevated` | `base/white` | `gray/900` |
+| `bg/brand-solid` | `brand/600` | `brand/600` |
+| `bg/brand-solid-hover` | `brand/700` | `brand/500` |
+| `bg/brand-subtle` | `brand/50` | `brand/950` |
+| `fg/primary` | `gray/900` | `gray/50` |
+| `fg/secondary` | `gray/600` | `gray/400` |
+| `fg/tertiary` | `gray/500` | `gray/500` |
+| `fg/disabled` | `gray/400` | `gray/600` |
+| `fg/on-brand` | `base/white` | `base/white` |
+| `fg/brand` | `brand/600` | `brand/400` |
+| `border/default` | `gray/200` | `gray/800` |
+| `border/strong` | `gray/300` | `gray/700` |
+| `border/brand` | `brand/600` | `brand/400` |
+| `focus/ring` | `brand/500` | `brand/400` |
+
+Status solids (`bg/error-solid`, `bg/warning-solid`, `bg/success-solid`) stay on
+their `*/600` step in both modes; subtles flip `*/50` → `*/950`.
+
+## Signature effects
+
+Two things make Asteria look like Asteria:
+
+- **Brand-tinted shadows.** Every shadow uses `brand/900` at low opacity instead of
+  flat black — depth stays in the brand's color world.
+- **Glow focus ring.** `--shadow-glow-focus`: a 4px spread of `brand/500` at 24%,
+  zero blur, zero offset. Applied via the `focus-glow` utility. Always brand-colored —
+  no error or neutral variants.
+
+## Changing the brand color
+
+Override the `--brand-*` primitive scale after importing `tokens.css`. Because
+everything downstream is semantic aliases, components, shadows, and the focus ring
+follow automatically.
+
+## Radius personality
+
+Asteria leans squircle: 6 / 8 / 10 / 14 / 20px (`radius-xs` → `radius-xl`), plus
+`radius-full` for pills. Inputs and buttons default to `radius-md` (10px).

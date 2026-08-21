@@ -1,0 +1,19 @@
+@import "tailwindcss";
+@import "fumadocs-ui/css/neutral.css";
+@import "fumadocs-ui/css/preset.css";
+@import "../styles/tokens.css";
+@import "../styles/theme.css";
+
+/* Registry components live outside the Next app; scan them so CVA classes emit. */
+@source "../../../packages/registry";
+
+/* Asteria accent — brand/600 for Fumadocs active nav / primary */
+:root {
+  --color-fd-primary: #4658de;
+  --color-fd-primary-foreground: #ffffff;
+}
+
+.dark {
+  --color-fd-primary: #4658de;
+  --color-fd-primary-foreground: #ffffff;
+}

@@ -1,0 +1,235 @@
+/*
+ * Asteria UI — Design Tokens
+ * Mirrors Figma Foundations / Colors exactly: two layers, always.
+ *   1. Primitives (raw scales, single mode)
+ *   2. Semantic (light + dark) — components ONLY reference semantic tokens.
+ *
+ * Source: Dipendra-Testing · Foundations / Colors (2066:14533)
+ *         Spacing (2066:14532) · Typography (2066:14528)
+ */
+
+:root,
+[data-preview-theme="light"] {
+  /* ============================================================
+     PRIMITIVES
+     ============================================================ */
+
+  --base-white: #ffffff;
+  --base-black: #000000;
+
+  /* brand — indigo-leaning blue; brand/600 is primary */
+  --brand-50: #eff3fe;
+  --brand-100: #e0e7fd;
+  --brand-200: #c6d3fb;
+  --brand-300: #a3b6f8;
+  --brand-400: #7d93f2;
+  --brand-500: #5c74eb;
+  --brand-600: #4658de;
+  --brand-700: #3a46c4;
+  --brand-800: #313b9e;
+  --brand-900: #2e377d;
+  --brand-950: #1c2049;
+
+  /* gray — cool bias to harmonize with brand */
+  --gray-50: #f9fafb;
+  --gray-100: #f2f4f7;
+  --gray-200: #e4e7ec;
+  --gray-300: #d0d5dd;
+  --gray-400: #98a2b3;
+  --gray-500: #667085;
+  --gray-600: #475467;
+  --gray-700: #344054;
+  --gray-800: #1d2939;
+  --gray-900: #101828;
+  --gray-950: #0c111d;
+
+  /* error */
+  --error-50: #fef3f2;
+  --error-100: #fee4e2;
+  --error-200: #fecdca;
+  --error-300: #fda29b;
+  --error-400: #f97066;
+  --error-500: #f04438;
+  --error-600: #d92d20;
+  --error-700: #b42318;
+  --error-800: #912018;
+  --error-900: #7a271a;
+  --error-950: #55160c;
+
+  /* warning */
+  --warning-50: #fffaeb;
+  --warning-100: #fef0c7;
+  --warning-200: #fedf89;
+  --warning-300: #fec84b;
+  --warning-400: #fdb022;
+  --warning-500: #f79009;
+  --warning-600: #dc6803;
+  --warning-700: #b54708;
+  --warning-800: #93370d;
+  --warning-900: #7a2e0e;
+  --warning-950: #4e1d09;
+
+  /* success */
+  --success-50: #ecfdf3;
+  --success-100: #d1fadf;
+  --success-200: #a6f4c5;
+  --success-300: #6ce9a6;
+  --success-400: #32d583;
+  --success-500: #12b76a;
+  --success-600: #079455;
+  --success-700: #067647;
+  --success-800: #085d3a;
+  --success-900: #074d31;
+  --success-950: #053321;
+
+  /* spacing — Figma Spacing page (4px base + micro tiers) */
+  --space-0: 0px;
+  --space-px: 1px;
+  --space-2xs: 2px;
+  --space-xs: 4px;
+  --space-sm: 6px;
+  --space-md: 8px;
+  --space-lg: 12px;
+  --space-xl: 16px;
+  --space-2xl: 20px;
+  --space-3xl: 24px;
+  --space-4xl: 32px;
+  --space-5xl: 40px;
+  --space-6xl: 48px;
+  --space-7xl: 64px;
+  --space-8xl: 80px;
+  --space-9xl: 96px;
+  --space-10xl: 128px;
+
+  /* radius — squircle-leaning */
+  --radius-xs: 6px;
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+
+  /* ============================================================
+     SEMANTIC — LIGHT
+     ============================================================ */
+
+  --bg-primary: var(--base-white);
+  --bg-secondary: var(--gray-50);
+  --bg-tertiary: var(--gray-100);
+  --bg-elevated: var(--base-white);
+  --bg-disabled: var(--gray-100);
+  --bg-secondary-hover: var(--gray-100);
+  --bg-tertiary-hover: var(--gray-200);
+  --bg-switch-off: var(--gray-300);
+
+  --bg-brand-solid: var(--brand-600);
+  --bg-brand-solid-hover: var(--brand-700);
+  --bg-brand-solid-active: var(--brand-800);
+  --bg-brand-subtle: var(--brand-50);
+
+  --bg-error-solid: var(--error-600);
+  --bg-error-solid-hover: var(--error-700);
+  --bg-error-subtle: var(--error-50);
+  --bg-warning-solid: var(--warning-600);
+  --bg-warning-subtle: var(--warning-50);
+  --bg-success-solid: var(--success-600);
+  --bg-success-subtle: var(--success-50);
+
+  /* short aliases (landing / legacy utilities) */
+  --bg-brand: var(--bg-brand-solid);
+  --bg-brand-hover: var(--bg-brand-solid-hover);
+
+  --fg-primary: var(--gray-900);
+  --fg-secondary: var(--gray-600);
+  --fg-tertiary: var(--gray-500);
+  --fg-disabled: var(--gray-400);
+  --fg-brand: var(--brand-600);
+  --fg-on-brand: var(--base-white);
+  --fg-on-error: var(--base-white);
+  --fg-on-warning: var(--base-white);
+  --fg-on-success: var(--base-white);
+  --fg-error: var(--error-600);
+  --fg-warning: var(--warning-600);
+  --fg-success: var(--success-600);
+
+  --border-default: var(--gray-200);
+  --border-strong: var(--gray-300);
+  --border-brand: var(--brand-600);
+  --border-error: var(--error-600);
+  --border-warning: var(--warning-600);
+  --border-success: var(--success-600);
+
+  --focus-ring: var(--brand-500);
+
+  /* ============================================================
+     EFFECTS — brand-tinted shadows (never flat black)
+     ============================================================ */
+
+  --shadow-xs: 0 1px 2px rgb(46 55 125 / 0.06);
+  --shadow-sm: 0 1px 3px rgb(46 55 125 / 0.1), 0 1px 2px rgb(46 55 125 / 0.06);
+  --shadow-md: 0 4px 6px -1px rgb(46 55 125 / 0.1), 0 2px 4px -2px rgb(46 55 125 / 0.06);
+  --shadow-lg: 0 10px 15px -3px rgb(46 55 125 / 0.1), 0 4px 6px -4px rgb(46 55 125 / 0.05);
+  --shadow-xl: 0 20px 25px -5px rgb(46 55 125 / 0.1), 0 8px 10px -6px rgb(46 55 125 / 0.05);
+  --shadow-2xl: 0 25px 50px -12px rgb(46 55 125 / 0.22);
+
+  /* glow-focus: brand/500 @ 24%, 4px spread, zero blur/offset */
+  --shadow-glow-focus: 0 0 0 4px rgb(92 116 235 / 0.24);
+
+  --blur-sm: 8px;
+  --blur-md: 16px;
+  --blur-lg: 24px;
+}
+
+/* ============================================================
+   SEMANTIC — DARK
+   ============================================================ */
+
+.dark,
+[data-preview-theme="dark"] {
+  --bg-primary: var(--gray-950);
+  --bg-secondary: var(--gray-900);
+  --bg-tertiary: var(--gray-800);
+  --bg-elevated: var(--gray-900);
+  --bg-disabled: var(--gray-800);
+  --bg-secondary-hover: var(--gray-800);
+  --bg-tertiary-hover: var(--gray-700);
+  --bg-switch-off: var(--gray-600);
+
+  --bg-brand-solid: var(--brand-600);
+  --bg-brand-solid-hover: var(--brand-500);
+  --bg-brand-solid-active: var(--brand-700);
+  --bg-brand-subtle: var(--brand-950);
+
+  --bg-error-solid: var(--error-600);
+  --bg-error-solid-hover: var(--error-500);
+  --bg-error-subtle: var(--error-950);
+  --bg-warning-solid: var(--warning-600);
+  --bg-warning-subtle: var(--warning-950);
+  --bg-success-solid: var(--success-600);
+  --bg-success-subtle: var(--success-950);
+
+  --bg-brand: var(--bg-brand-solid);
+  --bg-brand-hover: var(--bg-brand-solid-hover);
+
+  --fg-primary: var(--gray-50);
+  --fg-secondary: var(--gray-400);
+  --fg-tertiary: var(--gray-500);
+  --fg-disabled: var(--gray-600);
+  --fg-brand: var(--brand-400);
+  --fg-on-brand: var(--base-white);
+  --fg-on-error: var(--base-white);
+  --fg-on-warning: var(--base-white);
+  --fg-on-success: var(--base-white);
+  --fg-error: var(--error-400);
+  --fg-warning: var(--warning-400);
+  --fg-success: var(--success-400);
+
+  --border-default: var(--gray-800);
+  --border-strong: var(--gray-700);
+  --border-brand: var(--brand-400);
+  --border-error: var(--error-400);
+  --border-warning: var(--warning-400);
+  --border-success: var(--success-400);
+
+  --focus-ring: var(--brand-400);
+}

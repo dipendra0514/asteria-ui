@@ -1,0 +1,24 @@
+{
+  "title": "Components",
+  "defaultOpen": true,
+  "pages": [
+    "avatar",
+    "button",
+    "badge",
+    "input",
+    "textarea",
+    "checkbox",
+    "radio-group",
+    "switch",
+    "alert",
+    "spinner",
+    "divider",
+    "skeleton",
+    "progress-bar",
+    "breadcrumbs",
+    "tooltip",
+    "dropdown-menu",
+    "modal",
+    "tabs"
+  ]
+}

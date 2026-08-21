@@ -1,0 +1,42 @@
+---
+title: Introduction
+description: What Asteria UI is, how it works, and the principles behind it.
+---
+
+Asteria UI is an open-source library of React components styled with Tailwind CSS,
+paired with a Figma design system built on the exact same design tokens. You don't
+install it as a package — you copy the source into your project and own it.
+
+## How it works
+
+- **Copy, don't import.** `npx asteria-ui add button` writes the component's source
+  file into your codebase. There's no runtime dependency on Asteria, no version to
+  fight, and nothing you can't change.
+- **Two-layer tokens.** Raw primitive scales (color 50–950, spacing, radius) feed a
+  semantic layer (`bg-primary`, `fg-secondary`, `border-default`). Components only
+  ever touch the semantic layer, so dark mode and re-branding are a token remap —
+  never a component edit.
+- **Design and code stay in sync.** The Figma variables and the CSS custom
+  properties are the same system with the same names. What you design is what ships.
+
+## Principles
+
+- **Accessible by default.** Every interactive component follows the relevant
+  WAI-ARIA Authoring Practices pattern — keyboard support, focus management, and
+  ARIA wiring included, with the pattern linked from each component's docs.
+- **Own your code.** MIT-licensed source in your repo. Fork it, restyle it, delete
+  the parts you don't need.
+- **A visible point of view.** Brand-tinted shadows instead of flat black, a
+  signature glow focus ring instead of hard outlines, and softer squircle-leaning
+  radii. Small choices, consistently applied.
+
+## Stack
+
+React 19 · Tailwind CSS v4 (CSS-first tokens) · CVA for variants ·
+Base UI primitives for complex overlays · TypeScript throughout.
+
+## Next steps
+
+Head to [Installation](/docs/installation) to set up your project, or jump straight
+to [Avatar](/docs/components/avatar) — the first complete component page, and the
+template every other component will follow.

@@ -1,0 +1,12 @@
+{
+  "title": "Foundations",
+  "defaultOpen": true,
+  "pages": [
+    "colors",
+    "typography",
+    "spacing",
+    "radius",
+    "shadows-and-blurs",
+    "grid"
+  ]
+}

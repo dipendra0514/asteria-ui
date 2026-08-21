@@ -1,0 +1,81 @@
+---
+title: Avatar
+description: User portrait with an image, initials fallback, optional status, and stacked groups.
+---
+
+<AvatarHero />
+
+## Installation
+
+<AvatarInstall />
+
+## Usage
+
+```tsx
+import { Avatar, AvatarGroup } from "@/components/ui/avatar";
+
+<Avatar src="/maya.jpg" alt="Maya Chen" />
+<Avatar initials="MC" alt="Maya Chen" status="online" />
+
+<AvatarGroup max={3}>
+  <Avatar src="/maya.jpg" alt="Maya Chen" />
+  <Avatar src="/rio.jpg" alt="Rio Patel" />
+  <Avatar initials="KO" alt="Ken Okada" />
+  <Avatar initials="AS" alt="Ana Silva" />
+</AvatarGroup>
+```
+
+## Examples
+
+### Sizes
+
+xs 24px · sm 32px · md 40px · lg 48px · xl 64px · 2xl 80px.
+
+<AvatarSizes />
+
+### Image and fallback
+
+A missing or failing `src` falls back to initials on `bg-brand-subtle` with `fg-brand` text. If neither `src` nor `initials`/`alt` can produce letters, the avatar shows `?`.
+
+<AvatarImageFallback />
+
+### Status
+
+Optional presence dot. Online uses `success-500`; offline uses `gray-300`. The cutout ring is `bg-primary` so it punches through the portrait.
+
+<AvatarStatus />
+
+### Avatar group
+
+Stacked, overlapping avatars with a `+N` overflow chip (`bg-secondary` / `fg-secondary`). Each face gets a `border-default` ring and a `bg-primary` stack cutout.
+
+<AvatarGroupExample />
+
+## API reference
+
+Prop names and types are taken from `AvatarProps` / `AvatarGroupProps` in the registry source.
+
+<AvatarPropsTable />
+
+## Accessibility
+
+<A11yCallout>
+  <ul>
+    <li>
+      <strong>Role.</strong> Each avatar is <code>role=&quot;img&quot;</code> with an{" "}
+      <code>aria-label</code> from <code>alt</code> (or <code>initials</code>). Status is
+      appended to that name — <code>Maya Chen, online</code> — not a nested labelled
+      node. The inner <code>&lt;img&gt;</code> uses <code>alt=&quot;&quot;</code> so it
+      isn't announced twice.
+    </li>
+    <li>
+      <strong>Keyboard.</strong> Avatar is presentational. It is not focusable and has no
+      activation keys. Wrap it in a link or button if it should be interactive.
+    </li>
+    <li>
+      <strong>ARIA.</strong> <code>AvatarGroup</code> uses <code>role=&quot;group&quot;</code>.
+      Overflow is its own <code>role=&quot;img&quot;</code> labelled{" "}
+      <code>N more</code>.
+    </li>
+  </ul>
+</A11yCallout>
