@@ -498,3 +498,28 @@ total across 12 files.
 
 **Status: Divider complete.** Moving to Skeleton next (node already
 confirmed while resolving the collision above).
+
+## Overnight queue — Skeleton
+
+From-scratch, node `2120:13` already confirmed. Three variants pulled
+individually rather than assuming they share defaults: `text` gets a real
+default size (`h-4 w-full`, `radius-xs`) since Figma clearly means it as a
+one-line-of-text placeholder; `circle` (`rounded-full`) and `rect`
+(`radius-sm`) get no default size, since their Figma demo dimensions
+(48px, 200×120) read as arbitrary examples, not a canonical size. Added
+`animate-pulse` (the standard skeleton-loading convention; same "Figma
+can't show motion but the intent is obvious" reasoning as Spinner's
+`animate-spin`). `aria-hidden="true"` per the a11y note — `aria-busy` and
+the loaded-announcement are explicitly the wrapping container's
+responsibility, documented as such rather than built into the component
+itself, since Skeleton has no way to know when loading actually finishes.
+
+No Biome a11y findings on this one — `aria-hidden` doesn't trigger the
+role-semantics/focusable-interactive rules the way `role="..."` did on
+Badge/Spinner/Divider.
+
+Added `packages/registry/ui/__tests__/skeleton.test.tsx` (7 tests) and a
+`skeleton` registry.json entry. `pnpm lint`/`pnpm test` clean, 119 tests
+total across 13 files.
+
+**Status: Skeleton complete.** Moving to Progress Bar next.

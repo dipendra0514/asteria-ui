@@ -451,16 +451,42 @@ Order: Button → Avatar → Badge → Input → Field wrapper → Textarea → 
   plain/labeled/vertical). Added a `divider` registry.json entry.
   `pnpm lint`/`pnpm test` clean — 112 tests total across 12 files.
 
+- **Skeleton** (`packages/registry/ui/skeleton.tsx`) — from-scratch, node
+  `2120:13` (already confirmed while resolving the Divider collision).
+  Three variants, each pulled individually: `text` (`bg-tertiary`, fixed
+  16px height/`radius-xs`, meant to represent one line of text — the only
+  variant Figma gives a real default size to), `circle` (`rounded-full`,
+  no default size — Figma's 48px was just an arbitrary demo dimension),
+  `rect` (`radius-sm`, also no default size, 200×120 demo). Judgment call:
+  gave `text` a real default (`h-4 w-full`) since Figma clearly intends it
+  as a standard line-height placeholder, but left `circle`/`rect` unsized
+  by default since nothing in the spec suggests one canonical size for
+  either (consumers size them via `className`, same as any div). Added
+  `animate-pulse` — the universal skeleton-loading convention, same
+  reasoning as adding `animate-spin` to Spinner: Figma's static mockup
+  can't show motion, but the intent is unambiguous. `aria-hidden="true"`
+  applied per the a11y note (purely decorative; `aria-busy` and the
+  loaded-announcement are the wrapping container's job, not Skeleton's own
+  — noted in the doc comment rather than built into the component, since
+  Skeleton itself doesn't know when loading finishes).
+  Added `packages/registry/ui/__tests__/skeleton.test.tsx` (7 tests:
+  aria-hidden set, text variant's default size, circle variant classes,
+  rect variant classes, animate-pulse present, ref forwarding, axe
+  zero-violations across all 3 variants — this one had no Biome a11y
+  findings at all, unlike Badge/Spinner/Divider, since `aria-hidden` on a
+  div doesn't trigger the role-semantics rules the way `role="..."` does).
+  Added a `skeleton` registry.json entry. `pnpm lint`/`pnpm test` clean —
+  119 tests total across 13 files.
+
 ## Current
 
-**Skeleton** — about to start. Node `2120:13` already verified while
-resolving the Divider/Skeleton collision above — no further Figma
-verification call needed, go straight to pulling its design context
-(Text/Circle/Rect variants) before building.
+**Progress Bar** — about to start. From-scratch per CLAUDE.md. Per the
+node-map shift resolved during Divider, expect this at `2120:14` — verify
+before building rather than trust the shift blindly.
 
 ## Remaining
 
-Progress Bar, Breadcrumbs, Tooltip, Dropdown Menu, Modal, Tabs
+Breadcrumbs, Tooltip, Dropdown Menu, Modal, Tabs
 
 ## Blocked
 
@@ -468,11 +494,9 @@ _(none yet)_
 
 ## Exact resume point
 
-Divider is fully done, committed, and pushed (commit: `feat(ui): add
-Divider`). Next action: pull `get_design_context` on Skeleton's three
-variant symbols under node `2120:13` (Text `2121:15360`, Circle
-`2121:15361`, Rect `2121:15362`) to get exact sizing/shape/animation
-treatment, then build. Remember the shifted map going forward: Progress
-Bar is now expected at `2120:14` (not `2120:13` as the original brief
-said), Breadcrumbs at `2120:15`, Tooltip at `2120:16` — verify each on
-arrival rather than trust the shift blindly.
+Skeleton is fully done, committed, and pushed (commit: `feat(ui): add
+Skeleton`). Next action: run `get_metadata` on Figma node `2120:14`
+(fileKey `CDgfoMkj7lP3pXWJ3aOgkH`) to verify it's Progress Bar's canvas —
+if the title doesn't match the shifted-map prediction, scan `2120:12`
+through `2120:16` per the ±2-scan protocol and log the correction here
+before writing any code.
