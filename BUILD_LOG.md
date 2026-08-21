@@ -116,3 +116,39 @@ a direct import itself).
 (Avatar → Badge → … → Tabs) per the autonomous build protocol recorded in
 `STATUS.md` — see that file for live progress, since this log is updated
 once per component rather than continuously.
+
+## Overnight queue — Avatar
+
+Audited `packages/registry/ui/avatar.tsx` against Figma canvas `0:1`. Size
+scale and the online-status dot color were both already correct (verified
+directly: sizes match Figma's 24/32/40/48/64/80px exactly; status dot color
+`success/500` confirmed via `get_design_context` on node `2077:15` — matches
+the existing `bg-[var(--success-500)]`). No visual drift found.
+
+**Figma-gap decision**: unlike Button, Avatar's page has no "Page Content" /
+"Accessibility Note" frame to pull a verbatim a11y string from — checked
+twice (once via the canvas's own metadata listing, once by directly
+re-querying the page header instance `2178:250` with `get_design_context`,
+which returned the exact same breadcrumb+title+description content both
+times, no nested a11y block). Rather than block on this or invent a fake
+Figma quote, authored the doc comment myself, in the same terse
+`role=x · behavior · behavior` style Button's used, describing what the
+component actually does (role=img, aria-label sourcing from alt/initials
+with status suffix, automatic image→initials fallback on load failure,
+explicitly non-interactive so no focus state applies). This is a
+documentation-authoring decision, not a spec guess — no variant, size, or
+token was invented.
+
+Migrated both `Avatar` and `AvatarGroup` off `React.forwardRef` onto
+`React.ComponentPropsWithRef` + plain function components, for consistency
+with the ref convention just established on Button.
+
+Added `packages/registry/ui/__tests__/avatar.test.tsx`: 11 tests (accessible
+name derivation from alt/initials, status suffix, initials-overrides-alt
+precedence, image rendering, image-error→initials fallback, ref forwarding,
+axe zero-violations across image/initials/status, AvatarGroup rendering
+under `max`, overflow collapsing into a labeled "+N" indicator, axe
+zero-violations with overflow present). `pnpm lint` / `pnpm test` clean (21
+tests total, both component files).
+
+**Status: Avatar complete.** Moving to Badge next.

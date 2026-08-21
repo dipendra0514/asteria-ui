@@ -47,7 +47,7 @@ export type AvatarSize = NonNullable<
 export type AvatarStatus = "online" | "offline";
 
 export interface AvatarProps
-  extends Omit<React.HTMLAttributes<HTMLSpanElement>, "children"> {
+  extends Omit<React.ComponentPropsWithRef<"span">, "children"> {
   src?: string;
   alt?: string;
   initials?: string;
@@ -63,59 +63,72 @@ function initialsFrom(alt?: string, initials?: string) {
   return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
 }
 
-export const Avatar = React.forwardRef<HTMLSpanElement, AvatarProps>(
-  ({ className, src, alt, initials, size = "md", status, ...props }, ref) => {
-    const [failed, setFailed] = React.useState(false);
-    // biome-ignore lint/correctness/useExhaustiveDependencies: reset the fallback whenever `src` changes to a new image
-    React.useEffect(() => {
-      setFailed(false);
-    }, [src]);
+/**
+ * role=img · accessible name comes from `alt`/`initials`, suffixed with the status when present ·
+ * a broken image URL falls back to initials automatically · the image and status dot are
+ * aria-hidden (the name is carried by the wrapper's aria-label) · non-interactive, no focus state
+ */
+export function Avatar({
+  ref,
+  className,
+  src,
+  alt,
+  initials,
+  size = "md",
+  status,
+  ...props
+}: AvatarProps) {
+  const [failed, setFailed] = React.useState(false);
+  // biome-ignore lint/correctness/useExhaustiveDependencies: reset the fallback whenever `src` changes to a new image
+  React.useEffect(() => {
+    setFailed(false);
+  }, [src]);
 
-    const label = alt ?? initials ?? "Avatar";
-    const fallback = initialsFrom(alt, initials);
-    const showImage = Boolean(src) && !failed;
-    const accessibleName = status ? `${label}, ${status}` : label;
+  const label = alt ?? initials ?? "Avatar";
+  const fallback = initialsFrom(alt, initials);
+  const showImage = Boolean(src) && !failed;
+  const accessibleName = status ? `${label}, ${status}` : label;
 
-    return (
-      <span
-        ref={ref}
-        className={cn(avatarVariants({ size }), className)}
-        role="img"
-        aria-label={accessibleName}
-        {...props}
-      >
-        <span className="absolute inset-0 flex items-center justify-center overflow-hidden rounded-full">
-          {showImage ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={src}
-              alt=""
-              className="size-full object-cover"
-              onError={() => setFailed(true)}
-            />
-          ) : (
-            <span aria-hidden="true">{fallback || "?"}</span>
-          )}
-        </span>
-        {status ? (
-          <span
-            className={statusVariants({ size, status })}
-            aria-hidden="true"
+  return (
+    <span
+      ref={ref}
+      className={cn(avatarVariants({ size }), className)}
+      role="img"
+      aria-label={accessibleName}
+      {...props}
+    >
+      <span className="absolute inset-0 flex items-center justify-center overflow-hidden rounded-full">
+        {showImage ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={src}
+            alt=""
+            className="size-full object-cover"
+            onError={() => setFailed(true)}
           />
-        ) : null}
+        ) : (
+          <span aria-hidden="true">{fallback || "?"}</span>
+        )}
       </span>
-    );
-  },
-);
+      {status ? (
+        <span className={statusVariants({ size, status })} aria-hidden="true" />
+      ) : null}
+    </span>
+  );
+}
 
 Avatar.displayName = "Avatar";
 
-export interface AvatarGroupProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface AvatarGroupProps extends React.ComponentPropsWithRef<"div"> {
   max?: number;
   size?: AvatarSize;
   children: React.ReactNode;
 }
 
+/**
+ * role=group · shows up to `max` avatars, collapsing the rest into a "+N" indicator with its own
+ * aria-label · each avatar keeps its own accessible name (status included) · non-interactive
+ */
 export function AvatarGroup({
   className,
   max = 4,

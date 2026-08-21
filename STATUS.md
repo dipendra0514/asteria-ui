@@ -52,26 +52,45 @@ Order: Button → Avatar → Badge → Input → Field wrapper → Textarea → 
   CLAUDE.md — Button itself doesn't render one directly, the slot just
   accepts any icon element).
 
+- **Avatar** (`packages/registry/ui/avatar.tsx`) — audited against Figma
+  canvas `0:1`. Confirmed: Avatar's page has NO separate "Page Content" /
+  "Accessibility Note" frame like Button's does (checked twice, including
+  re-pulling `get_design_context` directly on the header instance
+  `2178:250` — it's identical to Button's page header, just
+  breadcrumb+title+description, no a11y block nested in it). This appears
+  to be a real gap in this specific Figma page, not a tool error — logged
+  as a Figma-gap decision in BUILD_LOG.md rather than guessed at. Authored
+  the a11y doc comment myself, in the same terse `·`-separated style as
+  Button's, grounded in the component's actual implemented behavior (role,
+  aria-label sourcing, image-fallback behavior, non-interactive/no-focus).
+  Verified size scale (xs 24 / sm 32 / md 40 / lg 48 / xl 64 / 2xl 80) and
+  the online-status dot color (`success/500` exactly, confirmed via
+  `get_design_context` on node `2077:15`) — both already correct in the
+  existing code, no drift. Migrated `Avatar` and `AvatarGroup` off
+  `React.forwardRef` onto `React.ComponentPropsWithRef` + plain function
+  components, matching the convention established on Button. Added
+  `ui/__tests__/avatar.test.tsx` — 11 tests (accessible name from
+  alt/initials, status suffix, initials derivation, initials override,
+  image render, image-error fallback to initials, ref forwarding, axe
+  zero-violations across image/initials/status states, AvatarGroup
+  rendering under max, overflow collapsing with labeled "+N" indicator, axe
+  zero-violations with overflow present). `pnpm lint` and `pnpm test` both
+  clean (21 tests total across both component test files).
+
 ## Current
 
-**Avatar** — about to start. Existing `packages/registry/ui/avatar.tsx` was
-already confirmed against Figma node `0:1` earlier this session (Size
-xs/sm/md/lg/xl/2xl, Status online/offline — matches exactly). This audit
-still needs: pull the Accessibility Note text for Avatar's doc comment
-(location TBD — need to search the `0:1` canvas's "Page Content" frame,
-same pattern as Button's `2121:14691`), verify ref-forwarding pattern
-matches the new `ComponentPropsWithRef` convention just established on
-Button (Avatar currently still uses `React.forwardRef` — needs migrating
-for consistency), and write `ui/__tests__/avatar.test.tsx` +
-`avatar-group.test.tsx`-equivalent coverage (render, image-load-failure
-fallback to initials, status indicator, AvatarGroup overflow count,
-vitest-axe zero violations). No Figma color/size drift expected since it
-was already verified once, but re-check the "Page Content" frame's
-Accessibility Note as the one thing not yet pulled.
+**Badge** — about to start. Need to locate Badge's node in the base-components
+overview canvas — expected around `2120:3` per the original map (unverified
+until checked). No existing `badge.tsx` yet in `packages/registry/ui/` —
+this is a net-new component, not an audit. Docs content already exists at
+`apps/www/content/docs/components/badge.mdx` (pre-written ahead of
+implementation, per a prior session) but touching docs content is out of
+scope for tonight's queue (that's Phase 4) — build the component + tests
+only.
 
 ## Remaining
 
-Badge, Input, Field wrapper, Textarea, Checkbox, Radio Group, Switch, Alert,
+Input, Field wrapper, Textarea, Checkbox, Radio Group, Switch, Alert,
 Spinner, Divider, Skeleton, Progress Bar, Breadcrumbs, Tooltip, Dropdown
 Menu, Modal, Tabs
 
@@ -81,10 +100,9 @@ _(none yet)_
 
 ## Exact resume point
 
-Button is fully done and about to be committed + pushed (commit message:
-`fix(ui): align Button to Figma spec for audits`). Next action after that
-commit/push completes: start the Avatar audit by using `get_metadata` on
-canvas `0:1` to locate its "Page Content" > "Accessibility Note" frame
-(same structure as Button's, just find the equivalent node ids under `0:1`),
-pull that text, migrate `avatar.tsx` off `forwardRef`, write its test file,
-lint/test/commit/push, then move to Badge.
+Avatar is fully done, committed, and pushed (commit:
+`fix(ui): align Avatar to Figma spec for audits`). Next action: run
+`get_metadata` on Figma node `2120:3` (fileKey `CDgfoMkj7lP3pXWJ3aOgkH`) to
+verify it's Badge's canvas before building anything — if the title doesn't
+say "Badge", scan `2120:1` through `2120:5` to find it, per the ±2-scan
+protocol, and log the correction here before proceeding.
