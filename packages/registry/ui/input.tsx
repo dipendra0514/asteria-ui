@@ -78,7 +78,7 @@ export function Input({
         ref={ref}
         aria-invalid={error || undefined}
         className={cn(
-          "min-w-0 flex-1 bg-transparent text-fg-primary outline-none placeholder:text-fg-tertiary",
+          "min-w-0 flex-1 bg-transparent font-medium text-fg-primary outline-none placeholder:text-fg-tertiary",
           "disabled:cursor-not-allowed disabled:text-fg-disabled",
           textSizeClassName[size],
         )}

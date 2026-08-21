@@ -64,12 +64,15 @@ export function Field({
       ) : null}
       {control}
       {description ? (
-        <p id={descriptionId} className="text-ui-xs text-fg-tertiary">
+        <p
+          id={descriptionId}
+          className="text-ui-xs font-medium text-fg-tertiary"
+        >
           {description}
         </p>
       ) : null}
       {invalid ? (
-        <p id={errorId} className="text-ui-xs text-fg-error">
+        <p id={errorId} className="text-ui-xs font-medium text-fg-error">
           {error}
         </p>
       ) : null}

@@ -74,14 +74,22 @@
 
 @theme {
   /* Figma Typography page — UI / Body / Display */
+  /* ui/* letter-spacing is a fixed -0.1px at every size in Figma (confirmed
+     across Button, Badge, Field, and Input specs) — not proportional to
+     font-size, so it's baked in here rather than left to a `tracking-*`
+     utility (which is em-relative and would drift at each size). */
   --text-ui-xs: 0.75rem;
   --text-ui-xs--line-height: 1rem;
+  --text-ui-xs--letter-spacing: -0.1px;
   --text-ui-sm: 0.8125rem;
   --text-ui-sm--line-height: 1.125rem;
+  --text-ui-sm--letter-spacing: -0.1px;
   --text-ui-md: 0.875rem;
   --text-ui-md--line-height: 1.25rem;
+  --text-ui-md--letter-spacing: -0.1px;
   --text-ui-lg: 1rem;
   --text-ui-lg--line-height: 1.5rem;
+  --text-ui-lg--letter-spacing: -0.1px;
 
   --text-body-sm: 0.875rem;
   --text-body-sm--line-height: 1.375rem;

@@ -198,6 +198,26 @@ Order: Button → Avatar → Badge → Input → Field wrapper → Textarea → 
   about the coupling). `pnpm lint`/`pnpm test` clean — 48 tests total
   across 5 files.
 
+- **Cross-cutting fix, caught while researching Textarea**: while pulling
+  Textarea's spec I noticed it uses `font-normal` (regular weight) where
+  every other `ui-*`-typed component I'd checked used medium — which made
+  me go back and actually verify, and I'd missed applying `font-medium` to
+  **Input**'s text and **Field**'s description/error text, even though the
+  original Figma pulls for both clearly showed `font-medium`. Fixed both.
+  Also discovered a second, more systemic issue while looking at this:
+  Button/Badge/Input all had a generic `tracking-tight` utility class
+  (Tailwind's default, `-0.025em`, so it scales with font-size), but every
+  Figma `ui-*` sample I've pulled so far (Button 13–16px, Badge 12–13px,
+  Field 12–13px, Input 14–16px) shows a **fixed** `-0.1px` letter-spacing
+  regardless of size — not proportional. Fixed properly at the token level:
+  added `--text-ui-*--letter-spacing: -0.1px` companions to all four `ui-*`
+  steps in `apps/www/styles/theme.css`, and removed the now-redundant (and
+  slightly wrong) `tracking-tight` class from Button, Badge, and Input —
+  the `text-ui-*` utility itself now carries the correct letter-spacing
+  automatically, the same way `--text-ui-*--line-height` already did.
+  Re-ran the full test suite after all three fixes: still 48/48 green,
+  `pnpm lint` clean.
+
 ## Current
 
 **Textarea** — about to start. Expect it to closely mirror Input's

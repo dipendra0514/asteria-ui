@@ -6,7 +6,7 @@ import { withIconSize } from "../lib/with-icon-size";
 const buttonVariants = cva(
   [
     "inline-flex items-center justify-center whitespace-nowrap",
-    "rounded-sm font-medium tracking-tight transition-colors",
+    "rounded-sm font-medium transition-colors",
     "disabled:pointer-events-none disabled:opacity-100",
     "focus-visible:outline-none focus-visible:shadow-[var(--shadow-glow-focus)]",
   ].join(" "),
