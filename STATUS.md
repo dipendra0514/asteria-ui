@@ -573,18 +573,75 @@ Order: Button → Avatar → Badge → Input → Field wrapper → Textarea → 
   `tooltip` registry.json entry. `pnpm lint`/`pnpm test` clean — 142 tests
   total across 16 files.
 
+- **Dropdown Menu** (`packages/registry/ui/dropdown-menu.tsx`) — second
+  Radix-based overlay. Node `2120:17` verified, as expected from the
+  original brief's "verified directly" list. Panel: `bg-elevated`,
+  `border-default`, `shadow-lg`, `radius-md`(10px), `gap-1` flex-col,
+  `p-1`. Item: `gap-2`, `px-2 py-1.5`, `radius-xs`, label `ui-md`(13px)
+  regular/`fg-primary`, optional 16px leading icon, optional
+  `ui-xs`/`fg-tertiary` shortcut text. Disabled: `fg-disabled` label.
+
+  **Real design tension found and resolved, not glossed over**: Figma
+  shows hover (`bg-secondary-hover`) and keyboard focus
+  (`bg-secondary` + `shadow-glow-focus`) as two visually distinct states.
+  But Radix's DropdownMenu architecture treats "highlighted" as one
+  concept via `data-highlighted` — both pointer hover and keyboard
+  navigation move real DOM focus to the same item, by design (WAI-ARIA
+  APG's single-moving-highlight menu pattern), so there's no clean way to
+  give hover and keyboard-focus two different background colors through
+  CSS alone without fighting the framework. Resolved by keeping ONE
+  unified highlighted background (`data-[highlighted]:bg-bg-secondary-hover`)
+  for both interaction methods, and layering `focus-visible:shadow-[var(--shadow-glow-focus)]`
+  on top — the browser's native `:focus-visible` heuristic correctly
+  distinguishes real keyboard-driven focus from pointer-triggered focus
+  even though Radix calls `.focus()` in both cases, so the glow still only
+  shows up for keyboard users exactly as the a11y note implies. This
+  preserves the actually load-bearing part of Figma's spec (a visible
+  keyboard focus indicator, CLAUDE.md's non-negotiable) while accepting a
+  minor, deliberate simplification on background-color parity between the
+  two interaction methods — the same practical compromise virtually every
+  production Radix-based menu (including shadcn's) makes for this exact
+  reason.
+
+  `destructive` prop (mentioned in Figma's own component description,
+  "supports icons, destructive variant, and disabled state," though no
+  distinct symbol was in the state axis) styles the item `fg-error` /
+  `data-[highlighted]:bg-bg-error-subtle`, consistent with every other
+  error treatment tonight. `role="menu"`/`role="menuitem"`, arrow-key
+  navigation, Enter/Space selection, Escape-to-close, and focus trapping
+  are all handled internally by Radix.
+
+  Two test-writing corrections worth remembering: (1) assumed Radix
+  auto-focuses the first item synchronously on open and asserted on that
+  — it didn't reliably resolve in jsdom (likely deferred via
+  requestAnimationFrame/focus-scope internals that don't flush the same
+  way there), so switched that test to just click the item directly
+  rather than fight the environment's timing; (2) a "forwards a ref" test
+  redundantly clicked a trigger on an already-controlled `open` menu,
+  which is a controlled-prop conflict, not a real assertion — removed the
+  unnecessary click since the menu was already open via the `open` prop.
+
+  Added `packages/registry/ui/__tests__/dropdown-menu.test.tsx` — 8 tests
+  (closed until triggered, opens with items on click, item selection
+  calls `onSelect`, disabled item has `data-disabled`, Escape closes,
+  destructive item selection fires its handler, ref forwarding, axe
+  zero-violations while open). Added a `dropdown-menu` registry.json
+  entry (includes `lib/with-icon-size.tsx`, its first non-Button/Input
+  consumer). `pnpm lint`/`pnpm test` clean — 150 tests total across 17
+  files.
+
 ## Current
 
-**Dropdown Menu** — about to start. Second Radix-based overlay; the
-`ResizeObserver` stub added for Tooltip should already cover whatever
-positioning internals this one needs too. Expect node `2120:17` — this
-was in the original brief's "verified directly" list and is unaffected by
-the node-map shift, but will still confirm on arrival rather than skip
-the check.
+**Modal** — about to start. Third and final Radix-based overlay
+component tonight (built on Radix's Dialog primitive, per CLAUDE.md's
+naming — "Modal" in our component vocabulary maps to Radix's "Dialog").
+Will need `pnpm add @radix-ui/react-dialog`. Expect node `2120:18` — this
+was also in the original brief's "verified directly" list, unaffected by
+the shift.
 
 ## Remaining
 
-Modal, Tabs
+Tabs
 
 ## Blocked
 
@@ -592,8 +649,8 @@ _(none yet)_
 
 ## Exact resume point
 
-Tooltip is fully done, committed, and pushed (commit: `feat(ui): add
-Tooltip`). Next action: run `get_metadata` on Figma node `2120:17`
-(fileKey `CDgfoMkj7lP3pXWJ3aOgkH`) to verify it's Dropdown Menu's canvas,
-then `pnpm add @radix-ui/react-dropdown-menu --filter @asteria-ui/registry`
+Dropdown Menu is fully done, committed, and pushed (commit: `feat(ui):
+add Dropdown Menu`). Next action: run `get_metadata` on Figma node
+`2120:18` (fileKey `CDgfoMkj7lP3pXWJ3aOgkH`) to verify it's Modal's
+canvas, then `pnpm add @radix-ui/react-dialog --filter @asteria-ui/registry`
 before writing the component.

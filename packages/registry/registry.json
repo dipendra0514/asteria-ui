@@ -313,6 +313,32 @@
           "type": "registry:lib"
         }
       ]
+    },
+    {
+      "name": "dropdown-menu",
+      "type": "registry:ui",
+      "title": "Dropdown Menu",
+      "description": "Contextual menu with selectable items and keyboard navigation, built on Radix UI.",
+      "dependencies": [
+        "@radix-ui/react-dropdown-menu",
+        "clsx",
+        "tailwind-merge"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "ui/dropdown-menu.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "lib/cn.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "lib/with-icon-size.tsx",
+          "type": "registry:lib"
+        }
+      ]
     }
   ]
 }

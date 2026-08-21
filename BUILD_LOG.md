@@ -599,3 +599,43 @@ timing) and a `tooltip` registry.json entry. `pnpm lint`/`pnpm test`
 clean, 142 tests total across 16 files.
 
 **Status: Tooltip complete.** Moving to Dropdown Menu next.
+
+## Overnight queue — Dropdown Menu
+
+Second Radix overlay, node `2120:17` verified as expected. Panel
+`bg-elevated`/`border-default`/`shadow-lg`/`radius-md`/`p-1`/`gap-1`;
+item `gap-2`/`px-2 py-1.5`/`radius-xs`, `ui-md` regular label, optional
+16px icon, optional `ui-xs`/`fg-tertiary` shortcut.
+
+**Design tension, resolved not glossed over**: Figma shows hover
+(`bg-secondary-hover`) and keyboard focus (`bg-secondary` + glow) as
+visually distinct, but Radix's menu architecture moves real DOM focus for
+both pointer hover and keyboard nav (single-moving-highlight APG
+pattern), so there's no clean `data-[highlighted]`-only way to split them.
+Resolved with one unified `data-[highlighted]:bg-bg-secondary-hover`
+background plus a separate `focus-visible:shadow-glow-focus` layered on
+top — `:focus-visible`'s native browser heuristic still correctly shows
+the ring only for real keyboard focus, so the actually-important part
+(CLAUDE.md's non-negotiable visible keyboard focus indicator) survives
+intact, at the cost of a deliberate, documented simplification on
+background parity between hover and focus. Same compromise shadcn's own
+dropdown-menu makes for the identical reason.
+
+Added `destructive` prop per Figma's own component description (no
+distinct symbol existed for it, but the description explicitly calls it
+out), styled consistently with every other error treatment tonight.
+
+Two test corrections: assumed synchronous auto-focus-on-open in jsdom,
+which didn't hold reliably (likely deferred focus-scope timing that
+doesn't flush the same way outside a real browser) — switched to direct
+item clicks instead of fighting it; and a ref-forwarding test redundantly
+clicked an already-`open`-controlled menu, a controlled-prop conflict
+rather than a real assertion — removed the unneeded click.
+
+Added `packages/registry/ui/__tests__/dropdown-menu.test.tsx` (8 tests)
+and a `dropdown-menu` registry.json entry (first non-Button/Input
+consumer of `lib/with-icon-size.tsx`). `pnpm lint`/`pnpm test` clean, 150
+tests total across 17 files.
+
+**Status: Dropdown Menu complete.** Moving to Modal next — third and
+final Radix overlay tonight (Radix's Dialog primitive under the hood).
