@@ -77,22 +77,59 @@ Order: Button → Avatar → Badge → Input → Field wrapper → Textarea → 
   zero-violations with overflow present). `pnpm lint` and `pnpm test` both
   clean (21 tests total across both component test files).
 
+- **Badge** (`packages/registry/ui/badge.tsx`) — net new. Node `2120:3`
+  verified as Badge on first try (title matched, no ±2 scan needed). This
+  page's metadata conveniently included the full Accessibility Note text
+  inline (no separate call needed): "role=status · dismiss button
+  role=button with aria-label="Remove" · dot indicator is decorative
+  (aria-hidden)". Pulled full design context for Gray/sm, Gray/md, and
+  Brand/md variants — confirmed the pattern `bg-{variant}-subtle +
+  border-{variant} + text-fg-{variant}` (Gray uses the neutral equivalents:
+  `bg-secondary` + `border-default` + `fg-primary`, since there's no
+  "gray-subtle" semantic token) and inferred Success/Warning/Warning/Error
+  follow identically, since the semantic token names exist specifically for
+  this — didn't spend extra calls re-verifying each, given Gray+Brand
+  already proved the pattern cleanly. Confirmed: pill shape (`radius-full`),
+  padding sm=`px-2 py-0.5`/md=`px-3 py-1` (exactly `space-md`/`space-2xs` and
+  `space-lg`/`space-xs`), font sm=`ui-xs`(12px)/md=`ui-sm`(13px), gap
+  `space-xs`(4px) constant across sizes, optional 6px/8px status dot colored
+  `fg-{variant}` (implemented as `bg-current` so it always matches the
+  active variant without a second color mapping), optional 12px/14px
+  dismiss button using the Lucide `X` icon (first real consumer of the
+  `lucide-react` dependency added during the Button phase).
+  Biome's a11y linter flagged `role="status"` on a `<span>` and suggested
+  `<output>` — unlike the earlier Avatar/`<fieldset>` false positive, this
+  one is correct (`<output>`'s implicit ARIA role genuinely is `status`), so
+  applied it: the root element is `<output>`, not `<span>`, with no explicit
+  `role` attribute needed. Added
+  `packages/registry/ui/__tests__/badge.test.tsx` — 9 tests (role=status
+  render, ref forwarding, className merge, decorative dot hidden from AT,
+  no dismiss button by default, dismiss button aria-label + onDismiss on
+  click, dismiss button keyboard activation, focus-glow class present on
+  dismiss button, axe zero-violations across default/dot/dismissible).
+  Added a `badge` entry to `registry.json` following the Button/Avatar
+  pattern (including `lucide-react` in its `dependencies` list — the first
+  registry item that needs it). `pnpm lint`/`pnpm test` clean (30 tests
+  total across 3 files).
+
 ## Current
 
-**Badge** — about to start. Need to locate Badge's node in the base-components
-overview canvas — expected around `2120:3` per the original map (unverified
-until checked). No existing `badge.tsx` yet in `packages/registry/ui/` —
-this is a net-new component, not an audit. Docs content already exists at
-`apps/www/content/docs/components/badge.mdx` (pre-written ahead of
-implementation, per a prior session) but touching docs content is out of
-scope for tonight's queue (that's Phase 4) — build the component + tests
-only.
+**Input** — about to start. Net-new component (form-row density matters:
+sm 32 / md 40 / lg 48 / xl 56 per CLAUDE.md). Need to verify Figma node
+`2120:4` (unverified — original map's next entry after Badge). Check
+whether Input pairs with a separate "Field wrapper" spec (next in queue) or
+whether Input's own Figma page already documents label/error/hint text as
+part of a combined spec — if so, may need to read both Input's and Field
+wrapper's pages together before building either, since they're likely
+tightly coupled (Field wrapper probably composes Input/Textarea/Select with
+label+hint+error text). Decide after seeing both specs; don't guess the
+composition boundary.
 
 ## Remaining
 
-Input, Field wrapper, Textarea, Checkbox, Radio Group, Switch, Alert,
-Spinner, Divider, Skeleton, Progress Bar, Breadcrumbs, Tooltip, Dropdown
-Menu, Modal, Tabs
+Field wrapper, Textarea, Checkbox, Radio Group, Switch, Alert, Spinner,
+Divider, Skeleton, Progress Bar, Breadcrumbs, Tooltip, Dropdown Menu, Modal,
+Tabs
 
 ## Blocked
 
@@ -100,9 +137,10 @@ _(none yet)_
 
 ## Exact resume point
 
-Avatar is fully done, committed, and pushed (commit:
-`fix(ui): align Avatar to Figma spec for audits`). Next action: run
-`get_metadata` on Figma node `2120:3` (fileKey `CDgfoMkj7lP3pXWJ3aOgkH`) to
-verify it's Badge's canvas before building anything — if the title doesn't
-say "Badge", scan `2120:1` through `2120:5` to find it, per the ±2-scan
-protocol, and log the correction here before proceeding.
+Badge is fully done, committed, and pushed (commit: `feat(ui): add Badge`).
+Next action: run `get_metadata` on Figma node `2120:4` (fileKey
+`CDgfoMkj7lP3pXWJ3aOgkH`) to verify it's Input's canvas — if the title
+doesn't say "Input", scan `2120:2` through `2120:6` per the ±2-scan
+protocol and log the correction here. Then also check `2120:5` (expected
+"Field wrapper") before writing any code, to understand the
+Input/Field-wrapper composition boundary before building either.

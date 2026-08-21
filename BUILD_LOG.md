@@ -152,3 +152,43 @@ zero-violations with overflow present). `pnpm lint` / `pnpm test` clean (21
 tests total, both component files).
 
 **Status: Avatar complete.** Moving to Badge next.
+
+## Overnight queue — Badge
+
+Net-new component. Figma node `2120:3` verified as Badge on the first try
+(no ±2 scan needed — title matched immediately). Unlike Button and Avatar,
+this page's `get_metadata` response included the full Accessibility Note
+text inline, no extra `get_design_context` call needed: "role=status ·
+dismiss button role=button with aria-label="Remove" · dot indicator is
+decorative (aria-hidden)".
+
+Pulled design context for Gray/sm, Gray/md, and Brand/md to establish the
+color pattern (`bg-{variant}-subtle + border-{variant} + text-fg-{variant}`,
+with Gray mapping to the neutral `bg-secondary`/`border-default`/`fg-primary`
+triplet since there's no dedicated "gray" semantic slot) — trusted this
+pattern for Success/Warning/Error without individually re-verifying each,
+since the semantic tokens exist specifically for that 1:1 mapping and
+re-checking three more would have been diminishing-returns given Gray+Brand
+already proved the shape cleanly.
+
+Implemented `showDot` and `dismissible` as independent boolean props (both
+present in Figma's own component properties, both already camelCase per
+CLAUDE.md's convention). Dot color implemented as `bg-current` rather than a
+per-variant color map — behaviorally identical to Figma's explicit
+`fg-{variant}` per-variant dot color, since the badge's own text color is
+already set to `fg-{variant}`, and this avoids a second parallel color
+mapping that could drift out of sync with the text color mapping later.
+
+**Accepted a11y-linter fix (not a suppression)**: Biome flagged
+`role="status"` on a `<span>` and suggested `<output>`. Checked this one
+against the ARIA spec instead of reflexively suppressing it like the
+Avatar/`<fieldset>` case — `<output>`'s implicit role genuinely is `status`,
+so this is a correct native-semantics substitution, not a mismatch. Root
+element is now `<output>` with no explicit `role` needed.
+
+Added `packages/registry/ui/__tests__/badge.test.tsx` (9 tests) and a
+`badge` entry to `registry.json`, including `lucide-react` in its
+dependency list (first registry item that needs it — Badge's dismiss button
+uses Lucide's `X` icon). `pnpm lint`/`pnpm test` clean, 30 tests total.
+
+**Status: Badge complete.** Moving to Input next.
