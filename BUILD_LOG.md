@@ -382,3 +382,25 @@ state update) — not our code, doesn't fail anything, left as-is.
 `pnpm lint`/`pnpm test` clean, 78 tests total across 8 files.
 
 **Status: Radio Group complete.** Moving to Switch next.
+
+## Overnight queue — Switch
+
+Third and final Radix-based simple control tonight. Node `2120:9` verified
+immediately. Track 44×24px rounded-full, `bg-switch-off` (a semantic token
+that already existed in `tokens.css` but had sat unused until now) /
+`bg-brand-solid` when on; thumb 20px circle, `bg-primary`, `shadow-sm`.
+On-state thumb positioning uses `data-[state=checked]:justify-end` rather
+than a `translate-x` — checked Figma's Off vs. On mockups directly and
+they differ by exactly a `justify-end` class, so this matches the real
+spec rather than reaching for the more common `translate-x` pattern seen
+in other Radix-based systems. Installed `@radix-ui/react-switch`; same
+`Root`/`Thumb` + auto-id label shape as Checkbox and Radio Group.
+
+Added `packages/registry/ui/__tests__/switch.test.tsx` (10 tests, written
+against already-verified Radix behavior this time — no false assumptions
+to correct) and a `switch` registry.json entry. `pnpm lint`/`pnpm test`
+clean, 88 tests total across 9 files.
+
+**Status: Switch complete.** All three Radix-based form controls
+(Checkbox, Radio Group, Switch) are done. Moving to Alert next — back to
+from-scratch components for a stretch.

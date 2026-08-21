@@ -320,19 +320,48 @@ Order: Button → Avatar → Badge → Input → Field wrapper → Textarea → 
   `radio-group` registry.json entry. `pnpm lint`/`pnpm test` clean — 78
   tests total across 8 files.
 
+- **Switch** (`packages/registry/ui/switch.tsx`) — third and final
+  Radix-based simple-control component. Node `2120:9` verified
+  immediately. Track: 44×24px, `rounded-full`, `bg-switch-off` (this
+  semantic token existed in `tokens.css` already but had never been used
+  by any component until now) / `bg-brand-solid` when on, `px-0.5` (2px)
+  inner padding. Thumb: 20px circle, `bg-primary`, `shadow-sm`. On-state
+  positioning implemented as `data-[state=checked]:justify-end` on the
+  Root (matches Figma's own modeling exactly — its Off/On mockups differ
+  only by a `justify-end` class, not a `translate-x`, so this isn't a
+  simplification, it's literally what the spec shows) rather than the more
+  common `translate-x` thumb approach seen in some other Radix-based
+  systems. Focus glow confirmed on the track itself, exact same value
+  again. Installed `@radix-ui/react-switch`; same
+  `Root`/`Thumb`+auto-id'd-`label` shape as Checkbox and Radio Group.
+  Added `packages/registry/ui/__tests__/switch.test.tsx` — 10 tests
+  (off by default, click toggles both directions, label-click toggles,
+  Space toggles, `onCheckedChange` fires, controlled `checked` respected,
+  disabled blocks toggling, ref forwarding, focus glow class, axe
+  zero-violations off/on/disabled — this time written against verified
+  Radix behavior from the start, no false assumptions this round). Added a
+  `switch` registry.json entry. `pnpm lint`/`pnpm test` clean — 88 tests
+  total across 9 files.
+
 ## Current
 
-**Switch** — about to start. Third and final Radix-based simple-control
-component in the queue (Checkbox, Radio Group, now Switch — all three are
-explicitly named in CLAUDE.md's "build on Radix/Base UI" list). Will need
-`pnpm add @radix-ui/react-switch`. Need to verify Figma node `2120:9`
-before building — remember from Radio Group's lesson: verify actual
-keyboard/toggle behavior with a real test rather than assuming.
+**Alert** — about to start. Back to a from-scratch simple component (not
+Radix-based) — CLAUDE.md explicitly lists Alert among the components
+built without a primitive dependency. This closes out the three
+Radix-based form controls tonight (Checkbox, Radio Group, Switch all
+done); the rest of the queue splits between more from-scratch components
+(Alert, Spinner, Divider, Skeleton, Progress Bar, Breadcrumbs) and
+Radix-based overlays (Tooltip, Dropdown Menu, Modal) plus Tabs (not
+explicitly in CLAUDE.md's Radix list but reasoned earlier — see the Button
+BUILD_LOG entry — that it needs the same treatment as the "build on
+Radix/Base UI" components given its APG keyboard-pattern complexity; will
+still verify this reasoning against Figma's actual a11y note when reached).
+Need to verify Figma node `2120:10` before building.
 
 ## Remaining
 
-Alert, Spinner, Divider, Skeleton, Progress Bar, Breadcrumbs, Tooltip,
-Dropdown Menu, Modal, Tabs
+Spinner, Divider, Skeleton, Progress Bar, Breadcrumbs, Tooltip, Dropdown
+Menu, Modal, Tabs
 
 ## Blocked
 
@@ -340,10 +369,10 @@ _(none yet)_
 
 ## Exact resume point
 
-Radio Group is fully done, committed, and pushed (commit:
-`feat(ui): add Radio Group`). Next action: run `get_metadata` on Figma node
-`2120:9` (fileKey `CDgfoMkj7lP3pXWJ3aOgkH`) to verify it's Switch's canvas
-— if the title doesn't match, scan `2120:7` through `2120:11` per the
-±2-scan protocol and log the correction here. Then `pnpm add
-@radix-ui/react-switch --filter @asteria-ui/registry` before writing the
-component.
+Switch is fully done, committed, and pushed (commit:
+`feat(ui): add Switch`). Next action: run `get_metadata` on Figma node
+`2120:10` (fileKey `CDgfoMkj7lP3pXWJ3aOgkH`) to verify it's Alert's canvas
+— if the title doesn't match, scan `2120:8` through `2120:12` per the
+±2-scan protocol (remember: `2120:12` is the known Divider/Skeleton
+collision point, so this scan range will need care) and log the
+correction here before writing any code.
