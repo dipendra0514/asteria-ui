@@ -33,7 +33,9 @@ export function AvatarSizes() {
   return (
     <ComponentPlayground
       code={sizes
-        .map((size) => `<Avatar size="${size}" initials="MC" alt="Maya Chen" />`)
+        .map(
+          (size) => `<Avatar size="${size}" initials="MC" alt="Maya Chen" />`,
+        )
         .join("\n")}
     >
       {sizes.map((size) => (

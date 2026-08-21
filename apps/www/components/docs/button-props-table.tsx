@@ -20,7 +20,8 @@ export function ButtonPropsTable() {
           name: "loading",
           type: "boolean",
           defaultValue: "false",
-          description: "Shows a spinner, sets aria-busy, and disables the button.",
+          description:
+            "Shows a spinner, sets aria-busy, and disables the button.",
         },
         {
           name: "disabled",

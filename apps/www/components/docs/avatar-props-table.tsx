@@ -1,22 +1,28 @@
-import type { AvatarGroupProps, AvatarProps } from "@asteria-ui/registry/ui/avatar";
 import { definePropDefs } from "@/lib/prop-defs";
+import type {
+  AvatarGroupProps,
+  AvatarProps,
+} from "@asteria-ui/registry/ui/avatar";
 import { PropsTable } from "./props-table";
 
 const avatarProps = definePropDefs<AvatarProps>()([
   {
     name: "src",
     type: "string",
-    description: "Image URL. Falls back to initials if missing or it fails to load.",
+    description:
+      "Image URL. Falls back to initials if missing or it fails to load.",
   },
   {
     name: "alt",
     type: "string",
-    description: "Accessible name. Also used to derive initials when `initials` is omitted.",
+    description:
+      "Accessible name. Also used to derive initials when `initials` is omitted.",
   },
   {
     name: "initials",
     type: "string",
-    description: "Fallback letters on `bg-brand-subtle` / `fg-brand`. Max two characters.",
+    description:
+      "Fallback letters on `bg-brand-subtle` / `fg-brand`. Max two characters.",
   },
   {
     name: "size",
@@ -27,7 +33,8 @@ const avatarProps = definePropDefs<AvatarProps>()([
   {
     name: "status",
     type: '"online" | "offline"',
-    description: "Optional presence dot. Online uses success-500; offline uses gray-300.",
+    description:
+      "Optional presence dot. Online uses success-500; offline uses gray-300.",
   },
 ]);
 

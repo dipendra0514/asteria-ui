@@ -37,8 +37,8 @@ export default function HomePage() {
       </div>
 
       <p className="mt-16 text-ui-xs text-fg-tertiary">
-        Asteria UI — Open-source components for React &amp; Tailwind · ©&nbsp;2026
-        Asteria UI
+        Asteria UI — Open-source components for React &amp; Tailwind ·
+        ©&nbsp;2026 Asteria UI
       </p>
     </main>
   );

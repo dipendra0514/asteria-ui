@@ -167,9 +167,12 @@
 
   --shadow-xs: 0 1px 2px rgb(46 55 125 / 0.06);
   --shadow-sm: 0 1px 3px rgb(46 55 125 / 0.1), 0 1px 2px rgb(46 55 125 / 0.06);
-  --shadow-md: 0 4px 6px -1px rgb(46 55 125 / 0.1), 0 2px 4px -2px rgb(46 55 125 / 0.06);
-  --shadow-lg: 0 10px 15px -3px rgb(46 55 125 / 0.1), 0 4px 6px -4px rgb(46 55 125 / 0.05);
-  --shadow-xl: 0 20px 25px -5px rgb(46 55 125 / 0.1), 0 8px 10px -6px rgb(46 55 125 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(46 55 125 / 0.1), 0 2px 4px -2px
+    rgb(46 55 125 / 0.06);
+  --shadow-lg: 0 10px 15px -3px rgb(46 55 125 / 0.1), 0 4px 6px -4px
+    rgb(46 55 125 / 0.05);
+  --shadow-xl: 0 20px 25px -5px rgb(46 55 125 / 0.1), 0 8px 10px -6px
+    rgb(46 55 125 / 0.05);
   --shadow-2xl: 0 25px 50px -12px rgb(46 55 125 / 0.22);
 
   /* glow-focus: brand/500 @ 24%, 4px spread, zero blur/offset */

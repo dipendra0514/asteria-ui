@@ -1,5 +1,5 @@
+import { type VariantProps, cva } from "class-variance-authority";
 import * as React from "react";
-import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../lib/cn";
 
 const avatarVariants = cva(
@@ -41,7 +41,9 @@ const statusVariants = cva(
   },
 );
 
-export type AvatarSize = NonNullable<VariantProps<typeof avatarVariants>["size"]>;
+export type AvatarSize = NonNullable<
+  VariantProps<typeof avatarVariants>["size"]
+>;
 export type AvatarStatus = "online" | "offline";
 
 export interface AvatarProps
@@ -62,11 +64,9 @@ function initialsFrom(alt?: string, initials?: string) {
 }
 
 export const Avatar = React.forwardRef<HTMLSpanElement, AvatarProps>(
-  (
-    { className, src, alt, initials, size = "md", status, ...props },
-    ref,
-  ) => {
+  ({ className, src, alt, initials, size = "md", status, ...props }, ref) => {
     const [failed, setFailed] = React.useState(false);
+    // biome-ignore lint/correctness/useExhaustiveDependencies: reset the fallback whenever `src` changes to a new image
     React.useEffect(() => {
       setFailed(false);
     }, [src]);
@@ -131,11 +131,8 @@ export function AvatarGroup({
   const overflow = items.length - visible.length;
 
   return (
-    <div
-      role="group"
-      className={cn("flex items-center", className)}
-      {...props}
-    >
+    // biome-ignore lint/a11y/useSemanticElements: <fieldset> is form semantics, not appropriate for a visual avatar stack
+    <div role="group" className={cn("flex items-center", className)} {...props}>
       {visible.map((child, index) => (
         <span
           key={child.key ?? index}

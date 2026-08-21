@@ -7,7 +7,9 @@ function resolveRegistryRoot() {
     join(process.cwd(), "../../packages/registry"),
     join(process.cwd(), "packages/registry"),
   ];
-  const match = candidates.find((dir) => existsSync(join(dir, "ui/avatar.tsx")));
+  const match = candidates.find((dir) =>
+    existsSync(join(dir, "ui/avatar.tsx")),
+  );
   if (!match) {
     throw new Error(
       `Could not find packages/registry. Tried:\n${candidates.join("\n")}`,

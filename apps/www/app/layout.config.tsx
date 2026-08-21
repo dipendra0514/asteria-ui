@@ -6,8 +6,16 @@ export const baseOptions: BaseLayoutProps = {
   },
   links: [
     { text: "Docs", url: "/docs", active: "nested-url" },
-    { text: "Components", url: "/docs/components/avatar", active: "nested-url" },
+    {
+      text: "Components",
+      url: "/docs/components/avatar",
+      active: "nested-url",
+    },
     // TODO: real repo URL
-    { text: "GitHub", url: "https://github.com/asteria-ui/asteria-ui", external: true },
+    {
+      text: "GitHub",
+      url: "https://github.com/asteria-ui/asteria-ui",
+      external: true,
+    },
   ],
 };
