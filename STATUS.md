@@ -685,32 +685,113 @@ Order: Button → Avatar → Badge → Input → Field wrapper → Textarea → 
   consumer happens to compose it. `pnpm lint`/`pnpm test` clean — 160
   tests total across 18 files.
 
-## Current
+- **Tabs** (`packages/registry/ui/tabs.tsx`) — last component in the
+  queue. Node `2120:19` verified. The earlier reasoning (logged in
+  Button's BUILD_LOG entry) that Tabs would need Radix-level treatment
+  despite not being on CLAUDE.md's literal "build on Radix/Base UI" list
+  was confirmed directly by Figma's own a11y note this time: "role=tablist
+  · each tab role=tab · panels role=tabpanel · arrow keys navigate ·
+  aria-selected on active tab · aria-controls links to panel" — the full
+  APG Tabs pattern, same complexity class as Checkbox/Switch/RadioGroup.
+  Used `@radix-ui/react-tabs`.
 
-**Tabs** — about to start, last component in tonight's queue. Node
-`2120:19` was in the original brief's "verified directly" list. Per the
-earlier reasoning logged in Button's BUILD_LOG entry, Tabs needs the same
-Radix/Base-UI treatment as the explicitly-named "complex" components
-despite not being on CLAUDE.md's literal list (APG Tabs pattern needs
-roving tabindex + arrow-key nav, same complexity class as
-Checkbox/Switch/RadioGroup) — will verify this reasoning against Figma's
-actual a11y note on arrival, and use `@radix-ui/react-tabs` if confirmed.
+  Two variants, both pulled in full: **underline** (tablist has
+  `border-b border-default`, `gap-4`; inactive tab `ui-sm`/`fg-secondary`,
+  `px-1 py-2`; active tab adds a 2px `border-brand` bottom border +
+  `fg-brand`, and Figma's own active-state symbol is 2px taller than the
+  inactive one, 36px vs 34px) and **pill** (tablist `bg-secondary
+  p-0.5 rounded-full gap-1`; inactive tab transparent, active tab
+  `bg-brand-subtle` + `fg-brand`, both `px-3 py-1.5 rounded-full`).
+
+  **Deliberate, logged deviation from Figma's literal pixel values**: for
+  the underline variant, rather than only adding the 2px border on the
+  active tab (which would shift tab-bar height by 2px whenever the
+  selection changes — genuinely bad UX, not what Figma intended to test
+  for since it's a static mockup), rendered `border-b-2` on every trigger
+  unconditionally (`border-transparent` when inactive, `border-border-brand`
+  when active) so the layout never jumps. This means the *default* state
+  in this implementation is 36px tall rather than Figma's literal 34px —
+  a 2px difference, deliberately chosen and documented rather than
+  faithfully reproducing a static mockup's incidental omission of
+  reserved border space. All color/spacing values themselves are
+  unchanged and exactly as specified.
+
+  Same confirmed `shadow-glow-focus` value on tab triggers via
+  `focus-visible`. `TabsList` accepts a `variant` prop and shares it with
+  child `TabsTrigger`s via context, so each trigger doesn't need its own
+  `variant` prop repeated.
+
+  Added `packages/registry/ui/__tests__/tabs.test.tsx` — 10 tests
+  (renders tablist + 3 tabs + default panel, `aria-selected` on the
+  active tab, `aria-controls` links tab to panel, click switches panels,
+  **arrow-key navigation auto-selects the newly-focused tab** — verified
+  directly, and confirmed genuinely different from RadioGroup's Radix
+  behavior in this same install, where arrow keys only move focus without
+  auto-selecting — disabled tab has `data-disabled`, focus glow class,
+  pill-variant classes applied, ref forwarding, axe zero-violations for
+  both variants). Same benign `RovingFocusGroupImpl` act() console
+  warning seen on RadioGroup, not a real issue. Added a `tabs` registry.json
+  entry. `pnpm lint`/`pnpm test` clean — **170 tests total across 19
+  files.**
+
+# Overnight queue: COMPLETE
+
+All 19 components in tonight's queue are built, Figma-verified, tested,
+linted, committed, and pushed: Button (audit) → Avatar (audit) → Badge →
+Input → Field → Textarea → Checkbox → Radio Group → Switch → Alert →
+Spinner → Divider → Skeleton → Progress Bar → Breadcrumbs → Tooltip →
+Dropdown Menu → Modal → Tabs.
+
+Final state: `pnpm lint` clean, `pnpm test` clean (170 tests / 19 files),
+`registry.json` has all 19 entries, every component has a Figma-sourced
+(or, where genuinely absent from Figma, self-authored-and-logged) a11y
+doc comment, and `git log` shows one commit per component plus the two
+cross-cutting fixes (font-weight/letter-spacing correction, and the
+`ResizeObserver` test-infra stub).
+
+Nothing is blocked. Nothing was skipped. The one real node-map collision
+(`2120:12`, flagged in the original brief) was resolved and documented;
+every downstream shifted prediction it implied (Progress Bar, Breadcrumbs,
+Tooltip) was independently verified rather than trusted blindly, and all
+three landed correctly.
+
+## What's genuinely left for Phase 2 (not done tonight, by design)
+
+This queue covered every component CLAUDE.md's "Current status" section
+listed as already built in Figma. Two things explicitly out of scope for
+tonight, called out here so they're not mistaken for gaps:
+
+- **Docs site wiring (Phase 4)**: `apps/www/content/docs/components/*.mdx`
+  already has pre-written pages for most of these components from an
+  earlier session, predating tonight's implementations. None of them were
+  touched tonight — Phase 4 is a separate pass to actually wire live
+  previews/prop tables to the real components now that they exist.
+- **CLI `init`/`add` commands (Phase 3)**: `packages/cli` only has its
+  build tooling from Phase 0; the actual registry-fetching logic isn't
+  built. `registry.json` is fully populated and ready for it though.
+
+## When you wake up
+
+Read this file top to bottom — the "Node-map correction" section above
+has the full resolved Figma id map if you need it again for Phase 2/3/4
+work. `BUILD_LOG.md` has the detailed per-component design rationale if
+you want to double-check any specific decision before building on top of
+it. Type "continue" and I'll pick up wherever you point me — Phase 2
+polish, Phase 3 (CLI), or Phase 4 (docs site) are all reasonable next
+steps; I don't have a strong opinion on which without knowing what you
+want to look at first.
 
 ## Remaining
 
-_(none — Tabs is the last item in tonight's queue)_
+_(none — queue complete)_
 
 ## Blocked
 
-_(none yet)_
+_(none)_
 
 ## Exact resume point
 
-Modal is fully done, committed, and pushed (commit: `feat(ui): add
-Modal`). Next action: run `get_metadata` on Figma node `2120:19` (fileKey
-`CDgfoMkj7lP3pXWJ3aOgkH`) to verify it's Tabs' canvas, confirm whether its
-a11y note calls for Radix-level keyboard complexity, then `pnpm add
-@radix-ui/react-tabs --filter @asteria-ui/registry` if so, before writing
-the component. This is the last component — after it's done, do a final
-full-repo `pnpm lint && pnpm test` pass and write a wrap-up summary in
-both STATUS.md and BUILD_LOG.md noting the queue is complete.
+**Queue complete.** Tabs is fully done, committed, and pushed (commit:
+`feat(ui): add Tabs`). All 19 components built. No pending action —
+waiting for the user's next instruction on what to tackle next (Phase 2
+polish / Phase 3 CLI / Phase 4 docs site).

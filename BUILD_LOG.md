@@ -679,3 +679,59 @@ describes real code dependencies, not how the demo happens to compose it.
 
 **Status: Modal complete.** Moving to Tabs next — last component in
 tonight's queue.
+
+## Overnight queue — Tabs (final component)
+
+Node `2120:19` verified. Figma's own a11y note ("role=tablist · each tab
+role=tab · panels role=tabpanel · arrow keys navigate · aria-selected ·
+aria-controls") confirmed the reasoning logged back in Button's entry:
+Tabs needs the full APG pattern despite not being on CLAUDE.md's literal
+Radix/Base-UI list. Used `@radix-ui/react-tabs`.
+
+Two variants pulled in full: underline (`border-b border-default` on the
+list, `border-b-2 border-brand` + `fg-brand` on the active trigger) and
+pill (`bg-secondary p-0.5 rounded-full` list, `bg-brand-subtle fg-brand
+rounded-full` active trigger).
+
+**Deliberate, logged pixel deviation**: Figma's underline mockup only
+adds the 2px active border to the selected tab, making default (34px)
+and active (36px) states different heights. Rendering that literally
+would shift the tab bar's height by 2px every time selection changes —
+a real UX bug, not something to reproduce faithfully. Rendered
+`border-b-2` unconditionally on every trigger (`border-transparent` when
+inactive) so height stays constant at 36px always. Colors/spacing
+otherwise exactly as specified; only this one layout-stability fix
+deviates from the literal static mockup.
+
+Test found a real, useful contrast with RadioGroup: Tabs' arrow-key
+navigation DOES auto-select the newly-focused tab in this same Radix
+install, whereas RadioGroup's arrow keys only moved roving focus without
+selecting. Verified directly rather than assumed either way, given the
+RadioGroup lesson from earlier tonight. Same benign
+`RovingFocusGroupImpl` act() warning as RadioGroup, not a real issue.
+
+Added `packages/registry/ui/__tests__/tabs.test.tsx` (10 tests) and a
+`tabs` registry.json entry. `pnpm lint`/`pnpm test` clean — **170 tests
+total across 19 files.**
+
+# QUEUE COMPLETE
+
+All 19 components: Button (audit) → Avatar (audit) → Badge → Input →
+Field → Textarea → Checkbox → Radio Group → Switch → Alert → Spinner →
+Divider → Skeleton → Progress Bar → Breadcrumbs → Tooltip → Dropdown Menu
+→ Modal → Tabs. Every one Figma-verified (not guessed), tested, linted,
+committed, and pushed individually. Two cross-cutting fixes landed along
+the way (the font-weight/letter-spacing token correction after Textarea,
+and the `ResizeObserver` jsdom stub after Tooltip) that benefited every
+component built after them.
+
+The one real Figma node-map ambiguity flagged at the start (`2120:12`,
+Divider vs. Skeleton) was resolved by direct verification, and every
+downstream id it shifted (Progress Bar → `14`, Breadcrumbs → `15`,
+Tooltip → `16`) was independently re-verified on arrival rather than
+trusted from the shift alone — all three landed correctly.
+
+Not touched tonight, by design (out of scope for this queue, not gaps):
+Phase 3's CLI `init`/`add` command logic, and Phase 4's docs-site wiring
+of the pre-existing MDX pages to these now-real components. See
+STATUS.md's final section for the handoff note.
