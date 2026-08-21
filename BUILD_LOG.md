@@ -523,3 +523,26 @@ Added `packages/registry/ui/__tests__/skeleton.test.tsx` (7 tests) and a
 total across 13 files.
 
 **Status: Skeleton complete.** Moving to Progress Bar next.
+
+## Overnight queue — Progress Bar
+
+From-scratch, node `2120:14` verified — the shifted-map prediction (see
+Divider's collision fix above) was correct on the first try, good sign
+for the remaining shifted entries. Only sm (`h-1`, 4px) and md (`h-2`,
+8px) tracks, both `rounded-full` `bg-tertiary` with a `bg-brand-solid`
+fill. Made `label` a required prop rather than optional, since the a11y
+note explicitly calls for "aria-label describes what is loading" — baking
+that into the type system rather than trusting consumers to remember an
+optional prop. Fill width is clamped to `[0, 100]%` so an out-of-range
+`value` can't overflow the track visually.
+
+Same `useFocusableInteractive` false positive as Divider's
+`role="separator"`, suppressed with the placement lesson already learned
+there (comment immediately above `<div`, since this rule's diagnostic
+range covers the whole element rather than a specific attribute).
+
+Added `packages/registry/ui/__tests__/progress-bar.test.tsx` (8 tests) and
+a `progress-bar` registry.json entry. `pnpm lint`/`pnpm test` clean, 127
+tests total across 14 files.
+
+**Status: Progress Bar complete.** Moving to Breadcrumbs next.

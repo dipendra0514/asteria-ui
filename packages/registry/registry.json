@@ -259,6 +259,24 @@
           "type": "registry:lib"
         }
       ]
+    },
+    {
+      "name": "progress-bar",
+      "type": "registry:ui",
+      "title": "Progress Bar",
+      "description": "Determinate progress indicator showing completion percentage, in sm and md sizes.",
+      "dependencies": ["class-variance-authority", "clsx", "tailwind-merge"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "ui/progress-bar.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "lib/cn.ts",
+          "type": "registry:lib"
+        }
+      ]
     }
   ]
 }

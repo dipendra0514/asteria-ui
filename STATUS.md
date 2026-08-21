@@ -478,15 +478,39 @@ Order: Button → Avatar → Badge → Input → Field wrapper → Textarea → 
   Added a `skeleton` registry.json entry. `pnpm lint`/`pnpm test` clean —
   119 tests total across 13 files.
 
+- **Progress Bar** (`packages/registry/ui/progress-bar.tsx`) —
+  from-scratch. Node `2120:14` verified — the shifted-map prediction from
+  the Divider fix was correct on the first try. Only 2 sizes: sm (`h-1`,
+  4px track) and md (`h-2`, 8px track), both `rounded-full`
+  `bg-tertiary` track with a `bg-brand-solid` fill. `label` made a
+  **required** prop (not optional) since the a11y note explicitly says
+  "aria-label describes what is loading" — a progress bar with no
+  description of what's progressing is a real accessibility gap, so this
+  bakes the requirement into the type system rather than leaving it
+  optional and hoping consumers remember. Fill width is computed and
+  clamped to `[0, 100]%` from `value`/`max`, so an out-of-range `value`
+  (negative, or exceeding `max`) can't visually overflow the track.
+  Same `useFocusableInteractive` false positive as Divider's
+  `role="separator"` — a determinate progress display isn't an
+  interactive control, so no `tabIndex` is needed; suppressed with the
+  placement lesson learned on Divider (comment immediately above the
+  `<div`, since this rule's range covers the whole element).
+  Added `packages/registry/ui/__tests__/progress-bar.test.tsx` — 8 tests
+  (role=progressbar with accessible name, aria-valuenow/min/max reflect
+  props, fill width matches percentage, clamping above 100% and below 0%,
+  className merge, ref forwarding, axe zero-violations at 0/50/100%).
+  Added a `progress-bar` registry.json entry. `pnpm lint`/`pnpm test`
+  clean — 127 tests total across 14 files.
+
 ## Current
 
-**Progress Bar** — about to start. From-scratch per CLAUDE.md. Per the
-node-map shift resolved during Divider, expect this at `2120:14` — verify
-before building rather than trust the shift blindly.
+**Breadcrumbs** — about to start. From-scratch per CLAUDE.md. Expect node
+`2120:15` per the shifted map (now proven correct once already) — verify
+before building.
 
 ## Remaining
 
-Breadcrumbs, Tooltip, Dropdown Menu, Modal, Tabs
+Tooltip, Dropdown Menu, Modal, Tabs
 
 ## Blocked
 
@@ -494,9 +518,8 @@ _(none yet)_
 
 ## Exact resume point
 
-Skeleton is fully done, committed, and pushed (commit: `feat(ui): add
-Skeleton`). Next action: run `get_metadata` on Figma node `2120:14`
-(fileKey `CDgfoMkj7lP3pXWJ3aOgkH`) to verify it's Progress Bar's canvas —
-if the title doesn't match the shifted-map prediction, scan `2120:12`
-through `2120:16` per the ±2-scan protocol and log the correction here
-before writing any code.
+Progress Bar is fully done, committed, and pushed (commit: `feat(ui): add
+Progress Bar`). Next action: run `get_metadata` on Figma node `2120:15`
+(fileKey `CDgfoMkj7lP3pXWJ3aOgkH`) to verify it's Breadcrumbs' canvas —
+if not, scan `2120:13` through `2120:17` per the ±2-scan protocol and log
+the correction here before writing any code.
