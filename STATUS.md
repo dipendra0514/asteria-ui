@@ -112,24 +112,65 @@ Order: Button → Avatar → Badge → Input → Field wrapper → Textarea → 
   registry item that needs it). `pnpm lint`/`pnpm test` clean (30 tests
   total across 3 files).
 
+- **Input** (`packages/registry/ui/input.tsx`) — net new. Node `2120:4`
+  verified as Input (title matched immediately). Also checked `2120:5`
+  ("↳ Field" in Figma — the queue's "Field wrapper") up front to understand
+  the composition boundary before building either: Input's own a11y note
+  says "requires associated label via Field wrapper", and Field's a11y note
+  confirms it's the one that owns label-for/id linkage + aria-describedby
+  wiring. So Input itself stays a bare styled control (no label/hint/error
+  text of its own) — that composition lands in the next component. Pulled
+  design context for md/default, md/focus, md/error, md/disabled, plus
+  sm/lg/xl/default to get per-size padding/gap/font: sm=`px-3 py-1.5
+  gap-2 text-ui-md`, md=`px-4 py-2 gap-2 text-ui-lg`, lg=`px-5 py-3 gap-2
+  text-ui-lg`, xl=`px-6 py-4 gap-3 text-ui-lg` (icon sizes 16px sm/md, 20px
+  lg/xl — same pattern as Button). Radius is `radius-sm` again, not
+  `radius-md` — third component in a row where Figma disagrees with
+  CLAUDE.md's generic "radius-md 10 (inputs/buttons)" note; this is now a
+  clear enough pattern to flag as a correction rather than a one-off (see
+  BUILD_LOG). Focus state reuses the exact same `shadow-glow-focus` value
+  confirmed on Button, applied via `focus-within` on the wrapper. Error
+  state: Figma's mockup showed the demo text itself turning `fg-error`, but
+  that's because the mockup's "value" is standing in for placeholder text —
+  implemented as `aria-invalid` on the real `<input>` driving
+  `has-[[aria-invalid=true]]:border-border-error` on the wrapper via CSS
+  `:has()`, which is the semantically correct implementation matching the
+  a11y note ("aria-invalid=true on error") without making real typed user
+  text change color (which no real product actually does).
+  Extracted `withIconSize` (previously private to `button.tsx`) into a
+  shared `packages/registry/lib/with-icon-size.tsx`, now used by both
+  Button and Input — also added an `aria-hidden` injection to the shared
+  helper (decorative icons should never announce, and neither Button nor
+  Input relies on its icon for its accessible name). Updated `button.tsx`
+  to import the shared helper instead of a local copy — no behavior change,
+  confirmed by rerunning its existing test suite (still 10/10 green).
+  Added `packages/registry/ui/__tests__/input.test.tsx` — 10 tests (typing,
+  ref-to-`<input>` forwarding, `wrapperRef`-to-wrapper forwarding, className
+  merge on wrapper, `aria-invalid` set only when `error`, disabled blocks
+  typing, icon slots sized + aria-hidden, focus-within glow class present,
+  axe zero-violations across default/error/disabled). Added an `input`
+  registry.json entry, and added `lib/with-icon-size.tsx` to both Button's
+  and Input's `files` lists (it wasn't in Button's before since it used to
+  be a private local function). `pnpm lint`/`pnpm test` clean — 40 tests
+  total across 4 files.
+
 ## Current
 
-**Input** — about to start. Net-new component (form-row density matters:
-sm 32 / md 40 / lg 48 / xl 56 per CLAUDE.md). Need to verify Figma node
-`2120:4` (unverified — original map's next entry after Badge). Check
-whether Input pairs with a separate "Field wrapper" spec (next in queue) or
-whether Input's own Figma page already documents label/error/hint text as
-part of a combined spec — if so, may need to read both Input's and Field
-wrapper's pages together before building either, since they're likely
-tightly coupled (Field wrapper probably composes Input/Textarea/Select with
-label+hint+error text). Decide after seeing both specs; don't guess the
-composition boundary.
+**Field wrapper** — about to start. This is the component that actually
+wires label/helper-text/error-message together with `for`/`id` and
+`aria-describedby`, composing around Input (and later Textarea, Select,
+etc. per its own Figma description: "Compose with Input, Textarea, Select,
+and other form controls"). Figma node `2120:5` already confirmed (see
+Input's completed entry above — checked both together). Need one more
+`get_design_context` pass on `2120:5`'s actual symbols (`2121:14986`
+default, `2121:14991` error) for exact label/helper-text typography and
+spacing before building — haven't pulled those yet, only the canvas
+metadata + a11y note so far.
 
 ## Remaining
 
-Field wrapper, Textarea, Checkbox, Radio Group, Switch, Alert, Spinner,
-Divider, Skeleton, Progress Bar, Breadcrumbs, Tooltip, Dropdown Menu, Modal,
-Tabs
+Textarea, Checkbox, Radio Group, Switch, Alert, Spinner, Divider, Skeleton,
+Progress Bar, Breadcrumbs, Tooltip, Dropdown Menu, Modal, Tabs
 
 ## Blocked
 
@@ -137,10 +178,12 @@ _(none yet)_
 
 ## Exact resume point
 
-Badge is fully done, committed, and pushed (commit: `feat(ui): add Badge`).
-Next action: run `get_metadata` on Figma node `2120:4` (fileKey
-`CDgfoMkj7lP3pXWJ3aOgkH`) to verify it's Input's canvas — if the title
-doesn't say "Input", scan `2120:2` through `2120:6` per the ±2-scan
-protocol and log the correction here. Then also check `2120:5` (expected
-"Field wrapper") before writing any code, to understand the
-Input/Field-wrapper composition boundary before building either.
+Input is fully done, committed, and pushed (commit: `feat(ui): add Input`).
+Next action: pull `get_design_context` on Figma nodes `2121:14986`
+(Field/State=default) and `2121:14991` (Field/State=error) to get exact
+label/helper/error typography and spacing, then build
+`packages/registry/ui/field.tsx` (a `Field`/`FieldLabel`/`FieldDescription`/
+`FieldError` composition, or similar — decide the exact composition shape
+once the spec is in hand) wrapping around `Input` with proper `for`/`id`
+and `aria-describedby` wiring, per CLAUDE.md's "composition over
+configuration for multi-part components" rule.

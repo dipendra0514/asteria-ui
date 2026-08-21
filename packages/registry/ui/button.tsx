@@ -1,6 +1,7 @@
 import { type VariantProps, cva } from "class-variance-authority";
-import * as React from "react";
+import type * as React from "react";
 import { cn } from "../lib/cn";
+import { withIconSize } from "../lib/with-icon-size";
 
 const buttonVariants = cva(
   [
@@ -89,13 +90,6 @@ function Spinner({ className }: { className?: string }) {
       />
     </svg>
   );
-}
-
-function withIconSize(icon: React.ReactNode, sizeClassName: string) {
-  if (!React.isValidElement<{ className?: string }>(icon)) return icon;
-  return React.cloneElement(icon, {
-    className: cn(sizeClassName, "shrink-0", icon.props.className),
-  });
 }
 
 /**

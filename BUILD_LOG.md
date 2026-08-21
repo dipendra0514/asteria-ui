@@ -192,3 +192,48 @@ dependency list (first registry item that needs it — Badge's dismiss button
 uses Lucide's `X` icon). `pnpm lint`/`pnpm test` clean, 30 tests total.
 
 **Status: Badge complete.** Moving to Input next.
+
+## Overnight queue — Input
+
+Net-new component. Verified `2120:4` = Input and, up front, `2120:5` = Field
+("Field wrapper" in the queue's naming) — read both before building either,
+since Input's a11y note explicitly says "requires associated label via
+Field wrapper" and Field's a11y note is the one that owns the
+label-for/id + aria-describedby wiring. This confirms the composition
+boundary cleanly: Input is a bare styled control, Field is what adds
+label/hint/error semantics around it (and, per its own component
+description, around Textarea/Select/etc. too — so Field is a general
+composer, not Input-specific).
+
+**Pattern correction worth flagging upstream**: this is the third
+component in a row (Button, now Input, and Input's radius matches Button's)
+where Figma's real spec uses `radius-sm` (8px) where CLAUDE.md's own
+"Radius" line says `radius-md` (10px) is for "inputs/buttons" specifically.
+Two data points was a coincidence; three is a pattern. CLAUDE.md's radius
+guideline note is likely just stale/wrong for these two components — worth
+a human updating that line to say `radius-sm` for Button/Input specifically
+(the doc's general step scale itself — xs 6 · sm 8 · md 10 · lg 14 · xl 20
+— is still presumably correct, just the "(inputs/buttons)" annotation on
+`radius-md` is misleading).
+
+Implemented the error state via `aria-invalid` on the real `<input>` +
+`has-[[aria-invalid=true]]:border-border-error` on the wrapper (CSS
+`:has()`), rather than literally recoloring typed text like Figma's static
+mockup appears to show — the mockup's colored "value" text is standing in
+for the placeholder in that empty-state frame, not a real product pattern
+of user-typed characters changing color based on validation.
+
+Extracted `withIconSize` out of `button.tsx` into a shared
+`packages/registry/lib/with-icon-size.tsx` (now used by both Button and
+Input, and available for future icon-slot components), and added an
+`aria-hidden` injection to it — every icon slot in this system is
+decorative, the accessible name always comes from a label or text content.
+Re-ran Button's full test suite after the refactor to confirm no behavior
+change (still 10/10 green).
+
+Added `packages/registry/ui/__tests__/input.test.tsx` (10 tests) and an
+`input` registry.json entry (also backfilled `lib/with-icon-size.tsx` into
+Button's `files` list, since it moved from a private function to a shared
+dependency). `pnpm lint`/`pnpm test` clean, 40 tests total across 4 files.
+
+**Status: Input complete.** Moving to Field wrapper next.

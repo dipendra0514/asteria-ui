@@ -18,6 +18,10 @@
         {
           "path": "lib/cn.ts",
           "type": "registry:lib"
+        },
+        {
+          "path": "lib/with-icon-size.tsx",
+          "type": "registry:lib"
         }
       ]
     },
@@ -58,6 +62,28 @@
         },
         {
           "path": "lib/cn.ts",
+          "type": "registry:lib"
+        }
+      ]
+    },
+    {
+      "name": "input",
+      "type": "registry:ui",
+      "title": "Input",
+      "description": "Text input field for forms and data entry, with leading/trailing icon slots and an error state.",
+      "dependencies": ["class-variance-authority", "clsx", "tailwind-merge"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "ui/input.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "lib/cn.ts",
+          "type": "registry:lib"
+        },
+        {
+          "path": "lib/with-icon-size.tsx",
           "type": "registry:lib"
         }
       ]
