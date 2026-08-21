@@ -462,3 +462,39 @@ total across 11 files.
 
 **Status: Spinner complete.** Moving to Divider next — right before the
 `2120:12` Divider/Skeleton collision flagged in the original brief.
+
+## Overnight queue — Divider (and the node-map collision, resolved)
+
+`2120:12` is **Divider**, not Skeleton. `2120:13` is **Skeleton**. This
+shifts the rest of the original map by +1 from here: Progress Bar now
+expected at `2120:14`, Breadcrumbs at `2120:15`, Tooltip at `2120:16`
+(filling what was previously an unaccounted gap in the brief) — Dropdown
+Menu (`17`)/Modal (`18`)/Tabs (`19`) are unaffected since those were
+already independently verified in the original brief and don't move.
+Recorded in STATUS.md under its own heading so this doesn't get lost.
+
+Built Divider from scratch: plain version is just a 1px line
+(`bg-border-default`, `h-px w-full` or `w-px h-full`); labeled version is
+two `flex-1` line segments around a centered `ui-xs`/`fg-tertiary` label
+with `gap-3`. Verified both horizontal and vertical directly rather than
+assuming symmetry — they are in fact just an axis flip of each other.
+
+**Biome suppression quirk, worth remembering**: `role="separator"`
+trips two rules (`useSemanticElements` → suggests `<hr>`; `useFocusableInteractive`
+→ wants `tabIndex`), both false positives here (`<hr>` is a void element and
+can't hold the labeled variant's children; a structural separator
+genuinely doesn't need `tabIndex` per ARIA). Getting the `biome-ignore`
+comments to actually take effect required discovering that the two
+rules' diagnostic ranges don't line up: on an element with children,
+`useFocusableInteractive` needs the ignore immediately above the opening
+`<div`, while `useSemanticElements` needs it immediately above the
+specific `role=` attribute line — stacking both comments in one spot
+silently leaves one of them unsuppressed. Worth remembering if this
+`role`-on-a-`<div>`-with-children shape comes up again later tonight.
+
+Added `packages/registry/ui/__tests__/divider.test.tsx` (8 tests) and a
+`divider` registry.json entry. `pnpm lint`/`pnpm test` clean, 112 tests
+total across 12 files.
+
+**Status: Divider complete.** Moving to Skeleton next (node already
+confirmed while resolving the collision above).

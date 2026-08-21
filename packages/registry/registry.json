@@ -223,6 +223,24 @@
           "type": "registry:lib"
         }
       ]
+    },
+    {
+      "name": "divider",
+      "type": "registry:ui",
+      "title": "Divider",
+      "description": "Visual separator between content sections, horizontal or vertical with an optional label.",
+      "dependencies": ["clsx", "tailwind-merge"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "ui/divider.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "lib/cn.ts",
+          "type": "registry:lib"
+        }
+      ]
     }
   ]
 }

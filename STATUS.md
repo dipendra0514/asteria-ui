@@ -4,6 +4,18 @@ Read this file first on every resume. It is the single source of truth for
 where the overnight queue stands. Update it after every component (see
 per-component commit protocol in the session that started this file).
 
+## Node-map correction (resolved the flagged `2120:12` collision)
+
+`2120:12` = **Divider** (confirmed via `get_metadata`, not Skeleton).
+`2120:13` = **Skeleton** (confirmed). This means the rest of the original
+map shifts by +1 from here: **Progress Bar is expected at `2120:14`**,
+**Breadcrumbs at `2120:15`**, **Tooltip at `2120:16`** (filling what was
+previously an unaccounted gap in the brief's map) — Dropdown Menu (`17`),
+Modal (`18`), and Tabs (`19`) are unaffected since they were already
+independently verified in the original brief. Will still verify each of
+Progress Bar/Breadcrumbs/Tooltip on arrival rather than trust this
+shifted-by-one theory blindly, per the standing protocol.
+
 ## Confirmed decisions (this run)
 
 - Figma file key: `CDgfoMkj7lP3pXWJ3aOgkH` — node-map is a working hypothesis,
@@ -401,16 +413,54 @@ Order: Button → Avatar → Badge → Input → Field wrapper → Textarea → 
   registry.json entry. `pnpm lint`/`pnpm test` clean — 104 tests total
   across 11 files.
 
+- **Divider** (`packages/registry/ui/divider.tsx`) — from-scratch. This
+  is the node that resolved the flagged `2120:12` collision: it's
+  Divider, not Skeleton (see the "Node-map correction" section above the
+  Confirmed Decisions block for the full shift explanation). Confirmed:
+  plain divider is just `h-px w-full bg-border-default` (or `w-px h-full`
+  vertical); labeled divider is two `flex-1` line segments around a
+  centered `ui-xs`/`fg-tertiary` label, `gap-3`(12px) — vertical and
+  horizontal are structurally identical, just flip the axis (verified
+  both, not just horizontal). a11y note: `role=separator`,
+  `aria-orientation` for vertical, "decorative by default."
+
+  **Biome quirk worth remembering for later components**: `role="separator"`
+  triggered two rules — `useSemanticElements` (suggesting `<hr>`) and
+  `useFocusableInteractive` (wanting a `tabIndex`). Both are false
+  positives here: `<hr>` can't hold the label+line-segment children the
+  labeled variant needs (it's a void element), and a purely structural,
+  non-interactive separator genuinely doesn't need `tabIndex` per the ARIA
+  spec (that's only for resizable/interactive separators). Suppressed both
+  with justified `biome-ignore` comments — but getting the suppression to
+  actually apply took real trial and error: **the two rules' diagnostic
+  ranges don't align**, so a single stacked pair of `biome-ignore` comments
+  right above `<div` only reliably works for a self-closing element.
+  For an element with children, `useFocusableInteractive`'s range covers
+  the *whole* element (comment must precede `<div` itself), while
+  `useSemanticElements`'s range is scoped to just the `role` attribute
+  (comment must precede the `role=` line specifically) — putting both
+  comments in the same spot silently fails to suppress one of them. If
+  this combination (`role` on a `<div>` with children) comes up again on a
+  later component, remember to split the two `biome-ignore` comments across
+  those two different anchor points rather than stacking them together.
+
+  Added `packages/registry/ui/__tests__/divider.test.tsx` (8 tests:
+  role=separator render, no aria-orientation by default, aria-orientation
+  set for vertical, plain-line classes, labeled rendering, className
+  merge, ref forwarding, axe zero-violations across
+  plain/labeled/vertical). Added a `divider` registry.json entry.
+  `pnpm lint`/`pnpm test` clean — 112 tests total across 12 files.
+
 ## Current
 
-**Divider** — about to start. From-scratch per CLAUDE.md. This is the
-component right before the known `2120:12` Divider/Skeleton ID collision
-— need to actually run the ±2 scan this time rather than assume, since the
-brief flagged this exact spot as ambiguous from the start.
+**Skeleton** — about to start. Node `2120:13` already verified while
+resolving the Divider/Skeleton collision above — no further Figma
+verification call needed, go straight to pulling its design context
+(Text/Circle/Rect variants) before building.
 
 ## Remaining
 
-Skeleton, Progress Bar, Breadcrumbs, Tooltip, Dropdown Menu, Modal, Tabs
+Progress Bar, Breadcrumbs, Tooltip, Dropdown Menu, Modal, Tabs
 
 ## Blocked
 
@@ -418,10 +468,11 @@ _(none yet)_
 
 ## Exact resume point
 
-Spinner is fully done, committed, and pushed (commit: `feat(ui): add
-Spinner`). Next action: run `get_metadata` on Figma node `2120:12` first
-(fileKey `CDgfoMkj7lP3pXWJ3aOgkH`) — per the brief, this ID is ambiguous
-between Divider and Skeleton. Whichever it turns out to be, scan the
-neighboring ±2 nodes (`2120:10` through `2120:14`) to find the other one,
-and log which id maps to which component here before building either —
-this is the collision the brief warned about from the very first message.
+Divider is fully done, committed, and pushed (commit: `feat(ui): add
+Divider`). Next action: pull `get_design_context` on Skeleton's three
+variant symbols under node `2120:13` (Text `2121:15360`, Circle
+`2121:15361`, Rect `2121:15362`) to get exact sizing/shape/animation
+treatment, then build. Remember the shifted map going forward: Progress
+Bar is now expected at `2120:14` (not `2120:13` as the original brief
+said), Breadcrumbs at `2120:15`, Tooltip at `2120:16` — verify each on
+arrival rather than trust the shift blindly.
