@@ -295,6 +295,24 @@
           "type": "registry:lib"
         }
       ]
+    },
+    {
+      "name": "tooltip",
+      "type": "registry:ui",
+      "title": "Tooltip",
+      "description": "Informational popup that appears on hover or focus, built on Radix UI.",
+      "dependencies": ["@radix-ui/react-tooltip", "clsx", "tailwind-merge"],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "ui/tooltip.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "lib/cn.ts",
+          "type": "registry:lib"
+        }
+      ]
     }
   ]
 }

@@ -539,17 +539,52 @@ Order: Button → Avatar → Badge → Input → Field wrapper → Textarea → 
   Added a `breadcrumbs` registry.json entry. `pnpm lint`/`pnpm test`
   clean — 135 tests total across 15 files.
 
+- **Tooltip** (`packages/registry/ui/tooltip.tsx`) — first Radix-based
+  **overlay** (distinct from the earlier Radix form controls). Node
+  `2120:16` verified — third and final shifted-map prediction confirmed
+  correct, filling what was originally the unaccounted `2120:16` gap in
+  the brief. Confirmed: dark inverted surface (`bg-fg-primary` background,
+  `text-bg-primary` white text — a deliberate surface-inversion, not a
+  mistake), `px-2 py-1`, `radius-xs`, `shadow-md`, `ui-xs`/medium text, a
+  small 8×4px arrow. Installed `@radix-ui/react-tooltip`; exported
+  `TooltipProvider`/`Tooltip`/`TooltipTrigger` as direct Radix re-exports
+  (no styling needed on those) and a styled `TooltipContent` wrapping
+  `Content` + Radix's own `Arrow` primitive (sized 8×4 to match Figma,
+  `fill-fg-primary`) rather than hand-rolling a triangle — Radix's Arrow
+  already measures and positions itself correctly per side, which a
+  manual CSS-triangle approach wouldn't get for free across all 4
+  positions. `role="tooltip"`, `aria-describedby` wiring, and Escape-to-
+  dismiss are all handled internally by Radix — no manual ARIA needed.
+
+  **Real infrastructure gap found and fixed, benefits every future
+  overlay tonight**: the first test run failed almost everything with
+  `ReferenceError: ResizeObserver is not defined` — jsdom doesn't
+  implement `ResizeObserver`, and Radix's internal `useSize` hook (used by
+  the Arrow) constructs one on mount, crashing before the tooltip could
+  ever render. Added a minimal `ResizeObserver` stub to the shared
+  `packages/registry/vitest.setup.ts` (not a per-test mock) specifically
+  because Dropdown Menu and Modal — both still ahead in the queue — are
+  also Radix-based overlays that will hit the exact same gap.
+  Added `packages/registry/ui/__tests__/tooltip.test.tsx` — 7 tests
+  (hidden until triggered, shows on hover, shows on focus, dismisses on
+  Escape, `aria-describedby` links trigger to content, ref forwarding,
+  axe zero-violations while open — `delayDuration={0}` used throughout to
+  avoid relying on Radix's real hover-delay timing in tests). Added a
+  `tooltip` registry.json entry. `pnpm lint`/`pnpm test` clean — 142 tests
+  total across 16 files.
+
 ## Current
 
-**Tooltip** — about to start. First Radix-based **overlay** component
-tonight (distinct from the earlier Radix-based form controls) — will need
-`pnpm add @radix-ui/react-tooltip`. Expect node `2120:16` per the shifted
-map (filling what was previously the unaccounted gap in the original
-brief) — verify before building.
+**Dropdown Menu** — about to start. Second Radix-based overlay; the
+`ResizeObserver` stub added for Tooltip should already cover whatever
+positioning internals this one needs too. Expect node `2120:17` — this
+was in the original brief's "verified directly" list and is unaffected by
+the node-map shift, but will still confirm on arrival rather than skip
+the check.
 
 ## Remaining
 
-Dropdown Menu, Modal, Tabs
+Modal, Tabs
 
 ## Blocked
 
@@ -557,9 +592,8 @@ _(none yet)_
 
 ## Exact resume point
 
-Breadcrumbs is fully done, committed, and pushed (commit: `feat(ui): add
-Breadcrumbs`). Next action: run `get_metadata` on Figma node `2120:16`
-(fileKey `CDgfoMkj7lP3pXWJ3aOgkH`) to verify it's Tooltip's canvas — if
-not, scan `2120:14` through `2120:18` per the ±2-scan protocol and log the
-correction here. Then `pnpm add @radix-ui/react-tooltip --filter
-@asteria-ui/registry` before writing the component.
+Tooltip is fully done, committed, and pushed (commit: `feat(ui): add
+Tooltip`). Next action: run `get_metadata` on Figma node `2120:17`
+(fileKey `CDgfoMkj7lP3pXWJ3aOgkH`) to verify it's Dropdown Menu's canvas,
+then `pnpm add @radix-ui/react-dropdown-menu --filter @asteria-ui/registry`
+before writing the component.

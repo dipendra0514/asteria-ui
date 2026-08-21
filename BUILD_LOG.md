@@ -572,3 +572,30 @@ tests total across 15 files.
 
 **Status: Breadcrumbs complete.** Moving to Tooltip next — first
 Radix-based overlay component tonight.
+
+## Overnight queue — Tooltip
+
+First Radix-based overlay. Node `2120:16` verified — the third and final
+shifted-map prediction from the Divider collision fix, confirmed correct
+(filling what was the unaccounted gap in the original brief). Dark
+inverted surface (`bg-fg-primary`/`text-bg-primary` — deliberate, not
+backwards), `px-2 py-1`, `radius-xs`, `shadow-md`, `ui-xs` medium text,
+8×4px arrow. Installed `@radix-ui/react-tooltip`; used Radix's own `Arrow`
+primitive rather than a hand-rolled CSS triangle, since it already
+measures/positions itself correctly across all 4 sides. `role="tooltip"`,
+`aria-describedby`, and Escape-dismiss all come from Radix for free.
+
+**Infrastructure fix that pays forward to the rest of the queue**: first
+test run failed nearly everything with `ReferenceError: ResizeObserver is
+not defined` — jsdom doesn't implement it, and Radix's `useSize` hook
+(used by Arrow) constructs one on mount. Added a minimal stub to the
+shared `vitest.setup.ts` rather than per-test, specifically because
+Dropdown Menu and Modal (both still ahead) are also Radix overlays likely
+to hit the same gap.
+
+Added `packages/registry/ui/__tests__/tooltip.test.tsx` (7 tests, using
+`delayDuration={0}` throughout to avoid relying on real hover-delay
+timing) and a `tooltip` registry.json entry. `pnpm lint`/`pnpm test`
+clean, 142 tests total across 16 files.
+
+**Status: Tooltip complete.** Moving to Dropdown Menu next.
