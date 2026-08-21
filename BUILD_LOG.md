@@ -321,3 +321,32 @@ real control. `pnpm lint`/`pnpm test` clean, 58 tests total across 6 files.
 
 **Status: Textarea complete.** Moving to Checkbox next — first
 Radix-UI-based component in the queue.
+
+## Overnight queue — Checkbox
+
+First Radix component. Node `2120:7` verified immediately — only Variant ×
+State, no size axis. Confirmed 20px box, `radius-xs`(6px) — first component
+where CLAUDE.md's generic radius note and the real Figma spec actually
+agree, after three in a row where they didn't (Button, Input both wanted
+`radius-sm` where the doc implied `radius-md`). Checked/indeterminate share
+identical colors (`bg-brand-solid`/`border-brand`), differing only by icon
+(Lucide `Check` vs `Minus` — confirmed via Figma's own internal layer
+names, literally "check" and "minus"). Installed
+`@radix-ui/react-checkbox`; wrapped `Checkbox.Root`/`Checkbox.Indicator`
+with an auto-generated id (`React.useId()`) and a sibling `<label
+htmlFor>` using the `peer`/`peer-disabled:` pattern — Radix already
+provides role/aria-checked/keyboard handling, so no manual ARIA needed on
+top of it.
+
+Added `packages/registry/ui/__tests__/checkbox.test.tsx` (10 tests) and a
+`checkbox` registry.json entry. One test-writing gotcha worth remembering:
+an axe test that `rerender()`s through unchecked → checked → indeterminate
+→ disabled tripped a React "changing from uncontrolled to controlled"
+console warning, because omitting `checked` and later passing it flips the
+component between controlled/uncontrolled. Fixed by always passing an
+explicit `checked` value in that test's rerender chain — not a real
+component bug, just sloppy test authoring on my part.
+
+`pnpm lint`/`pnpm test` clean, 68 tests total across 7 files.
+
+**Status: Checkbox complete.** Moving to Radio Group next.

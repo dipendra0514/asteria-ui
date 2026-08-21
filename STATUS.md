@@ -246,18 +246,57 @@ Order: Button → Avatar → Badge → Input → Field wrapper → Textarea → 
   `textarea` registry.json entry. `pnpm lint`/`pnpm test` clean — 58 tests
   total across 6 files.
 
+- **Checkbox** (`packages/registry/ui/checkbox.tsx`) — first Radix-UI-based
+  component tonight. Node `2120:7` verified immediately. Only one size (no
+  density variants) — Variant (Unchecked/Checked/Indeterminate) × State
+  (default/hover/focus/active/disabled). Confirmed: 20px box, `radius-xs`
+  (6px, NOT radius-sm this time — first component where CLAUDE.md's
+  "radius-xs 6" note and Figma actually agree), border `1.5px`
+  `border-default`, checked/indeterminate both use `bg-brand-solid` +
+  `border-brand` with a 14px icon (Lucide `Check` for checked, `Minus` for
+  indeterminate — confirmed via Figma's own layer names, which literally
+  say "check" and "minus"). Focus glow applies directly to the 20px box
+  (not a wrapper), same exact `shadow-glow-focus` value as everywhere else.
+  Label text is `font-normal` (regular), `ui-md`(14px), `fg-primary` (this
+  is the second `font-normal` sighting after Textarea, both are "reading"
+  text rather than a UI chrome label like Button/Badge/Field's label —
+  worth remembering as a possible pattern: `ui-*` control chrome ≈ medium,
+  `ui-*` reading/body-adjacent text ≈ normal, but not verifying that
+  theory further tonight, just noting it).
+  `pnpm add @radix-ui/react-checkbox` installed. Implementation wraps
+  Radix's `Checkbox.Root`/`Checkbox.Indicator`, generates an id via
+  `React.useId()` when none is given, and renders a native `<label
+  htmlFor>` sibling using the `peer`/`peer-disabled:` Tailwind pattern for
+  the disabled-label-dimming behavior — Radix already handles
+  role/aria-checked/keyboard natively, so no manual ARIA wiring needed
+  there. Added `packages/registry/ui/__tests__/checkbox.test.tsx` — 10
+  tests (unchecked by default, click toggles, label-click toggles, Space
+  key toggles, `onCheckedChange` fires, indeterminate renders
+  `aria-checked="mixed"`, disabled blocks toggling, ref forwarding, focus
+  glow class present, axe zero-violations across
+  unchecked/checked/indeterminate/disabled). One test-only gotcha: the
+  first axe-violations draft triggered a React "changing from uncontrolled
+  to controlled" console warning because the `rerender()` sequence mixed
+  `checked={undefined}` and `checked={...}` renders — fixed by keeping the
+  component controlled (`checked={false}` instead of omitting it)
+  throughout that one test's rerender chain; not a real component bug,
+  purely a test-authoring artifact. Added a `checkbox` registry.json entry
+  (dependencies include `@radix-ui/react-checkbox` and `lucide-react`).
+  `pnpm lint`/`pnpm test` clean — 68 tests total across 7 files.
+
 ## Current
 
-**Checkbox** — about to start. First component in tonight's queue that
-CLAUDE.md explicitly requires building on Radix UI (confirmed decision:
-Radix, not Base UI) rather than from scratch — need to `pnpm add
-@radix-ui/react-checkbox` before writing any code. Need to verify Figma
-node `2120:7` before building.
+**Radio Group** — about to start. Also Radix-based per CLAUDE.md (Switch
+and Checkbox are both explicitly listed in the "build on Radix/Base UI"
+category, and Radio Group is the same family of control). Will need `pnpm
+add @radix-ui/react-radio-group`. Need to verify Figma node `2120:8` before
+building — this one was in the original "verified directly" list from the
+overnight brief, so should be a fast confirm.
 
 ## Remaining
 
-Radio Group, Switch, Alert, Spinner, Divider, Skeleton, Progress Bar,
-Breadcrumbs, Tooltip, Dropdown Menu, Modal, Tabs
+Switch, Alert, Spinner, Divider, Skeleton, Progress Bar, Breadcrumbs,
+Tooltip, Dropdown Menu, Modal, Tabs
 
 ## Blocked
 
@@ -265,10 +304,9 @@ _(none yet)_
 
 ## Exact resume point
 
-Textarea is fully done, committed, and pushed (commit:
-`feat(ui): add Textarea`). Next action: run `get_metadata` on Figma node
-`2120:7` (fileKey `CDgfoMkj7lP3pXWJ3aOgkH`) to verify it's Checkbox's
-canvas — if the title doesn't match, scan `2120:5` through `2120:9` per
-the ±2-scan protocol and log the correction here. Then `pnpm add
-@radix-ui/react-checkbox --filter @asteria-ui/registry` before writing the
-component, since this is the first Radix-based component tonight.
+Checkbox is fully done, committed, and pushed (commit:
+`feat(ui): add Checkbox`). Next action: run `get_metadata` on Figma node
+`2120:8` (fileKey `CDgfoMkj7lP3pXWJ3aOgkH`) to verify it's Radio Group's
+canvas (expected to match immediately per the brief's "verified directly"
+list), then `pnpm add @radix-ui/react-radio-group --filter
+@asteria-ui/registry` before writing the component.
