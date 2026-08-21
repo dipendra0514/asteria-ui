@@ -404,3 +404,33 @@ clean, 88 tests total across 9 files.
 **Status: Switch complete.** All three Radix-based form controls
 (Checkbox, Radio Group, Switch) are done. Moving to Alert next — back to
 from-scratch components for a stretch.
+
+## Overnight queue — Alert
+
+From-scratch, node `2120:10` verified immediately. The a11y note surfaced
+a real, non-obvious rule: role is variant-dependent, not fixed —
+`warning`/`error` get `role="alert"` (assertive), `info`/`success` get
+`role="status"` (polite). Implemented as a lookup table keyed by variant
+so consumers can't get this wrong by omission.
+
+Rather than guess plausible Lucide icon names for the 4 variants, pulled
+each one's actual Figma layer name and cross-checked against
+lucide-react's real exports for the installed version (this major version
+keeps both old and new names as aliases, e.g. `XCircle`/`CircleX`) before
+picking: `info`→`Info`, `success`→`CheckCircle` ("check-circle" layer),
+`warning`→`AlertTriangle` ("alert-triangle" layer), `error`→`XCircle`
+("x-circle" layer). Description text is always `fg-secondary` regardless
+of variant (confirmed across all 4 pulls) — only title/icon/action pick up
+the variant color, via CSS inheritance from the container rather than
+repeating the color class on every child.
+
+`title`/`description`/`actionLabel` props mirror Figma's own documented
+API shape, continuing the precedent set by Field and Badge: match the
+spec's actual prop modeling rather than defaulting to a compound-component
+slot API when the spec itself doesn't call for one.
+
+Added `packages/registry/ui/__tests__/alert.test.tsx` (8 tests) and an
+`alert` registry.json entry. `pnpm lint`/`pnpm test` clean, 96 tests total
+across 10 files.
+
+**Status: Alert complete.** Moving to Spinner next.

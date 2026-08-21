@@ -343,25 +343,50 @@ Order: Button → Avatar → Badge → Input → Field wrapper → Textarea → 
   `switch` registry.json entry. `pnpm lint`/`pnpm test` clean — 88 tests
   total across 9 files.
 
+- **Alert** (`packages/registry/ui/alert.tsx`) — from-scratch, node
+  `2120:10` verified immediately. Real a11y wrinkle confirmed straight from
+  the Figma note: **role differs by variant** —
+  `warning`/`error` use `role="alert"` (assertive, interrupting),
+  `info`/`success` use `role="status"` (polite) — implemented via a
+  `roleByVariant` lookup, computed automatically from the `variant` prop
+  rather than left for the consumer to set. Verified all 4 variant icons
+  directly against Figma's own layer names rather than guessing likely
+  Lucide names: `info` → `Info`, `success` → `CheckCircle` (Figma layer
+  literally "check-circle"), `warning` → `AlertTriangle` ("alert-triangle"),
+  `error` → `XCircle` ("x-circle") — checked lucide-react's actual exports
+  first since this major version aliases old/new icon names side by side
+  (`XCircle` ≡ `CircleX`, etc.) and picked the ones matching Figma's exact
+  naming. Structure: icon (20px, inherits `fg-{variant}` via `currentColor`)
+  + content column (title `ui-md`/medium, description `body-sm`/regular/
+  always `fg-secondary` regardless of variant, optional text-style action
+  button) + optional dismiss button, all using the same
+  `bg-{variant}-subtle`/`border-{variant}`/`fg-{variant}` triplet
+  established since Badge. `title`/`description`/`actionLabel` props
+  mirror Figma's own prop shape (matching the Field/Badge precedent of
+  following Figma's documented API when it already fits, rather than
+  reaching for a compound-component slot API by default).
+  Added `packages/registry/ui/__tests__/alert.test.tsx` — 8 tests (title +
+  description render, `role="status"` for info/success, `role="alert"` for
+  warning/error, no action button by default, action button + `onAction`
+  fires, dismiss button aria-label + `onDismiss` fires, ref forwarding,
+  axe zero-violations across all 4 variants with action+dismiss present).
+  Added an `alert` registry.json entry. `pnpm lint`/`pnpm test` clean — 96
+  tests total across 10 files.
+
 ## Current
 
-**Alert** — about to start. Back to a from-scratch simple component (not
-Radix-based) — CLAUDE.md explicitly lists Alert among the components
-built without a primitive dependency. This closes out the three
-Radix-based form controls tonight (Checkbox, Radio Group, Switch all
-done); the rest of the queue splits between more from-scratch components
-(Alert, Spinner, Divider, Skeleton, Progress Bar, Breadcrumbs) and
-Radix-based overlays (Tooltip, Dropdown Menu, Modal) plus Tabs (not
-explicitly in CLAUDE.md's Radix list but reasoned earlier — see the Button
-BUILD_LOG entry — that it needs the same treatment as the "build on
-Radix/Base UI" components given its APG keyboard-pattern complexity; will
-still verify this reasoning against Figma's actual a11y note when reached).
-Need to verify Figma node `2120:10` before building.
+**Spinner** — about to start. From-scratch per CLAUDE.md. Note: Button
+already has an internal (unexported) `Spinner` helper for its `loading`
+state — need to check whether the real Figma Spinner component is
+visually identical to that internal one (in which case, extract/reuse
+rather than duplicating) or genuinely different (in which case keep them
+separate and just note why). Need to verify Figma node `2120:11` before
+building anything.
 
 ## Remaining
 
-Spinner, Divider, Skeleton, Progress Bar, Breadcrumbs, Tooltip, Dropdown
-Menu, Modal, Tabs
+Divider, Skeleton, Progress Bar, Breadcrumbs, Tooltip, Dropdown Menu,
+Modal, Tabs
 
 ## Blocked
 
@@ -369,10 +394,10 @@ _(none yet)_
 
 ## Exact resume point
 
-Switch is fully done, committed, and pushed (commit:
-`feat(ui): add Switch`). Next action: run `get_metadata` on Figma node
-`2120:10` (fileKey `CDgfoMkj7lP3pXWJ3aOgkH`) to verify it's Alert's canvas
-— if the title doesn't match, scan `2120:8` through `2120:12` per the
-±2-scan protocol (remember: `2120:12` is the known Divider/Skeleton
-collision point, so this scan range will need care) and log the
-correction here before writing any code.
+Alert is fully done, committed, and pushed (commit: `feat(ui): add
+Alert`). Next action: run `get_metadata` on Figma node `2120:11` (fileKey
+`CDgfoMkj7lP3pXWJ3aOgkH`) to verify it's Spinner's canvas — if the title
+doesn't match, scan `2120:9` through `2120:13` per the ±2-scan protocol
+(the known Divider/Skeleton `2120:12` collision sits just past this range)
+and log the correction here. Then compare against Button's internal
+Spinner helper before deciding whether to extract/reuse or build fresh.
