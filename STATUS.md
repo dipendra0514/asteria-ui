@@ -630,18 +630,75 @@ Order: Button → Avatar → Badge → Input → Field wrapper → Textarea → 
   consumer). `pnpm lint`/`pnpm test` clean — 150 tests total across 17
   files.
 
+- **Modal** (`packages/registry/ui/modal.tsx`) — third and final
+  Radix-based overlay, built on Radix's Dialog primitive (per CLAUDE.md's
+  naming, "Modal" = Radix "Dialog"). Node `2120:18` verified as expected.
+  Confirmed full anatomy in one pull (unusually complete for one call):
+  panel `bg-elevated`/`border-default`/`radius-lg`(14px)/`shadow-xl`,
+  sized by `max-w-[400/560/720px]` for sm/md/lg; header
+  `px-6 py-4` with title `display-xs`(24px semibold)/`fg-primary` (flex-1)
+  + a 20px close X (shrink-0) — Figma places the close button INSIDE the
+  header's flex row as a sibling of the title, not absolutely positioned
+  over the corner, so the component mirrors that literally via
+  `ModalHeader`/`ModalTitle`(`flex-1`)/`ModalClose`(`shrink-0`)
+  composition rather than the more common absolutely-positioned-corner-X
+  pattern; body `px-6 pt-1 pb-4` with description `body-sm`/`fg-secondary`;
+  footer `px-6 py-4` `justify-end gap-3` with Cancel/Confirm buttons that
+  are visually **identical to the existing Button component's
+  secondary/primary variants** — confirmed this by comparing colors
+  directly rather than assuming, and deliberately did NOT bake
+  Cancel/Confirm into Modal itself; the footer is a plain flex container
+  and the demo/tests compose real `<Button>` instances into it, reusing
+  the already-built, already-tested component instead of duplicating its
+  styles. Overlay backdrop tinted `bg-[var(--brand-900)]/60` rather than
+  generic black — extends CLAUDE.md's "brand-tinted shadows" principle to
+  the other dark surface in the system (no semantic token exists for an
+  overlay scrim, so this uses the primitive directly, same precedent as
+  Button's already-established `active:bg-[var(--error-800)]`).
+
+  **Real, verified gap in the installed Radix version, not assumed**: a
+  test asserting `aria-modal="true"` on the dialog failed; DOM inspection
+  (dumped the actual rendered `outerHTML`, then grepped the installed
+  `@radix-ui/react-dialog` package source for `aria-modal` and found zero
+  matches) confirmed this Radix version's `Dialog.Content` genuinely does
+  not set `aria-modal` by default, contrary to what's commonly assumed
+  about Radix Dialog. Added `aria-modal="true"` explicitly to
+  `ModalContent` rather than trusting the primitive — Figma's a11y note
+  requires it, and now it's actually there regardless of what any
+  particular Radix version does or doesn't provide out of the box.
+  `role="dialog"`, `aria-labelledby`/`aria-describedby` auto-wiring to
+  `ModalTitle`/`ModalDescription`, focus trapping, and Escape-to-close are
+  all still handled by Radix correctly.
+
+  Added `packages/registry/ui/__tests__/modal.test.tsx` — 10 tests
+  (closed until triggered, opens with `role="dialog"` +
+  `aria-modal="true"`, title linked via `aria-labelledby`, description
+  linked via `aria-describedby`, close button has an accessible name,
+  close button click closes it, Escape closes it, a real `<Button>` in
+  the footer fires its own `onClick`, ref forwarding, axe
+  zero-violations while open — composes `Button` directly in the test,
+  matching the "reuse, don't duplicate" decision above). Added a `modal`
+  registry.json entry — deliberately did NOT declare a
+  `registryDependencies: ["button"]` even though the demo/tests use
+  Button, since `modal.tsx` itself has no actual import of it; the
+  registry entry should describe real code dependencies, not how a
+  consumer happens to compose it. `pnpm lint`/`pnpm test` clean — 160
+  tests total across 18 files.
+
 ## Current
 
-**Modal** — about to start. Third and final Radix-based overlay
-component tonight (built on Radix's Dialog primitive, per CLAUDE.md's
-naming — "Modal" in our component vocabulary maps to Radix's "Dialog").
-Will need `pnpm add @radix-ui/react-dialog`. Expect node `2120:18` — this
-was also in the original brief's "verified directly" list, unaffected by
-the shift.
+**Tabs** — about to start, last component in tonight's queue. Node
+`2120:19` was in the original brief's "verified directly" list. Per the
+earlier reasoning logged in Button's BUILD_LOG entry, Tabs needs the same
+Radix/Base-UI treatment as the explicitly-named "complex" components
+despite not being on CLAUDE.md's literal list (APG Tabs pattern needs
+roving tabindex + arrow-key nav, same complexity class as
+Checkbox/Switch/RadioGroup) — will verify this reasoning against Figma's
+actual a11y note on arrival, and use `@radix-ui/react-tabs` if confirmed.
 
 ## Remaining
 
-Tabs
+_(none — Tabs is the last item in tonight's queue)_
 
 ## Blocked
 
@@ -649,8 +706,11 @@ _(none yet)_
 
 ## Exact resume point
 
-Dropdown Menu is fully done, committed, and pushed (commit: `feat(ui):
-add Dropdown Menu`). Next action: run `get_metadata` on Figma node
-`2120:18` (fileKey `CDgfoMkj7lP3pXWJ3aOgkH`) to verify it's Modal's
-canvas, then `pnpm add @radix-ui/react-dialog --filter @asteria-ui/registry`
-before writing the component.
+Modal is fully done, committed, and pushed (commit: `feat(ui): add
+Modal`). Next action: run `get_metadata` on Figma node `2120:19` (fileKey
+`CDgfoMkj7lP3pXWJ3aOgkH`) to verify it's Tabs' canvas, confirm whether its
+a11y note calls for Radix-level keyboard complexity, then `pnpm add
+@radix-ui/react-tabs --filter @asteria-ui/registry` if so, before writing
+the component. This is the last component — after it's done, do a final
+full-repo `pnpm lint && pnpm test` pass and write a wrap-up summary in
+both STATUS.md and BUILD_LOG.md noting the queue is complete.

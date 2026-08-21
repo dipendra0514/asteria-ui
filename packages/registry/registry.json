@@ -339,6 +339,29 @@
           "type": "registry:lib"
         }
       ]
+    },
+    {
+      "name": "modal",
+      "type": "registry:ui",
+      "title": "Modal",
+      "description": "Dialog overlay for confirmations, forms, and focused tasks, built on Radix UI.",
+      "dependencies": [
+        "@radix-ui/react-dialog",
+        "clsx",
+        "lucide-react",
+        "tailwind-merge"
+      ],
+      "registryDependencies": [],
+      "files": [
+        {
+          "path": "ui/modal.tsx",
+          "type": "registry:ui"
+        },
+        {
+          "path": "lib/cn.ts",
+          "type": "registry:lib"
+        }
+      ]
     }
   ]
 }

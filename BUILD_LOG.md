@@ -639,3 +639,43 @@ tests total across 17 files.
 
 **Status: Dropdown Menu complete.** Moving to Modal next — third and
 final Radix overlay tonight (Radix's Dialog primitive under the hood).
+
+## Overnight queue — Modal
+
+Third and final Radix overlay, node `2120:18` verified as expected. Got
+unusually complete anatomy in a single design-context pull: panel
+`bg-elevated`/`border-default`/`radius-lg`/`shadow-xl` sized via
+`max-w-[400/560/720px]`; header with title (`display-xs` semibold,
+flex-1) and a 20px close X as a flex SIBLING inside the header row (not
+absolutely positioned over a corner) — mirrored that literally via
+composable `ModalHeader`/`ModalTitle`/`ModalClose` rather than the more
+common absolute-corner-X pattern; body with `body-sm`/`fg-secondary`
+description; footer with Cancel/Confirm buttons that are visually
+identical to the existing Button component's secondary/primary variants
+— verified by comparing colors directly, then deliberately left
+Cancel/Confirm OUT of Modal itself so real `<Button>` instances compose
+into the footer instead of duplicating its styles. Overlay tinted
+`bg-[var(--brand-900)]/60`, extending the brand-tinted-shadow principle
+to the app's other dark surface (no semantic overlay token exists, same
+primitive-fallback precedent as Button's `active:bg-[var(--error-800)]`).
+
+**Real, verified gap in the installed Radix version**: a test asserting
+`aria-modal="true"` failed. Rather than assume it was a test mistake,
+dumped the actual rendered `outerHTML` and grepped the installed
+`@radix-ui/react-dialog` package source for `aria-modal` — zero matches.
+This Radix version's `Dialog.Content` genuinely doesn't set it by
+default. Added `aria-modal="true"` explicitly to `ModalContent` instead
+of trusting the primitive, since Figma's a11y note requires it and now
+it's guaranteed present regardless of what any given Radix version
+provides.
+
+Added `packages/registry/ui/__tests__/modal.test.tsx` (10 tests,
+composing a real `Button` in the footer rather than a mock, consistent
+with the reuse decision above) and a `modal` registry.json entry —
+deliberately without `registryDependencies: ["button"]`, since
+`modal.tsx` itself has zero import of Button; the registry entry
+describes real code dependencies, not how the demo happens to compose it.
+`pnpm lint`/`pnpm test` clean, 160 tests total across 18 files.
+
+**Status: Modal complete.** Moving to Tabs next — last component in
+tonight's queue.
