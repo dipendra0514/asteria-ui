@@ -300,3 +300,24 @@ worth adding an explicit assertion somewhere that checks a rendered
 element's computed `font-weight` for at least one `ui-*` component, so a
 regression like this fails loudly next time instead of relying on manual
 diffing against Figma.
+
+## Overnight queue — Textarea
+
+Net new. Node `2120:6` verified immediately. No icon slots in this one's
+Figma spec (unlike Input) — just size × state — so it's a bare
+`<textarea>`, no bordered wrapper div needed. Padding matches Input's
+per-size numbers exactly for sm/md (verified directly); trusted lg/xl to
+continue the same progression rather than re-querying, since two data
+points already matched Input's pattern precisely. Error state uses
+`aria-invalid` + an `aria-invalid:` Tailwind variant directly on the
+element (simpler than Input's `has-[[aria-invalid=true]]`, since there's
+no wrapper here). `resize-y` applied per the a11y note.
+
+Added `packages/registry/ui/__tests__/textarea.test.tsx` (9 tests) and a
+`textarea` registry.json entry. Also added a test to `field.test.tsx`
+confirming Field composes with Textarea too, not just Input — validates
+the earlier "Field isn't Input-specific" design decision against a second
+real control. `pnpm lint`/`pnpm test` clean, 58 tests total across 6 files.
+
+**Status: Textarea complete.** Moving to Checkbox next — first
+Radix-UI-based component in the queue.

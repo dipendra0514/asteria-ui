@@ -218,19 +218,46 @@ Order: Button → Avatar → Badge → Input → Field wrapper → Textarea → 
   Re-ran the full test suite after all three fixes: still 48/48 green,
   `pnpm lint` clean.
 
+- **Textarea** (`packages/registry/ui/textarea.tsx`) — net new. Node
+  `2120:6` verified immediately (title matched). Unlike Input, Textarea has
+  no icon slots in its Figma spec — just size/state, no leading/trailing
+  icon properties — so it's a single unwrapped `<textarea>` (no bordered
+  wrapper div needed, simpler than Input). Confirmed padding matches
+  Input's per-size pattern exactly (sm `px-3 py-1.5`, and md/error checked
+  directly — `px-4 py-2` for md, border-error on error); trusted lg/xl to
+  follow the same `px-5 py-3`/`px-6 py-4` progression without re-querying,
+  since sm+md both matched Input's numbers exactly. Min-heights confirmed
+  from metadata: sm 80px, md 96px, lg 112px, xl 128px (`min-h-20/24/28/32`).
+  Text is `font-normal` (regular weight) here, not `font-medium` like every
+  other `ui-*` component so far — this is the discrepancy that led to
+  catching the Input/Field font-weight bugs (see the cross-cutting fix
+  entry above). Error state implemented the same way as Input: `aria-invalid`
+  driving an `aria-invalid:border-border-error` variant — simpler here
+  since there's no wrapper, so the variant applies directly to the
+  `<textarea>` instead of needing `has-[[aria-invalid=true]]`. Native
+  `resize-y` applied per the a11y note's "resizable via drag handle".
+  Added `packages/registry/ui/__tests__/textarea.test.tsx` (9 tests:
+  typing, ref forwarding, className merge, `resize-y` present, aria-invalid
+  on error, disabled blocks typing, focus glow class, axe zero-violations
+  across default/error/disabled) and one more test in `field.test.tsx`
+  confirming `Field` composes with `Textarea` just as well as `Input`
+  (proving the Field API genuinely isn't Input-specific, per its own
+  documented "compose with Input, Textarea, Select" description). Added a
+  `textarea` registry.json entry. `pnpm lint`/`pnpm test` clean — 58 tests
+  total across 6 files.
+
 ## Current
 
-**Textarea** — about to start. Expect it to closely mirror Input's
-wrapper pattern (border/bg/radius/focus-within/has-invalid) but as a
-multi-line control — likely has an `autoResize` or fixed-rows property per
-CLAUDE.md's component list context. Need to verify Figma node `2120:6`
-(unverified — next after Field in the original map) before building
-anything.
+**Checkbox** — about to start. First component in tonight's queue that
+CLAUDE.md explicitly requires building on Radix UI (confirmed decision:
+Radix, not Base UI) rather than from scratch — need to `pnpm add
+@radix-ui/react-checkbox` before writing any code. Need to verify Figma
+node `2120:7` before building.
 
 ## Remaining
 
-Checkbox, Radio Group, Switch, Alert, Spinner, Divider, Skeleton, Progress
-Bar, Breadcrumbs, Tooltip, Dropdown Menu, Modal, Tabs
+Radio Group, Switch, Alert, Spinner, Divider, Skeleton, Progress Bar,
+Breadcrumbs, Tooltip, Dropdown Menu, Modal, Tabs
 
 ## Blocked
 
@@ -238,8 +265,10 @@ _(none yet)_
 
 ## Exact resume point
 
-Field is fully done, committed, and pushed (commit: `feat(ui): add Field`).
-Next action: run `get_metadata` on Figma node `2120:6` (fileKey
-`CDgfoMkj7lP3pXWJ3aOgkH`) to verify it's Textarea's canvas — if the title
-doesn't match, scan `2120:4` through `2120:8` per the ±2-scan protocol and
-log the correction here before writing any code.
+Textarea is fully done, committed, and pushed (commit:
+`feat(ui): add Textarea`). Next action: run `get_metadata` on Figma node
+`2120:7` (fileKey `CDgfoMkj7lP3pXWJ3aOgkH`) to verify it's Checkbox's
+canvas — if the title doesn't match, scan `2120:5` through `2120:9` per
+the ±2-scan protocol and log the correction here. Then `pnpm add
+@radix-ui/react-checkbox --filter @asteria-ui/registry` before writing the
+component, since this is the first Radix-based component tonight.

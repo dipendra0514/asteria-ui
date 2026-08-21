@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 import { axe } from "../../lib/test-axe";
 import { Field } from "../field";
 import { Input } from "../input";
+import { Textarea } from "../textarea";
 
 describe("Field", () => {
   it("links the label to the control via for/id", () => {
@@ -83,6 +84,17 @@ describe("Field", () => {
       </Field>,
     );
     expect(ref.current).toBeInstanceOf(HTMLDivElement);
+  });
+
+  it("composes with Textarea just as well as Input (Field isn't Input-specific)", () => {
+    render(
+      <Field label="Bio" error="Bio is too short">
+        <Textarea />
+      </Field>,
+    );
+    const textarea = screen.getByLabelText("Bio");
+    expect(textarea).toBeInstanceOf(HTMLTextAreaElement);
+    expect(textarea).toHaveAttribute("aria-invalid", "true");
   });
 
   it("has no axe violations across default, description, and error states", async () => {
