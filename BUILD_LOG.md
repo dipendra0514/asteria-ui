@@ -350,3 +350,35 @@ component bug, just sloppy test authoring on my part.
 `pnpm lint`/`pnpm test` clean, 68 tests total across 7 files.
 
 **Status: Checkbox complete.** Moving to Radio Group next.
+
+## Overnight queue — Radio Group
+
+Second Radix component. Node `2120:8` verified immediately (this one was
+in the brief's "verified directly" list, and it checked out). Visually a
+close cousin of Checkbox: same 20px control size and `1.5px`
+`border-default`, but `rounded-full` and a solid 8px center dot on select
+instead of an icon. Installed `@radix-ui/react-radio-group`; `RadioGroup`
+wraps `Root`, `RadioGroupItem` wraps `Item`/`Indicator` plus an auto-id'd
+label, matching Checkbox's established shape.
+
+**Test caught a wrong assumption about real behavior**: I wrote a test
+assuming arrow-key navigation auto-selects the newly-focused radio (native
+`<input type=radio>` behavior, and what I'd have guessed the a11y note
+"arrow keys navigate · Space selects" implied). It failed — actual Radix
+behavior in this installed version is roving-focus-only on arrow keys;
+selection requires an explicit Space or click afterward. Fixed the test to
+describe the real behavior rather than forcing the implementation to match
+my assumption (the implementation is a thin Radix wrapper with no custom
+keyboard handling of our own — there's nothing to "fix" here, Radix's
+actual behavior IS the correct behavior for this component; the a11y note
+just describes two separate actions, not one combined gesture). This is
+the value of writing behavior tests against the real rendered thing rather
+than trusting memory of "how radio groups usually work."
+
+Added `packages/registry/ui/__tests__/radio-group.test.tsx` (10 tests) and
+a `radio-group` registry.json entry. One benign Radix-internal `act()`
+console warning on the arrow-key test (from `RovingFocusGroupImpl`'s own
+state update) — not our code, doesn't fail anything, left as-is.
+`pnpm lint`/`pnpm test` clean, 78 tests total across 8 files.
+
+**Status: Radio Group complete.** Moving to Switch next.

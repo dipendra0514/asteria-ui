@@ -284,19 +284,55 @@ Order: Button → Avatar → Badge → Input → Field wrapper → Textarea → 
   (dependencies include `@radix-ui/react-checkbox` and `lucide-react`).
   `pnpm lint`/`pnpm test` clean — 68 tests total across 7 files.
 
+- **Radio Group** (`packages/registry/ui/radio-group.tsx`) — second
+  Radix-based component. Node `2120:8` verified immediately, as expected
+  (this one was in the brief's "verified directly" list). Visually nearly
+  identical to Checkbox: 20px control, `1.5px` `border-default`, but
+  `rounded-full` instead of `rounded-xs`; selected state is `bg-brand-solid`
+  + `border-brand` with an 8px solid dot (`fg-on-brand`) instead of an
+  icon. Installed `@radix-ui/react-radio-group`; built two exports —
+  `RadioGroup` (thin wrapper around `RadioGroupPrimitive.Root`) and
+  `RadioGroupItem` (wraps `Item`/`Indicator` + an auto-id'd sibling
+  `<label>`, same pattern as Checkbox).
+
+  **Real behavior discovery via a failing test, not assumption**: wrote a
+  test assuming Radix's radio group auto-selects the newly-focused item on
+  arrow-key navigation (matching native `<input type=radio>` behavior per
+  the WAI-ARIA APG pattern). It failed — this Radix version's roving-focus
+  behavior moves focus on arrow keys but does NOT auto-select; selection
+  needs an explicit Space or click on the now-focused item. Rather than
+  force the test to match my assumption, corrected the test to describe
+  the real, verified behavior instead. This is exactly the kind of thing
+  that would have been wrong if I'd written the test from memory of "how
+  radio groups usually work" without actually running it — the a11y note
+  ("arrow keys navigate · Space selects") turns out to describe two
+  separate actions, not one combined gesture, which the test now makes
+  explicit. There's a benign, well-known Radix-internal `act()` console
+  warning on this one test (from `RovingFocusGroupImpl`'s own state
+  update, not our code) — left as-is, doesn't fail anything.
+
+  Added `packages/registry/ui/__tests__/radio-group.test.tsx` (10 tests:
+  renders 3 radio options in a named group, click selects, label-click
+  selects, arrow-key roving focus + explicit Space selects, `onValueChange`
+  fires, controlled `value` respected, group-level `disabled` blocks
+  selection, focus glow class on every item, ref forwarding, axe
+  zero-violations across unselected/selected/disabled). Added a
+  `radio-group` registry.json entry. `pnpm lint`/`pnpm test` clean — 78
+  tests total across 8 files.
+
 ## Current
 
-**Radio Group** — about to start. Also Radix-based per CLAUDE.md (Switch
-and Checkbox are both explicitly listed in the "build on Radix/Base UI"
-category, and Radio Group is the same family of control). Will need `pnpm
-add @radix-ui/react-radio-group`. Need to verify Figma node `2120:8` before
-building — this one was in the original "verified directly" list from the
-overnight brief, so should be a fast confirm.
+**Switch** — about to start. Third and final Radix-based simple-control
+component in the queue (Checkbox, Radio Group, now Switch — all three are
+explicitly named in CLAUDE.md's "build on Radix/Base UI" list). Will need
+`pnpm add @radix-ui/react-switch`. Need to verify Figma node `2120:9`
+before building — remember from Radio Group's lesson: verify actual
+keyboard/toggle behavior with a real test rather than assuming.
 
 ## Remaining
 
-Switch, Alert, Spinner, Divider, Skeleton, Progress Bar, Breadcrumbs,
-Tooltip, Dropdown Menu, Modal, Tabs
+Alert, Spinner, Divider, Skeleton, Progress Bar, Breadcrumbs, Tooltip,
+Dropdown Menu, Modal, Tabs
 
 ## Blocked
 
@@ -304,9 +340,10 @@ _(none yet)_
 
 ## Exact resume point
 
-Checkbox is fully done, committed, and pushed (commit:
-`feat(ui): add Checkbox`). Next action: run `get_metadata` on Figma node
-`2120:8` (fileKey `CDgfoMkj7lP3pXWJ3aOgkH`) to verify it's Radio Group's
-canvas (expected to match immediately per the brief's "verified directly"
-list), then `pnpm add @radix-ui/react-radio-group --filter
-@asteria-ui/registry` before writing the component.
+Radio Group is fully done, committed, and pushed (commit:
+`feat(ui): add Radio Group`). Next action: run `get_metadata` on Figma node
+`2120:9` (fileKey `CDgfoMkj7lP3pXWJ3aOgkH`) to verify it's Switch's canvas
+— if the title doesn't match, scan `2120:7` through `2120:11` per the
+±2-scan protocol and log the correction here. Then `pnpm add
+@radix-ui/react-switch --filter @asteria-ui/registry` before writing the
+component.
