@@ -434,3 +434,31 @@ Added `packages/registry/ui/__tests__/alert.test.tsx` (8 tests) and an
 across 10 files.
 
 **Status: Alert complete.** Moving to Spinner next.
+
+## Overnight queue — Spinner
+
+From-scratch, node `2120:11` verified immediately. Worth recording the
+reasoning explicitly since it's a "did NOT refactor" decision: Button
+already has its own internal loading spinner (a two-tone SVG arc sized to
+match Button's confirmed 16/20px icon slots), and this standalone Spinner
+turned out to be a genuinely different design — a static ring with one
+accent dot at a fixed corner, meant to read as "rotating" via
+`animate-spin` on the whole element, at Figma-defined sizes 16/24/32px
+that don't even align with Button's 20px requirement. Two different
+components for two different jobs, not a missed reuse opportunity —
+verified this by actually pulling all 3 sizes rather than assuming a
+shared design and being surprised later.
+
+Confirmed the size/border/dot scaling directly at all 3 sizes rather than
+extrapolating from one: sm 16px/`border-2`/6px dot, md 24px/
+`border-[3px]`/9px dot, lg 32px/`border-4`/12px dot, with dot inset always
+equal to border width and dot size a consistent 0.375× the ring diameter.
+Biome's `<output>` substitution for `role="status"` applied again (same
+correct-not-suppressed reasoning as Badge).
+
+Added `packages/registry/ui/__tests__/spinner.test.tsx` (8 tests) and a
+`spinner` registry.json entry. `pnpm lint`/`pnpm test` clean, 104 tests
+total across 11 files.
+
+**Status: Spinner complete.** Moving to Divider next — right before the
+`2120:12` Divider/Skeleton collision flagged in the original brief.

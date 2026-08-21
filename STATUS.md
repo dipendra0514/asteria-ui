@@ -373,20 +373,44 @@ Order: Button → Avatar → Badge → Input → Field wrapper → Textarea → 
   Added an `alert` registry.json entry. `pnpm lint`/`pnpm test` clean — 96
   tests total across 10 files.
 
+- **Spinner** (`packages/registry/ui/spinner.tsx`) — from-scratch, node
+  `2120:11` verified immediately. Turns out to be a genuinely different
+  visual design from Button's internal loading spinner — not the same
+  component wearing two hats. Figma's standalone Spinner is a static ring
+  (`border-border-default`) with one small accent dot (`fg-brand`)
+  positioned at the top-left corner, and the whole thing rotates via
+  `animate-spin` (the dot "orbits" the ring — Figma obviously can't show
+  motion, but a single fixed accent point rotating is the only sensible
+  read of that layout). Button's internal spinner is a two-tone SVG arc,
+  sized to match Button's own confirmed icon slots (16px/20px) — and
+  Spinner's Figma sizes are 16/24/32px, which don't even overlap with
+  Button's 20px lg/xl requirement. Concluded these are legitimately two
+  separate components for two separate contexts (a standalone loading
+  indicator vs. a button's inline busy state), not a missed reuse
+  opportunity — did not refactor Button.
+  Confirmed exact scaling across all 3 sizes directly (not inferred from
+  one sample): sm 16px/`border-2`/6px dot, md 24px/`border-[3px]`/9px dot,
+  lg 32px/`border-4`/12px dot — border width and dot inset always match
+  (`-2px`/`-3px`/`-4px`), dot size is a consistent 0.375× the ring size.
+  Biome's `<output>` suggestion for `role="status"` on a div applied
+  again (same reasoning as Badge — the implicit role is a genuine match).
+  Added `packages/registry/ui/__tests__/spinner.test.tsx` — 8 tests
+  (role=status with accessible name "Loading", `aria-busy="true"` set,
+  correct default/requested size, `animate-spin` present, className merge,
+  ref forwarding, axe zero-violations at all 3 sizes). Added a `spinner`
+  registry.json entry. `pnpm lint`/`pnpm test` clean — 104 tests total
+  across 11 files.
+
 ## Current
 
-**Spinner** — about to start. From-scratch per CLAUDE.md. Note: Button
-already has an internal (unexported) `Spinner` helper for its `loading`
-state — need to check whether the real Figma Spinner component is
-visually identical to that internal one (in which case, extract/reuse
-rather than duplicating) or genuinely different (in which case keep them
-separate and just note why). Need to verify Figma node `2120:11` before
-building anything.
+**Divider** — about to start. From-scratch per CLAUDE.md. This is the
+component right before the known `2120:12` Divider/Skeleton ID collision
+— need to actually run the ±2 scan this time rather than assume, since the
+brief flagged this exact spot as ambiguous from the start.
 
 ## Remaining
 
-Divider, Skeleton, Progress Bar, Breadcrumbs, Tooltip, Dropdown Menu,
-Modal, Tabs
+Skeleton, Progress Bar, Breadcrumbs, Tooltip, Dropdown Menu, Modal, Tabs
 
 ## Blocked
 
@@ -394,10 +418,10 @@ _(none yet)_
 
 ## Exact resume point
 
-Alert is fully done, committed, and pushed (commit: `feat(ui): add
-Alert`). Next action: run `get_metadata` on Figma node `2120:11` (fileKey
-`CDgfoMkj7lP3pXWJ3aOgkH`) to verify it's Spinner's canvas — if the title
-doesn't match, scan `2120:9` through `2120:13` per the ±2-scan protocol
-(the known Divider/Skeleton `2120:12` collision sits just past this range)
-and log the correction here. Then compare against Button's internal
-Spinner helper before deciding whether to extract/reuse or build fresh.
+Spinner is fully done, committed, and pushed (commit: `feat(ui): add
+Spinner`). Next action: run `get_metadata` on Figma node `2120:12` first
+(fileKey `CDgfoMkj7lP3pXWJ3aOgkH`) — per the brief, this ID is ambiguous
+between Divider and Skeleton. Whichever it turns out to be, scan the
+neighboring ±2 nodes (`2120:10` through `2120:14`) to find the other one,
+and log which id maps to which component here before building either —
+this is the collision the brief warned about from the very first message.
