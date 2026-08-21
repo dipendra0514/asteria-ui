@@ -116,3 +116,6 @@ Every interactive component needs: correct ARIA role, documented keyboard behavi
 ## Working style
 
 Direct and practical, build-as-we-go. Don't over-explain settled decisions above — they're settled. If something in this file conflicts with a new instruction, flag the conflict and ask rather than silently picking one.
+
+Add the confirmed Figma file link (https://www.figma.com/design/CDgfoMkj7lP3pXWJ3aOgkH/Dipendra-Testing--Copy---Copy-, file key CDgfoMkj7lP3pXWJ3aOgkH) to CLAUDE.md under "Where specs come from" as the single source of truth. Commit the change.
+
