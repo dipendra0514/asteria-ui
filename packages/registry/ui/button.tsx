@@ -4,8 +4,8 @@ import { cn } from "../lib/cn";
 
 const buttonVariants = cva(
   [
-    "inline-flex items-center justify-center gap-2 whitespace-nowrap",
-    "rounded-md font-medium tracking-tight transition-colors",
+    "inline-flex items-center justify-center whitespace-nowrap",
+    "rounded-sm font-medium tracking-tight transition-colors",
     "disabled:pointer-events-none disabled:opacity-100",
     "focus-visible:outline-none focus-visible:shadow-[var(--shadow-glow-focus)]",
   ].join(" "),
@@ -44,10 +44,10 @@ const buttonVariants = cva(
         ].join(" "),
       },
       size: {
-        sm: "h-8 px-3 text-ui-sm",
-        md: "h-10 px-4 text-ui-md",
-        lg: "h-12 px-5 text-ui-lg",
-        xl: "h-14 px-6 text-ui-lg",
+        sm: "h-8 gap-1 px-3 text-ui-md",
+        md: "h-10 gap-2 px-4 text-ui-lg",
+        lg: "h-12 gap-2 px-5 text-ui-lg",
+        xl: "h-14 gap-3 px-6 text-ui-lg",
       },
     },
     defaultVariants: {
@@ -58,9 +58,11 @@ const buttonVariants = cva(
 );
 
 export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+  extends React.ComponentPropsWithRef<"button">,
     VariantProps<typeof buttonVariants> {
   loading?: boolean;
+  /** Instance-swap icon slot rendered before the label. Sized to match the button's `size`. */
+  leadingIcon?: React.ReactNode;
 }
 
 function Spinner({ className }: { className?: string }) {
@@ -89,28 +91,46 @@ function Spinner({ className }: { className?: string }) {
   );
 }
 
-export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  (
-    { className, variant, size, loading = false, disabled, children, ...props },
-    ref,
-  ) => {
-    const isDisabled = disabled || loading;
+function withIconSize(icon: React.ReactNode, sizeClassName: string) {
+  if (!React.isValidElement<{ className?: string }>(icon)) return icon;
+  return React.cloneElement(icon, {
+    className: cn(sizeClassName, "shrink-0", icon.props.className),
+  });
+}
 
-    return (
-      <button
-        ref={ref}
-        type="button"
-        className={cn(buttonVariants({ variant, size }), className)}
-        disabled={isDisabled}
-        aria-busy={loading || undefined}
-        {...props}
-      >
-        {children}
-        {loading ? <Spinner /> : null}
-      </button>
-    );
-  },
-);
+/**
+ * role=button · Enter/Space activates · focus ring visible on Tab · disabled prevents interaction · loading state announces via aria-busy
+ */
+export function Button({
+  ref,
+  className,
+  variant,
+  size = "md",
+  loading = false,
+  disabled,
+  leadingIcon,
+  children,
+  ...props
+}: ButtonProps) {
+  const isDisabled = disabled || loading;
+  const iconSizeClassName =
+    size === "lg" || size === "xl" ? "size-5" : "size-4";
+
+  return (
+    <button
+      ref={ref}
+      type="button"
+      className={cn(buttonVariants({ variant, size }), className)}
+      disabled={isDisabled}
+      aria-busy={loading || undefined}
+      {...props}
+    >
+      {leadingIcon ? withIconSize(leadingIcon, iconSizeClassName) : null}
+      {children}
+      {loading ? <Spinner className={iconSizeClassName} /> : null}
+    </button>
+  );
+}
 
 Button.displayName = "Button";
 
