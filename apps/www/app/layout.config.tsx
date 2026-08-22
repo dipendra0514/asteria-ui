@@ -11,10 +11,9 @@ export const baseOptions: BaseLayoutProps = {
       url: "/docs/components/avatar",
       active: "nested-url",
     },
-    // TODO: real repo URL
     {
       text: "GitHub",
-      url: "https://github.com/asteria-ui/asteria-ui",
+      url: "https://github.com/dipendra0514/asteria-ui",
       external: true,
     },
   ],

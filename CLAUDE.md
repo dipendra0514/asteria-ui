@@ -6,6 +6,14 @@ This file is auto-loaded by Claude Code every session. Read it before doing any 
 
 **Asteria UI** — an open-source React + Tailwind component library, shadcn-style copy-paste distribution (not an npm-imported package). Free tier first (~28 foundational components), paid tier later (complex patterns: data tables, date pickers, dashboards, marketing sections). Design system lives in Figma; this repo is the code + docs site.
 
+## Project links
+
+- **Repo:** https://github.com/dipendra0514/asteria-ui
+- **Issues:** https://github.com/dipendra0514/asteria-ui/issues
+- **Docs:** https://docs.asteria-ui.com (matches the Figma footers; not live yet)
+
+Use these exactly — don't guess or reconstruct a repo URL from the package name. The registry/CLI's own marketing domain (`asteria-ui.com`, no `docs.` subdomain — used in `packages/registry/registry.json`'s `homepage`, the CLI's `components.json` `$schema`, and the `asteria-ui.com/r/[name].json` registry-JSON endpoint convention) is a separate, deliberately distinct domain from the docs site above — don't conflate the two or "fix" one to match the other.
+
 ## Brand identity — do not deviate without being told
 
 - **Name:** Asteria UI · **Tagline:** "Open-source components for React & Tailwind"
