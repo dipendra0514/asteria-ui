@@ -1,6 +1,6 @@
 ---
 title: Avatar
-description: User portrait with an image, initials fallback, optional status, and stacked groups.
+description: User portrait with an image, initials fallback, optional status, stacked groups, and an add-member button.
 ---
 
 <AvatarHero />
@@ -12,7 +12,7 @@ description: User portrait with an image, initials fallback, optional status, an
 ## Usage
 
 ```tsx
-import { Avatar, AvatarGroup } from "@/components/ui/avatar";
+import { Avatar, AvatarAddButton, AvatarGroup } from "@/components/ui/avatar";
 
 <Avatar src="/maya.jpg" alt="Maya Chen" />
 <Avatar initials="MC" alt="Maya Chen" status="online" />
@@ -51,6 +51,16 @@ Stacked, overlapping avatars with a `+N` overflow chip (`bg-secondary` / `fg-sec
 
 <AvatarGroupExample />
 
+### Add-member button
+
+A dashed-border circular button for adding another person to a group. Sizes match Avatar's own `md`/`lg`/`xl`. The hover state (`border-brand` + the signature glow-focus shadow) is also applied on `focus-visible`, since Figma's mockup only shows hover but every interactive component needs a visible keyboard focus indicator.
+
+<AvatarAddButtonSizes />
+
+Composed after an `AvatarGroup`:
+
+<AvatarAddButtonWithGroup />
+
 ## API reference
 
 Prop names and types are taken from `AvatarProps` / `AvatarGroupProps` in the registry source.
@@ -76,6 +86,13 @@ Prop names and types are taken from `AvatarProps` / `AvatarGroupProps` in the re
       <strong>ARIA.</strong> <code>AvatarGroup</code> uses <code>role=&quot;group&quot;</code>.
       Overflow is its own <code>role=&quot;img&quot;</code> labelled{" "}
       <code>N more</code>.
+    </li>
+    <li>
+      <strong>AvatarAddButton</strong> is a native <code>&lt;button&gt;</code> —
+      Enter/Space activates, and it accepts an accessible name via{" "}
+      <code>aria-label</code> (defaults to <code>&quot;Add&quot;</code>). Its
+      focus ring uses the same <code>shadow-glow-focus</code> treatment as its
+      hover state.
     </li>
   </ul>
 </A11yCallout>

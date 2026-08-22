@@ -1,5 +1,6 @@
 import { definePropDefs } from "@/lib/prop-defs";
 import type {
+  AvatarAddButtonProps,
   AvatarGroupProps,
   AvatarProps,
 } from "@asteria-ui/registry/ui/avatar";
@@ -58,6 +59,21 @@ const groupProps = definePropDefs<AvatarGroupProps>()([
   },
 ]);
 
+const addButtonProps = definePropDefs<AvatarAddButtonProps>()([
+  {
+    name: "size",
+    type: '"md" | "lg" | "xl"',
+    defaultValue: '"md"',
+    description: "Diameter: 40 / 48 / 64px, matching Avatar's own md/lg/xl.",
+  },
+  {
+    name: "aria-label",
+    type: "string",
+    defaultValue: '"Add"',
+    description: "Accessible name — the \"+\" glyph itself is decorative.",
+  },
+]);
+
 export function AvatarPropsTable() {
   return (
     <>
@@ -65,6 +81,8 @@ export function AvatarPropsTable() {
       <PropsTable rows={[...avatarProps]} />
       <h3 className="text-[1.25em] font-semibold">AvatarGroup</h3>
       <PropsTable rows={[...groupProps]} />
+      <h3 className="text-[1.25em] font-semibold">AvatarAddButton</h3>
+      <PropsTable rows={[...addButtonProps]} />
     </>
   );
 }

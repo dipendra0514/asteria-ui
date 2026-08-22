@@ -2,6 +2,8 @@ import { A11yCallout } from "@/components/docs/a11y-callout";
 import { AlertHero, AlertVariants, AlertWithActionAndDismiss } from "@/components/docs/alert-demos";
 import { AlertPropsTable } from "@/components/docs/alert-props-table";
 import {
+  AvatarAddButtonSizes,
+  AvatarAddButtonWithGroup,
   AvatarGroupExample,
   AvatarHero,
   AvatarImageFallback,
@@ -110,6 +112,8 @@ export function getMDXComponents(components?: MDXComponents): MDXComponents {
     WarningScale,
 
     // Avatar
+    AvatarAddButtonSizes,
+    AvatarAddButtonWithGroup,
     AvatarGroupExample,
     AvatarHero,
     AvatarImageFallback,

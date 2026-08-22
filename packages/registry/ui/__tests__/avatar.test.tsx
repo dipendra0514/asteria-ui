@@ -1,8 +1,8 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import * as React from "react";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { axe } from "../../lib/test-axe";
-import { Avatar, AvatarGroup } from "../avatar";
+import { Avatar, AvatarAddButton, AvatarGroup } from "../avatar";
 
 describe("Avatar", () => {
   it("uses alt text as the accessible name when no status is set", () => {
@@ -92,6 +92,54 @@ describe("AvatarGroup", () => {
         <Avatar alt="Bo" />
       </AvatarGroup>,
     );
+    expect(await axe(container)).toHaveNoViolations();
+  });
+});
+
+describe("AvatarAddButton", () => {
+  it("has an accessible name of 'Add' by default", () => {
+    render(<AvatarAddButton />);
+    expect(screen.getByRole("button", { name: "Add" })).toBeInTheDocument();
+  });
+
+  it("accepts a custom aria-label", () => {
+    render(<AvatarAddButton aria-label="Add member" />);
+    expect(
+      screen.getByRole("button", { name: "Add member" }),
+    ).toBeInTheDocument();
+  });
+
+  it("hides the + glyph from assistive tech", () => {
+    render(<AvatarAddButton />);
+    expect(screen.getByText("+")).toHaveAttribute("aria-hidden", "true");
+  });
+
+  it("calls onClick when activated", () => {
+    const onClick = vi.fn();
+    render(<AvatarAddButton onClick={onClick} />);
+    screen.getByRole("button").click();
+    expect(onClick).toHaveBeenCalledOnce();
+  });
+
+  it("defaults to type=button so it never submits a surrounding form", () => {
+    render(<AvatarAddButton />);
+    expect(screen.getByRole("button")).toHaveAttribute("type", "button");
+  });
+
+  it("forwards a ref to the underlying button", () => {
+    const ref = React.createRef<HTMLButtonElement>();
+    render(<AvatarAddButton ref={ref} />);
+    expect(ref.current).toBeInstanceOf(HTMLButtonElement);
+  });
+
+  it("has no axe violations at any size", async () => {
+    const { container, rerender } = render(<AvatarAddButton size="md" />);
+    expect(await axe(container)).toHaveNoViolations();
+
+    rerender(<AvatarAddButton size="lg" />);
+    expect(await axe(container)).toHaveNoViolations();
+
+    rerender(<AvatarAddButton size="xl" />);
     expect(await axe(container)).toHaveNoViolations();
   });
 });

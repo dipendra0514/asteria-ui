@@ -1,9 +1,14 @@
 "use client";
 
-import { Avatar, AvatarGroup } from "@asteria-ui/registry/ui/avatar";
+import {
+  Avatar,
+  AvatarAddButton,
+  AvatarGroup,
+} from "@asteria-ui/registry/ui/avatar";
 import { ComponentPlayground } from "./component-playground";
 
 const sizes = ["xs", "sm", "md", "lg", "xl", "2xl"] as const;
+const addButtonSizes = ["md", "lg", "xl"] as const;
 
 const portrait = (fill: string) =>
   `data:image/svg+xml,${encodeURIComponent(
@@ -91,6 +96,42 @@ export function AvatarGroupExample() {
         <Avatar src={ana} alt="Ana Silva" />
         <Avatar initials="JD" alt="Jordan Diaz" />
       </AvatarGroup>
+    </ComponentPlayground>
+  );
+}
+
+export function AvatarAddButtonSizes() {
+  return (
+    <ComponentPlayground
+      code={addButtonSizes
+        .map((size) => `<AvatarAddButton size="${size}" aria-label="Add" />`)
+        .join("\n")}
+    >
+      {addButtonSizes.map((size) => (
+        <AvatarAddButton key={size} size={size} />
+      ))}
+    </ComponentPlayground>
+  );
+}
+
+export function AvatarAddButtonWithGroup() {
+  return (
+    <ComponentPlayground
+      code={`<AvatarGroup max={3}>
+  <Avatar src="/maya.jpg" alt="Maya Chen" />
+  <Avatar src="/rio.jpg" alt="Rio Patel" />
+  <Avatar src="/ken.jpg" alt="Ken Okada" />
+</AvatarGroup>
+<AvatarAddButton aria-label="Add team member" />`}
+    >
+      <div className="flex items-center gap-3">
+        <AvatarGroup max={3}>
+          <Avatar src={maya} alt="Maya Chen" />
+          <Avatar src={rio} alt="Rio Patel" />
+          <Avatar src={ken} alt="Ken Okada" />
+        </AvatarGroup>
+        <AvatarAddButton aria-label="Add team member" />
+      </div>
     </ComponentPlayground>
   );
 }

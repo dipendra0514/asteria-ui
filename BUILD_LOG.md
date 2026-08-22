@@ -1032,3 +1032,53 @@ regression that a build-only check would have missed entirely.
 
 **Status: Phase 5 (parity features) complete. All 5 phases from the
 original project brief are now done.**
+
+---
+
+## Avatar audit — added AvatarAddButton (post-Phase-5)
+
+User pointed at 5 Figma links under Avatar's page (fileKey
+`CDgfoMkj7lP3pXWJ3aOgkH`, nodes `2077:14018`, `2077:31`, `2077:30`,
+`2077:17`, `2077:14`) and asked to implement them. Checked metadata on
+all 5 before writing anything, rather than assuming they were 5 new
+components:
+
+- `2077:14018` ("Avatar", initials sizes xs–2xl) and `2077:14`
+  ("_Avatar image", image sizes xs–2xl) — dimensions (24/32/40/48/64/80px)
+  match `avatarVariants` exactly. No change needed.
+- `2077:31` ("_Avatar group") — matches `AvatarGroup`'s existing overflow
+  behavior. No change needed.
+- `2077:17` ("_Avatar online") — pulled full design context to confirm
+  the **offline** state specifically (the earlier Avatar build only
+  logged verifying **online**'s color). Confirmed exact match:
+  `bg-success-500` online, `bg-gray-300` offline, white ring — identical
+  to the existing `statusVariants`. No change needed.
+- `2077:30` ("_Avatar add button") — genuinely new, not in the original
+  19-component queue. Size (md/lg/xl, matching Avatar's own 40/48/64px)
+  × State (default/hover) dashed-circle button with a "+" glyph.
+  **Implemented** as `AvatarAddButton` in `packages/registry/ui/avatar.tsx`:
+  `border-[1.5px] border-dashed border-border-strong bg-bg-secondary`
+  default, `border-border-brand` + the exact confirmed
+  `shadow-glow-focus` value on hover. Figma only mocked hover, not
+  focus — added the identical treatment to `focus-visible` too, since
+  CLAUDE.md's glow-focus requirement is non-negotiable for every
+  interactive component regardless of what the static mockup shows.
+  Built as a real `<button type="button">` (native keyboard support),
+  `aria-label` defaults to `"Add"`, the "+" glyph is `aria-hidden`.
+
+  Added 7 tests to `ui/__tests__/avatar.test.tsx` (accessible name
+  default + override, glyph hidden from AT, onClick fires, type=button,
+  ref forwarding, axe zero-violations at all 3 sizes) — registry suite
+  now 177 tests (was 170). Updated `registry.json`'s Avatar description.
+  Wired into docs: two new demos (`AvatarAddButtonSizes`,
+  `AvatarAddButtonWithGroup` — composed after an `AvatarGroup`, its most
+  natural real-world placement), a new `AvatarAddButton` props-table
+  section, an `avatar.mdx` section, an accessibility-callout addition,
+  and registrations in `mdx-components.tsx`.
+
+  Verified live, not just via `next build`: ran the actual dev server
+  and curled `/docs/components/avatar`, confirming `aria-label="Add"`
+  and `aria-label="Add team member"` both render in the real HTML.
+
+`pnpm lint` clean, `pnpm test` clean (177 registry tests + 17 CLI),
+`apps/www` builds clean (36 static pages, unchanged — no new routes).

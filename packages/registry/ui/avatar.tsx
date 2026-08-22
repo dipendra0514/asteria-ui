@@ -180,4 +180,59 @@ export function AvatarGroup({
 
 AvatarGroup.displayName = "AvatarGroup";
 
+const avatarAddButtonVariants = cva(
+  "inline-flex shrink-0 items-center justify-center rounded-full border-[1.5px] border-dashed border-border-strong bg-bg-secondary text-fg-secondary transition-colors focus-visible:outline-none hover:border-border-brand hover:shadow-[var(--shadow-glow-focus)] focus-visible:border-border-brand focus-visible:shadow-[var(--shadow-glow-focus)]",
+  {
+    variants: {
+      size: {
+        md: "size-10 text-base leading-4",
+        lg: "size-12 text-xl leading-5",
+        xl: "size-16 text-2xl leading-6",
+      },
+    },
+    defaultVariants: {
+      size: "md",
+    },
+  },
+);
+
+export type AvatarAddButtonSize = NonNullable<
+  VariantProps<typeof avatarAddButtonVariants>["size"]
+>;
+
+export interface AvatarAddButtonProps
+  extends React.ComponentPropsWithRef<"button"> {
+  size?: AvatarAddButtonSize;
+}
+
+/**
+ * role=button (native <button>) · Enter/Space activates · focus ring visible on Tab via
+ * shadow-glow-focus (Figma's own mockup only shows a hover state, but every interactive
+ * component needs a visible keyboard focus indicator per the design system, so the same
+ * treatment is applied to focus-visible) · accessible name defaults to "Add", overridable
+ * via aria-label · the "+" glyph is decorative (aria-hidden)
+ */
+export function AvatarAddButton({
+  ref,
+  className,
+  size = "md",
+  type = "button",
+  "aria-label": ariaLabel = "Add",
+  ...props
+}: AvatarAddButtonProps) {
+  return (
+    <button
+      ref={ref}
+      type={type}
+      aria-label={ariaLabel}
+      className={cn(avatarAddButtonVariants({ size }), className)}
+      {...props}
+    >
+      <span aria-hidden="true">+</span>
+    </button>
+  );
+}
+
+AvatarAddButton.displayName = "AvatarAddButton";
+
 export { avatarVariants };
