@@ -920,3 +920,115 @@ re-ran `pnpm lint` clean afterward.
 copy-to-clipboard on code blocks, ⌘K command palette, OG image generator,
 changelog page, "New" badge system) is the only remaining phase from the
 original brief.
+
+---
+
+## Phase 5 — Parity features: COMPLETE
+
+Proceeded automatically after Phase 4's commit/push, per the standing
+"continue to the next phase unless told to stop" instruction. Before
+writing any code, ran a research-only subagent to survey what Fumadocs
+already provides for each of the 6 items — this caught that 2 of them
+were already fully working, so no time was spent rebuilding them.
+
+**Dark mode toggle** and **copy-to-clipboard on code blocks**: both
+already fully wired by Fumadocs UI's defaults (`RootProvider`'s
+`theme.enabled: true`, and the default MDX `pre` → `CodeBlock` override
+with `allowCopy`). Verified rather than assumed: curled a real rendered
+page and found `aria-label="Toggle Theme"` / confirmed no local `pre`
+override exists in `mdx-components.tsx`.
+
+**⌘K search**: the dialog was already there (bound to the default
+Meta/Ctrl+K hotkey via `RootProvider`), it just had nothing to query.
+Added `apps/www/app/api/search/route.ts`:
+```ts
+import { source } from "@/lib/source";
+import { createFromSource } from "fumadocs-core/search/server";
+export const { GET } = createFromSource(source);
+```
+This is the standard fumadocs pattern and needs no extra config, since
+fumadocs-mdx generates each page's `structuredData` automatically.
+Verified end-to-end, not just read: built, ran the real production
+server, and curled `/api/search?query=button` — got real ranked results
+with highlighted match spans.
+
+**OG image generator — built, then a real bug found and one part
+deliberately walked back.** First pass added two files: a static root
+`app/opengraph-image.tsx` (brand-styled default) and a dynamic
+`app/docs/[[...slug]]/opengraph-image.tsx` using `next/og`'s
+`ImageResponse`, pulling each page's real title/description from
+`source.getPage()`. Hit two issues along the way:
+1. The dynamic route's `generateStaticParams()` initially reused
+   `source.generateParams()` verbatim, which includes an empty-slug entry
+   for the bare `/docs` index — `next build` failed with `Requested and
+   resolved page mismatch: /docs//opengraph-image /docs/opengraph-image`
+   (a double-slash from the empty array). Fixed by filtering out
+   empty-slug params for the image route specifically; `/docs` itself
+   falls back to the root static OG image, which is a sensible default
+   for it anyway.
+2. With that fix, `next build` succeeded completely — compiled clean,
+   generated all 29 per-page OG images as static output. But actually
+   starting the built server (`next start`, not just checking the build
+   log) surfaced something the build never would: **every single route,
+   including the plain `/` homepage, returned 500** with
+   `Error: Catch-all must be the last part of the URL.` Isolated the
+   cause by deleting just the one dynamic OG image file and rebuilding —
+   the entire site immediately came back to 200s across the board, ⌘K
+   search included. This is a real, verified incompatibility between an
+   `opengraph-image` file living inside an optional catch-all segment
+   (`[[...slug]]`) and this exact Next.js version (15.5.20) at request
+   time, not a mistake in the file's own code — confirmed by isolation,
+   not assumed from an error message alone. Decision: keep only the
+   static root OG image (it still applies as the fallback for every
+   docs page, just without a per-page custom title/description baked
+   into the image), and do not re-attempt a per-page dynamic version
+   under this Next version. Logged here as a real tooling-gap decision,
+   the same way Figma-gap decisions were logged earlier in this project
+   — not silently downgraded without a trace.
+
+   Also set `metadataBase: new URL("https://asteria-ui.com")` on the
+   root layout's metadata while here — Next was warning that OG/Twitter
+   image resolution needs an absolute base, and `asteria-ui.com` is
+   already the assumed domain used elsewhere in this repo (the CLI's
+   `components.json` `$schema` URL, the registry JSON install command
+   shown in `installation.mdx`), so this isn't a new invented fact.
+
+**Changelog page**: `content/docs/changelog.mdx`, added to
+`content/docs/meta.json`'s `pages`. Content grouped by this project's
+real phases (docs wiring, CLI, the 19-component build, the monorepo
+scaffold) — all under one `2026-08-22` heading since that's genuinely
+when the entire thing happened in one continuous session, not spread
+across fabricated dates to look more "changelog-shaped."
+
+**"New" badge system**: built as a reusable mechanism, not a hardcoded
+list. `source.config.ts` extends fumadocs-mdx's default frontmatter Zod
+schema with an optional `new: z.boolean()` — needed because the default
+schema silently strips unrecognized frontmatter keys (Zod's default
+object behavior, no `.strict()`/`.passthrough()` on it), so without this
+extension a `new: true` in a page's frontmatter would just vanish.
+`lib/source.ts` renamed to `lib/source.tsx` (now returns JSX) and, after
+building `source`, walks `source.pageTree.children` once, wrapping the
+sidebar `name` of any page whose `page.data.new` is true with a small
+pill badge (new `components/docs/new-badge.tsx`, `bg-brand-subtle`/
+`fg-brand`, matching the badge-styling precedent from the actual `Badge`
+component). Applied `new: true` to Dropdown Menu, Modal, and Tabs — the
+last 3, most complex components built in the overnight queue — rather
+than to all 19, since flagging every component "new" on day one would
+make the badge meaningless; a deliberate scoping call, logged rather
+than left implicit.
+
+Needed `zod` as a direct dependency of `apps/www` (previously only
+available transitively via `fumadocs-mdx`) since `source.config.ts`
+imports it directly now — added to `package.json`, reinstalled.
+
+**Verification**: `pnpm lint` clean (136 files, up from 133 — the 3 new
+Phase 5 files), `pnpm test` clean (187 tests, unchanged — this phase
+touched no component logic). Critically, verification this time included
+actually starting the production server and hitting every kind of route
+(root, docs index, changelog, a component page, `/api/search`,
+`/opengraph-image`) with real HTTP requests — not just trusting
+`next build`'s exit code — which is exactly what caught the OG-image
+regression that a build-only check would have missed entirely.
+
+**Status: Phase 5 (parity features) complete. All 5 phases from the
+original project brief are now done.**

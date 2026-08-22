@@ -6,6 +6,7 @@ import type { ReactNode } from "react";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
+  metadataBase: new URL("https://asteria-ui.com"),
   title: {
     template: "%s — Asteria UI",
     default: "Asteria UI — Open-source components for React & Tailwind",

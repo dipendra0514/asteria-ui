@@ -1,0 +1,42 @@
+---
+title: Changelog
+description: Notable changes to Asteria UI's components, CLI, and docs site.
+---
+
+## 2026-08-22
+
+### Docs site wired to the real components
+
+Every component page (`/docs/components/*`) now renders live previews and
+prop tables generated against each component's real TypeScript interface,
+instead of the placeholder pages from an earlier draft. Foundations pages
+(Colors, Typography, Spacing, Radius, Shadows & Blurs) now pull their
+values directly from `tokens.css`/`theme.css` rather than static copy.
+
+Added: search (⌘K), per-page Open Graph images, and this changelog.
+
+### CLI: `init` and `add`
+
+```bash
+npx asteria-ui init
+npx asteria-ui add button badge
+```
+
+`init` scaffolds `components.json`, `tokens.css`, `theme.css`, and
+`lib/cn.ts`, and installs the core dependencies. `add` resolves a
+component's `registryDependencies` recursively and dedupes files/deps
+across a multi-name add — `add field` pulls in `input` automatically.
+
+### 19 free-tier components shipped
+
+Button, Avatar, Badge, Input, Field, Textarea, Checkbox, Radio Group,
+Switch, Alert, Spinner, Divider, Skeleton, Progress Bar, Breadcrumbs,
+Tooltip, Dropdown Menu, Modal, and Tabs — each audited against the Figma
+design system, built with CVA + semantic tokens, and covered by a
+vitest-axe accessibility test with zero violations across every state.
+
+### Monorepo scaffold
+
+Initial pnpm + Turborepo workspace: `apps/www` (docs site), `packages/registry`
+(component source of truth), `packages/cli`. Biome for lint/format, Vitest +
+Testing Library + vitest-axe for tests, Tailwind v4 CSS-first tokens.

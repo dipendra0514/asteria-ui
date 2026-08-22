@@ -858,11 +858,87 @@ prompting.
   (187 total: 170 registry + 17 CLI, unchanged — Phase 4 touched no
   component logic).
 
+## Phase 5 — Parity features: COMPLETE
+
+Proceeded automatically after Phase 4 was committed and pushed, per the
+standing instruction. Surveyed what Fumadocs already provided before
+building anything (via a research-only subagent) rather than assuming
+gaps — two of the six items turned out to already work out of the box:
+
+- **Dark mode toggle** — already fully working. `RootProvider` in
+  `app/layout.tsx` had `theme.enabled: true` since Phase 4; `DocsLayout`/
+  `HomeLayout` render a "Toggle Theme" control automatically. Verified by
+  curling a real rendered page and finding `aria-label="Toggle Theme"` in
+  the HTML — nothing to build.
+- **Copy-to-clipboard on code blocks** — already fully working.
+  `fumadocs-ui/mdx`'s default `pre` override wraps every code fence in a
+  `CodeBlock` with `allowCopy` on, and nothing in this repo overrides
+  `pre`/`code`. Nothing to build.
+- **⌘K command palette** — the dialog itself (bound to the default
+  Meta/Ctrl+K hotkey) was already wired via `RootProvider`, but it had
+  nothing to query: no `/api/search` route existed. Added
+  `app/api/search/route.ts` — `createFromSource(source)` from
+  `fumadocs-core/search/server`, which is the standard pattern and needs
+  no extra config since fumadocs-mdx generates each page's
+  `structuredData` by default. Verified live, not just by reading the
+  code: built, ran `next start`, and curled `/api/search?query=button` —
+  got real ranked results with highlight spans.
+- **OG image generator** — built from scratch, then had to walk part of
+  it back. First attempt: a root `app/opengraph-image.tsx` (static,
+  brand-styled) plus a dynamic `app/docs/[[...slug]]/opengraph-image.tsx`
+  (per-page title/description via `next/og`'s `ImageResponse`). The build
+  compiled and even statically generated all 29 per-page images
+  successfully — but starting the real production server
+  (`next start`, not just `next build`) turned up a **global 500 on every
+  single route, including `/`,** with `Error: Catch-all must be the last
+  part of the URL.` This is a genuine incompatibility between an
+  `opengraph-image` file placed inside an optional catch-all segment
+  (`[[...slug]]`) and this Next.js version (15.5.20) at runtime, not
+  something visible from the build output alone or from reading the
+  file. Confirmed by isolation: removed just that one file, rebuilt,
+  restarted the production server, and every route returned 200 again.
+  Kept the root static OG image (applies as the fallback for every page,
+  including all docs pages) and did **not** re-attempt the dynamic
+  per-page version — logging this as a real, verified tooling limitation
+  rather than quietly downgrading scope. Also set `metadataBase` on the
+  root layout's metadata (`https://asteria-ui.com`, matching the domain
+  already assumed elsewhere in the repo, e.g. `packages/cli`'s
+  `components.json` schema URL) since OG image resolution needs an
+  absolute base and Next was warning about its absence.
+- **Changelog page** — built from scratch:
+  `content/docs/changelog.mdx`, added to `content/docs/meta.json`.
+  Grouped by the real phases of this project (docs-site wiring, CLI,
+  19-component build, monorepo scaffold), all dated `2026-08-22` since
+  that's genuinely when all of it happened in this session — not spread
+  across invented dates.
+- **"New" badge system** — built the underlying mechanism generically
+  (any page can opt in via a `new: true` frontmatter field) rather than
+  hardcoding a page list. Required extending fumadocs-mdx's frontmatter
+  Zod schema in `source.config.ts` (`frontmatterSchema.extend({ new:
+  z.boolean().optional() })`) since unknown frontmatter keys are silently
+  stripped by the default schema otherwise. `lib/source.ts` → renamed to
+  `.tsx` (now contains JSX) — walks `source.pageTree` once after loading,
+  wrapping any page's sidebar `name` with a small `NewBadge` pill
+  (`components/docs/new-badge.tsx`) when its `page.data.new` is true.
+  Applied the frontmatter flag to the 3 most recently shipped, most
+  complex components — Dropdown Menu, Modal, Tabs (the last 3 in the
+  overnight build queue) — rather than all 19, since marking every
+  component "new" on day one would defeat the badge's purpose; logged
+  here as the judgment call it is, not a hardcoded assumption.
+
+`pnpm lint` clean (136 files), `pnpm test` clean (187 tests, unchanged —
+no component logic touched), `apps/www` builds clean and **`next start`
+verified clean on every route** (root, docs index, changelog, a
+component page, `/api/search`, `/opengraph-image`) — the production-mode
+check that caught the OG-image regression in the first place, so it's
+now part of how this phase closes out, not skipped.
+
 ## Remaining
 
-Phase 5 (dark mode toggle, copy-to-clipboard on code blocks, ⌘K command
-palette, OG image generator, changelog page, "New" badge system) per the
-original brief. Not started.
+Nothing from the original Phase 0–5 brief. Anything further (visual
+polish passes, additional docs content, new components beyond the 19
+free-tier set, the paid-tier registry) would be a new phase the user
+defines.
 
 ## Blocked
 
@@ -870,9 +946,6 @@ _(none)_
 
 ## Exact resume point
 
-**Phase 4 complete.** About to commit and push all of Phase 4's changes
-to `origin main`, then proceed straight into Phase 5 per the standing
-"continue automatically to the next phase unless told to stop"
-instruction — no further "continue" needed from the user for that
-transition. If interrupted before Phase 5's own entry is written, resume
-by starting Phase 5 fresh (nothing in it has been started yet).
+**Phase 5 complete — all 5 phases from the original brief are done.**
+About to commit and push Phase 5's changes to `origin main`. No further
+autonomous phase exists to continue into; next steps are the user's call.
