@@ -970,21 +970,48 @@ not literals. Measured WCAG AA contrast for `fg-brand` on `bg-primary`:
 before/after scale are in `BUILD_LOG.md`. `pnpm lint`/`pnpm test` clean,
 `apps/www` builds clean (36 pages). Committed and pushed.
 
-## Rebrand — Part 2 of 2: light-first docs layout + theme toggle
+## Rebrand — Part 2 of 2: light-first docs layout + theme toggle: COMPLETE
 
-Not started yet. Per the user's brief: default to light mode with a
-persisting toggle (`next-themes` or equivalent), a documentation-first
-layout (720–760px content column, generous whitespace, subtle 1px
-border separators, `display/*`/`body/*`/`ui/*` type hierarchy, sticky
-header with logo/search/theme-toggle/GitHub), a cleaner sidebar
-active-nav treatment (brand @ 8–10% opacity fill or a 2px left accent,
-tested in both modes), full dogfooding of `packages/registry/ui`
-components across the docs site itself (logging any real component gap
-to `BUILD_LOG.md` rather than working around it), and a light/dark
-toggle inside each component doc page's own preview frame.
+- **2a**: fixed `app/layout.tsx`'s `RootProvider` theme override
+  (`defaultTheme: "dark"` → `"system"`) — Fumadocs already wraps
+  `next-themes` and already renders its toggle in the sidebar footer;
+  the only actual bug was the forced-dark override.
+- **2c**: traced the "harsh dark-mode active nav" complaint to its root
+  cause — Fumadocs' sidebar active-item already does `bg-fd-primary/10`
+  + a 1px left accent + `text-fd-primary` (a hybrid of both options the
+  brief offered), but `--color-fd-primary` was wrongly set to the same
+  saturated `brand-600` in dark mode instead of `brand-400` (matching
+  our own `fg-brand` dark-mode convention). One-variable fix in
+  `globals.css`, no custom CSS needed.
+- **2b**: content column capped at 760px via `DocsPage`'s own `article`
+  prop; `DocsTitle`/`DocsDescription` now use `display-sm`/`body-lg`
+  tokens. Sticky header + 3-column layout were already Fumadocs
+  defaults.
+- **2d**: dogfooded every interactive docs-site element — real `Tabs`
+  now powers `ComponentPlayground`'s Preview/Code switch and
+  `install-tabs.tsx` (previously Fumadocs' own Tabs component, not
+  custom markup, but still not ours); real `Button` now powers the
+  preview theme toggle, the homepage CTA (via `buttonVariants()` on a
+  real `<Link>`, since `Button` can't navigate), and a new
+  `search-trigger.tsx` wired into Fumadocs' `searchToggle` slot; real
+  `Badge` now powers the homepage eyebrow pill and the sidebar "New"
+  pill (previously a hand-rolled span). **4 real component gaps found
+  and logged, not silently worked around** — see `BUILD_LOG.md`:
+  `Button` has no `asChild`; no dedicated icon-only button component;
+  our `Tabs` has no `groupId` cross-instance sync (a real feature lost
+  vs. Fumadocs' own Tabs); `Badge`'s `role="status"` semantics are a
+  stretch for static content.
+- **2e**: the per-preview light/dark toggle already existed from
+  Phase 4/5; confirmed still working after the Tabs refactor.
+
+`pnpm lint` clean (137 files), `pnpm test` clean (178 registry + 17
+CLI), `apps/www` builds clean (36 pages) — and this time verified
+against a real running **production server**, not just a build,
+curling actual routes for the real component classes, the search
+trigger's rendered markup, and the preview-toggle's `aria-pressed`
+state.
 
 ## Exact resume point
 
-**Part 1 (brand color) complete, committed and pushed.** Starting Part 2
-(docs site layout + theme toggle) now, per the user's "work sequentially
-— finish and commit part 1 before starting part 2" instruction.
+**Both parts of the rebrand brief are complete, committed, and pushed.**
+No further autonomous work is queued; next steps are the user's call.

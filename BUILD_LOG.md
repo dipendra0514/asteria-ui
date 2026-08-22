@@ -1226,3 +1226,142 @@ modes.
 
 `pnpm lint` clean, `pnpm test` clean (178 registry + 17 CLI, unchanged —
 no component logic touched), `apps/www` builds clean (36 static pages).
+
+---
+
+## Part 2 — Docs site: light-first layout + theme toggle
+
+**2a. Light-first default.** Fumadocs UI's `RootProvider` already wraps
+`next-themes` internally (`attribute: "class"`, `enableSystem: true`) —
+our `app/layout.tsx` was overriding its `defaultTheme` to `"dark"`,
+forcing every first visit into dark regardless of OS preference.
+Changed to `defaultTheme: "system"` — this is the precise mechanism
+that satisfies "respects prefers-color-scheme on first visit, remembers
+the manual choice after" (next-themes persists the manual override to
+`localStorage` automatically; nothing else to build). The toggle itself
+was already present — `DocsLayout` renders Fumadocs' own `ThemeToggle`
+inside `SidebarFooter` by default, confirmed via a live curl for
+`aria-label="Toggle Theme"` earlier in this project. Logged interpretation:
+the brief's heading said "light by default" but its own parenthetical
+described system-preference-respecting behavior, which only
+`defaultTheme: "system"` (not `"light"`) actually satisfies — a literal
+always-light default would ignore OS dark-mode users entirely, which
+directly contradicts the same sentence's next clause. Went with
+`"system"`.
+
+**2c. Sidebar active-nav fix — root cause was a color value, not a
+shape.** Read Fumadocs' actual `itemVariants` source before changing
+anything: the active sidebar item already renders as `bg-fd-primary/10
+text-fd-primary` *plus* a 1px `before:bg-fd-primary` left-accent line —
+literally a hybrid of both options the brief offered (a translucent
+brand fill and a left accent), driven entirely by one CSS variable,
+`--color-fd-primary`. Confirmed via grep that this variable is *only*
+ever used as text color or a 1px line throughout Fumadocs' own
+components (sidebar active item, TOC active item + thumb, RootToggle
+checkmark) — never as a large solid fill needing light text on top — so
+changing its dark-mode value carries no contrast-regression risk
+elsewhere. The real bug: `globals.css` set `--color-fd-primary` to the
+same saturated `brand-600` in *both* light and dark mode, instead of
+following our own semantic convention (`fg-brand` uses `brand-400` in
+dark mode specifically for legibility against near-black). Fixed by
+making `.dark`'s `--color-fd-primary` reference `var(--brand-400)`
+instead of `var(--brand-600)` — this is the actual "harsh/saturated in
+dark mode" fix, achieved without writing a single line of custom
+CSS to fight Fumadocs' generated utility classes.
+
+**2b. Layout — content width, typography hierarchy.**
+- `DocsPage` accepts an `article` prop spread directly onto its
+  content-column wrapper — used it (`article={{ className: "mx-auto
+  w-full max-w-[760px]" }}` in `app/docs/[[...slug]]/page.tsx`) rather
+  than fighting the layout with extra wrapper divs or global CSS; this
+  is Fumadocs' own documented customization surface for exactly this.
+- `DocsTitle`/`DocsDescription` default to generic `text-[1.75em]`/
+  `text-lg` — overrode with our own `display-sm`/`body-lg` tokens.
+  Used the `!` (important) modifier on these two overrides specifically
+  (`!text-display-sm !font-semibold`, `!text-body-lg !text-fg-secondary`)
+  since Fumadocs' `cn()` is plain `clsx` (no tailwind-merge dedup, unlike
+  our own `cn()`), so a later class in the string doesn't reliably beat
+  an earlier one purely on CSS source order — `!` is the correct,
+  standard escape hatch for overriding a vendored component's own
+  utility classes, not a workaround.
+- Sticky header, three-column structure (sidebar/content/TOC): already
+  Fumadocs' default `DocsLayout` behavior — confirmed via the compiled
+  CSS (`--fd-nav-height`, multiple `sticky`/`md:sticky` rules tied to it)
+  rather than assumed; no changes needed.
+
+**2d. Dogfooding — every interactive docs-site element now uses a real
+Asteria component, with gaps logged rather than worked around:**
+
+- `component-playground.tsx`: the hand-rolled `TabButton` pair
+  (Preview/Code) is now the real `Tabs`/`TabsList` (pill)/`TabsTrigger`/
+  `TabsContent`. The light/dark preview toggle's `ThemeButton` pair is
+  now the real `Button` (`variant="ghost"`, `size="sm"`, icon-only
+  children).
+- `install-tabs.tsx`: was using **Fumadocs' own** `Tabs`/`Tab` component
+  (not custom markup, but also not ours) — replaced with our real
+  `Tabs`/`TabsList` (pill)/`TabsTrigger`/`TabsContent`.
+- `apps/www/app/(home)/page.tsx`: the "Building in public…" eyebrow pill
+  is now the real `Badge` (`variant="gray"`, `size="md"`). The "Read the
+  docs" CTA was a hand-styled `<Link>` — now uses `buttonVariants({
+  variant: "primary" })` (the exact CVA function `<Button>` itself
+  calls) applied to a real `<Link>`, since `<Button>` can't navigate.
+- `new-badge.tsx` (the sidebar "New" pill): was a hand-rolled `<span>`
+  with its own one-off pill classes — now the real `Badge` (`variant="brand"`,
+  `size="sm"`).
+- **Search trigger** (explicitly named in the brief): built a new
+  `search-trigger.tsx` using the real `Button` (`variant="secondary"`,
+  `size="sm"`, `leadingIcon={<Search />}`) wired to Fumadocs'
+  `useSearchContext().setOpenSearch`, and registered it via
+  `baseOptions.searchToggle.components.{sm,lg}` in `layout.config.tsx` —
+  Fumadocs' own documented slot for exactly this kind of replacement.
+  Verified live: curled the docs page and found the real `Button`
+  classes (including the Secondary-variant border-state fix from
+  earlier this session) rendered on both the `sm` and `lg` trigger
+  instances.
+
+**Real component gaps found and logged (not worked around with custom
+CSS):**
+1. **`Button` has no `asChild`/polymorphic-rendering support**, despite
+   CLAUDE.md naming `asChild` as the established convention for exactly
+   this case (a button-styled navigation link). Bridged via
+   `buttonVariants()` applied directly to a real `<Link>` — same CVA
+   logic and tokens Button itself uses, just not the `<Button>` JSX
+   wrapper. A real `asChild` implementation (Radix/Base UI `Slot`) would
+   be the correct long-term fix.
+2. **No dedicated icon-only button component** (an `IconButton` or
+   similar). `Button` works for the light/dark preview toggle and the
+   playground's icon buttons, but its padding is tuned for text+icon
+   combinations, not a square icon-only target — an acceptable but
+   imperfect reuse, logged rather than silently treated as ideal.
+3. **Our `Tabs` has no equivalent to Fumadocs' own `<Tabs groupId>`**,
+   which synchronizes tab selection across every instance of that
+   `groupId` on a page (e.g., every code sample's "npm vs pnpm" choice
+   staying in sync). Lost when `install-tabs.tsx` switched from
+   Fumadocs' `Tabs` to ours — each `InstallTabs` instance now manages
+   its own CLI/Manual state independently. Not rebuilt to preserve scope;
+   flagged as a real feature gap if cross-instance sync is wanted later.
+4. **`Badge`'s `role="status"`/`<output>` semantics are a stretch** when
+   used for genuinely static content — the homepage's "Building in
+   public…" eyebrow text and the sidebar's "New" pill are never-changing
+   labels, not live status updates. Used it anyway for real dogfooding
+   per the brief's explicit instruction, but noting the semantic mismatch
+   honestly rather than pretending it's a perfect fit.
+
+**2e. Per-page light/dark preview toggle** — already existed (built
+during Phase 4/5's `ComponentPlayground`, confirmed still working after
+the Tabs refactor above via a live curl showing `data-preview-theme`
+and correct `aria-pressed` state on both toggle buttons). Nothing new
+needed here.
+
+**Verification:** `pnpm lint` clean (137 files), `pnpm test` clean (178
+registry + 17 CLI, unchanged — no component *logic* touched, only how
+the docs site consumes them), `apps/www` builds clean (36 pages). Also
+ran the actual **production server** (not just `next build`) and curled
+real routes to confirm: the homepage Link carries real `buttonVariants()`
+classes, the eyebrow/New badges render as real `<output>` Badge markup,
+the search trigger renders as two real `<button>` instances with full
+Button styling, the preview-theme toggle's `data-preview-theme` and
+`aria-pressed` state both still work correctly after the Tabs refactor,
+and `role="tablist"` appears the expected number of times across a
+component doc page (one Tabs per `ComponentPlayground` demo + one for
+`InstallTabs`).

@@ -1,6 +1,11 @@
 "use client";
 
-import { Tab, Tabs } from "fumadocs-ui/components/tabs";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@asteria-ui/registry/ui/tabs";
 
 export function InstallTabs({
   name,
@@ -10,17 +15,21 @@ export function InstallTabs({
   manual: string;
 }) {
   return (
-    <Tabs items={["CLI", "Manual"]} groupId="install">
-      <Tab value="CLI">
+    <Tabs defaultValue="cli" className="not-prose my-4">
+      <TabsList variant="pill" aria-label="Installation method">
+        <TabsTrigger value="cli">CLI</TabsTrigger>
+        <TabsTrigger value="manual">Manual</TabsTrigger>
+      </TabsList>
+      <TabsContent value="cli" className="mt-3">
         <pre className="overflow-x-auto rounded-lg border border-border-default bg-bg-secondary p-4 font-mono text-ui-sm text-fg-primary">
           <code>{`npx asteria-ui add ${name}`}</code>
         </pre>
-      </Tab>
-      <Tab value="Manual">
+      </TabsContent>
+      <TabsContent value="manual" className="mt-3">
         <pre className="overflow-x-auto rounded-lg border border-border-default bg-bg-secondary p-4 font-mono text-ui-sm text-fg-primary">
           <code>{manual}</code>
         </pre>
-      </Tab>
+      </TabsContent>
     </Tabs>
   );
 }

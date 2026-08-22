@@ -1,3 +1,5 @@
+import { Badge } from "@asteria-ui/registry/ui/badge";
+import { buttonVariants } from "@asteria-ui/registry/ui/button";
 import Link from "next/link";
 
 /**
@@ -10,9 +12,9 @@ import Link from "next/link";
 export default function HomePage() {
   return (
     <main className="flex flex-1 flex-col items-center justify-center bg-bg-primary px-6 py-24 text-center">
-      <p className="mb-6 rounded-full border border-border-default bg-bg-secondary px-4 py-1.5 text-ui-xs font-medium text-fg-secondary">
+      <Badge variant="gray" size="md" className="mb-6">
         Building in public — foundations complete, components in progress
-      </p>
+      </Badge>
 
       <h1 className="max-w-3xl text-balance text-display-lg font-semibold tracking-tight text-fg-primary">
         Open-source components for React &amp; Tailwind
@@ -24,10 +26,12 @@ export default function HomePage() {
       </p>
 
       <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-        <Link
-          href="/docs"
-          className="focus-glow rounded-md bg-brand px-5 py-2.5 text-ui-sm font-semibold text-fg-on-brand shadow-sm transition-colors hover:bg-brand-hover"
-        >
+        {/* Button doesn't support asChild/polymorphic rendering yet (a real
+            gap — CLAUDE.md names asChild as the established pattern for
+            exactly this), so this reuses Button's own buttonVariants() CVA
+            function directly on a real <Link>, rather than hand-rolled
+            classes or a non-navigable <button>. See BUILD_LOG.md. */}
+        <Link href="/docs" className={buttonVariants({ variant: "primary" })}>
           Read the docs
         </Link>
         {/* Command block — the glow-focus shadow doubles as the hero accent */}

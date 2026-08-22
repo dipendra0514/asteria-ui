@@ -7,13 +7,19 @@
 /* Registry components live outside the Next app; scan them so CVA classes emit. */
 @source "../../../packages/registry";
 
-/* Asteria accent — brand/600 for Fumadocs active nav / primary */
+/* Asteria accent for Fumadocs' active-nav/TOC/primary accents. Fumadocs only
+   ever uses --color-fd-primary as text color or a 1px accent line (sidebar
+   active item, TOC active item + thumb, RootToggle check) — never as a large
+   solid fill — so this mirrors our own fg-brand convention exactly:
+   brand-600 in light, the lighter brand-400 in dark (matching tokens.css'
+   dark-mode fg-brand) instead of reusing the same saturated brand-600 in
+   both modes, which read too heavy/harsh against a near-black background. */
 :root {
   --color-fd-primary: var(--brand-600);
   --color-fd-primary-foreground: #ffffff;
 }
 
 .dark {
-  --color-fd-primary: var(--brand-600);
+  --color-fd-primary: var(--brand-400);
   --color-fd-primary-foreground: #ffffff;
 }
