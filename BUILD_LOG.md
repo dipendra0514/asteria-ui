@@ -1131,3 +1131,22 @@ verified).
 
 `pnpm lint` clean, `pnpm test` clean (178 registry + 17 CLI), `apps/www`
 builds clean (36 static pages, unchanged).
+
+---
+
+## Badge re-audit (post-Phase-5, node 2121:14770)
+
+User asked to re-implement Badge from its full Figma frame (5 variants ×
+2 sizes = 10 symbols). The original Badge build only directly verified
+Gray and Brand, then inferred Success/Warning/Error would follow the
+same `bg-{variant}-subtle` / `border-{variant}` / `fg-{variant}` pattern
+without spending extra calls to confirm it. This pass closes that gap:
+pulled all 10 symbols directly (Gray/Brand/Success/Warning/Error × sm/md).
+
+**Result: exact match on every value, no code changes needed.** Colors,
+padding (sm `px-2 py-0.5`, md `px-3 py-1`), gap (`space-xs`/4px, constant
+across sizes), dot size (6px sm / 8px md, via `bg-current`), dismiss icon
+size (12px sm / 14px md), and font (`ui-xs`/`ui-sm`) all matched
+`packages/registry/ui/badge.tsx` precisely. The original inference was
+correct — this just converts "inferred, not directly checked" into
+"directly confirmed" for the record.
