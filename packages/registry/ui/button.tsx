@@ -21,8 +21,9 @@ const buttonVariants = cva(
         ].join(" "),
         secondary: [
           "border border-border-default bg-bg-primary text-fg-primary shadow-xs",
-          "hover:bg-bg-secondary-hover",
-          "active:bg-bg-tertiary",
+          "hover:border-border-strong hover:bg-bg-secondary-hover",
+          "active:border-border-strong active:bg-bg-tertiary",
+          "focus-visible:border-border-brand",
           "disabled:bg-bg-primary disabled:text-fg-disabled disabled:border-border-default",
         ].join(" "),
         ghost: [

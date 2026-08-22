@@ -89,6 +89,15 @@ describe("Button", () => {
     expect(screen.getByTestId("icon")).toHaveClass("size-5");
   });
 
+  it("secondary variant darkens its border on hover/active and switches to border-brand on focus", () => {
+    render(<Button variant="secondary">Click</Button>);
+    const button = screen.getByRole("button");
+    expect(button).toHaveClass("border-border-default");
+    expect(button).toHaveClass("hover:border-border-strong");
+    expect(button).toHaveClass("active:border-border-strong");
+    expect(button).toHaveClass("focus-visible:border-border-brand");
+  });
+
   it("has no axe violations across default, disabled, and loading states", async () => {
     const { container, rerender } = render(<Button>Default</Button>);
     expect(await axe(container)).toHaveNoViolations();

@@ -1082,3 +1082,52 @@ components:
 
 `pnpm lint` clean, `pnpm test` clean (177 registry tests + 17 CLI),
 `apps/www` builds clean (36 static pages, unchanged — no new routes).
+
+---
+
+## Button re-audit (post-Phase-5, node 2121:722)
+
+User asked to re-implement the Button design from its full Figma frame
+(`2121:722`, the same node the original Phase 1 audit used — 120 symbols:
+5 variants × 4 sizes × 6 states). Rather than assume the earlier audit
+caught everything, re-verified against real `get_design_context` pulls
+of the states most likely to have drifted (hover/active/focus across all
+5 variants, plus one loading symbol) — pulling the whole 2400×312 frame
+at once hit the response's token ceiling, so this was done as ~14
+targeted per-symbol pulls instead.
+
+**One real, confirmed drift found and fixed:** the **Secondary**
+variant's border color was frozen at `border-default` (`gray-200`) in
+every state. Figma specifies it should darken to `border-strong`
+(`gray-300`) on both hover and active, and switch to `border-brand` on
+focus — none of that was in the code; only the background color changed
+per state. Fixed in `buttonVariants`'s `secondary` branch:
+`hover:border-border-strong`, `active:border-border-strong`,
+`focus-visible:border-border-brand`. Confirmed via direct pulls that
+Primary/Ghost/Destructive/Link — all borderless by default — stay
+borderless on focus too (no border added), so this fix is Secondary-only,
+correctly scoped. Added a test asserting all three border-state classes
+are present; registry suite now 178 tests (was 177).
+
+**One thing investigated and deliberately left unchanged:** Link
+variant's default/hover/active mockups in Figma are **byte-identical**
+screenshots (verified via `md5` on all three downloaded PNGs — exact
+match), meaning Figma's own file shows zero visual difference between
+Link's resting, hovered, and pressed states. This reads as an
+unfinished/duplicated symbol in the Figma file rather than an
+intentional "no hover feedback" decision — every other variant clearly
+differentiates its states, and a Link button with no hover/active
+affordance at all would be a real usability regression. Kept the
+existing `hover:underline` / `active:text-[var(--brand-800)]` treatment
+(already in the code from the original build) rather than flattening it
+to match what looks like a Figma authoring gap. Logged here rather than
+silently overriding working, sensible behavior.
+
+Also re-confirmed (no changes needed): the loading spinner's structure,
+size, and render order all match Figma's loading symbols exactly; the
+focus-visible glow-focus shadow value is unchanged and already
+pixel-exact (confirmed again on this pass, same value as originally
+verified).
+
+`pnpm lint` clean, `pnpm test` clean (178 registry + 17 CLI), `apps/www`
+builds clean (36 static pages, unchanged).
