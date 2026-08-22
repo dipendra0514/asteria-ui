@@ -735,3 +735,87 @@ Not touched tonight, by design (out of scope for this queue, not gaps):
 Phase 3's CLI `init`/`add` command logic, and Phase 4's docs-site wiring
 of the pre-existing MDX pages to these now-real components. See
 STATUS.md's final section for the handoff note.
+
+## Phase 3 — CLI (`init` / `add`)
+
+User said "continue" after the overnight queue finished, which per the
+very first message's phase plan ("continue automatically to the next
+phase unless I say stop") meant proceeding straight to Phase 3 without
+waiting for further direction.
+
+**Design decision: bundle the registry, don't fetch it.** The docs page
+(`apps/www/content/docs/cli.mdx`, pre-written in an earlier session)
+describes components being served from `asteria-ui.com/r/[name].json` —
+but that domain isn't live, so a CLI that only fetches from it would be
+non-functional today. Instead, `packages/cli/scripts/sync-templates.mjs`
+embeds the current `packages/registry` source files, `registry.json`,
+and `apps/www/styles/{tokens,theme}.css` as string constants in a
+generated `src/generated/templates.ts`, giving the CLI a fully working
+local-only mode with zero runtime dependency on a hosted endpoint or the
+rest of the monorepo. This file is gitignored (regenerated content
+shouldn't live in git) and regenerated automatically by `pnpm run sync`,
+wired as a prerequisite of both `build` and `test` so it can never go
+stale at those points. Swapping to fetching from a real hosted registry
+later is a follow-up, not a rewrite — `resolveComponents`/`getComponentSource`
+would just change where they source data from; the CLI's public behavior
+doesn't need to change.
+
+Built a small `components.json` config (shadcn's own pattern, scoped to
+what Asteria actually needs): `aliases.components`/`aliases.lib` for
+where files land, `tailwind.tokens`/`tailwind.theme` for where the CSS
+goes. `init` creates it with defaults if absent, reuses it if present
+(satisfies the docs' "safe to re-run" requirement without needing an
+interactive-prompts dependency — skipped `prompts`/`inquirer` deliberately
+to keep the dependency footprint minimal, since sensible defaults plus a
+`--force` flag cover the same ground without a TTY-prompt UX to test
+around).
+
+`writeFileSafe` is the one safety mechanism doing double duty for both
+commands: skip an existing file unless `--force`, never silently clobber
+local edits — directly satisfying the docs' "should not overwrite local
+edits without prompting" without actually needing a prompt (declining to
+overwrite is itself the non-destructive default; `--force` is the
+explicit opt-in).
+
+`add`'s dependency resolution (`resolveComponents` in
+`utils/registry.ts`) recursively walks `registryDependencies`, then
+dedupes both `files` (by path) and npm `dependencies` (by name) across
+every resolved item — directly satisfying the docs' "multi-name adds
+resolve shared deps once." Verified this isn't just a paper claim by
+running the actual built CLI end-to-end against a real scratch npm
+project (not just unit tests): `add field` correctly pulled in `input`
+as a dependency and skipped `lib/cn.ts` since it already existed from
+`init`; `add button badge` correctly skipped `lib/with-icon-size.tsx`
+since a prior `add` had already written it; an unknown component name
+produced a clean error message + exit code 1 (after fixing an initial
+version that let the error escape as a raw Node stack trace); `add`
+without a prior `init` produced a clean "run init first" error. Diffed
+every written file byte-for-byte against its `packages/registry` source
+— identical.
+
+Added a lean Vitest suite (`environment: "node"`, no jsdom/Testing
+Library needed — this is pure Node CLI logic, not React) covering the
+parts with real logic worth protecting: dependency resolution and
+dedup, unknown-component error message, `writeFileSafe`'s three
+outcomes, package-manager detection from lockfile presence, and
+`components.json` round-tripping. 17 tests, all passing. Deliberately did
+NOT test `execSync`-driven install invocations directly (would require
+mocking child_process or hitting a real package manager in CI) — the
+`installCommand` string-building logic is tested instead, which is where
+the actual per-manager branching lives.
+
+Also corrected two stale things in `CLAUDE.md` while here, since it
+explicitly says to keep its "Current status" section current: the
+"Code: just starting" status line (now describes all 19 components +
+the CLI), and the `Radius` line's parenthetical hints, which claimed
+`radius-md` was for "(inputs/buttons)" and `radius-xl` for "(modals)" —
+neither matches what was actually confirmed against Figma across all 19
+components tonight (buttons/inputs are `radius-sm`; modals are
+`radius-lg`; `radius-xl` hasn't been used by any built component yet).
+
+`pnpm lint` clean, `pnpm test` clean across both packages (170 registry
+tests + 17 CLI tests = 187 total). `packages/cli` builds cleanly with
+`tsup` and produces a working `dist/index.js` binary.
+
+**Status: Phase 3 (CLI) complete.** Phase 4 (wiring the docs site to the
+now-real components) and Phase 5 (parity features) remain.

@@ -9,13 +9,18 @@
   },
   "files": ["dist"],
   "scripts": {
-    "build": "tsup",
-    "dev": "tsup --watch"
+    "sync": "node scripts/sync-templates.mjs",
+    "build": "pnpm run sync && tsup",
+    "dev": "pnpm run sync && tsup --watch",
+    "test": "pnpm run sync && vitest run"
   },
-  "dependencies": {},
+  "dependencies": {
+    "commander": "^15.0.0"
+  },
   "devDependencies": {
     "@types/node": "^22.10.0",
     "tsup": "^8.3.5",
-    "typescript": "^5.7.0"
+    "typescript": "^5.7.0",
+    "vitest": "^2.1.8"
   }
 }

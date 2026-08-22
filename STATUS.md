@@ -781,9 +781,56 @@ polish, Phase 3 (CLI), or Phase 4 (docs site) are all reasonable next
 steps; I don't have a strong opinion on which without knowing what you
 want to look at first.
 
+## Phase 3 — CLI: COMPLETE
+
+User said "continue" after the queue finished; per the original phase
+plan this meant proceeding straight to Phase 3 (CLI) without further
+prompting.
+
+- **`init`**: writes `components.json` (defaults: `aliases.components =
+  components/ui`, `aliases.lib = lib`, `tailwind.tokens = styles/tokens.css`,
+  `tailwind.theme = styles/theme.css`; reuses it if already present),
+  writes `tokens.css`/`theme.css`/`lib/cn.ts` (skips existing files unless
+  `--force`), installs `clsx`/`tailwind-merge`/`class-variance-authority`
+  via the detected package manager (lockfile-sniffed: pnpm/yarn/bun/npm,
+  defaulting to npm).
+- **`add <name...>`**: resolves `registryDependencies` recursively,
+  dedupes files and npm deps across a multi-name add, writes each file
+  (same skip-unless-`--force` safety), installs the deduped deps. Errors
+  cleanly (message + exit 1) on an unknown component name or a missing
+  `components.json`.
+- **Data source**: `packages/cli/scripts/sync-templates.mjs` embeds the
+  current `packages/registry` source + `registry.json` + token CSS into
+  a gitignored `src/generated/templates.ts`, regenerated via `pnpm run
+  sync` (wired as a prerequisite of both `build` and `test`). The CLI
+  needs no live registry endpoint to work — `asteria-ui.com/r/[name].json`
+  from the pre-existing docs page isn't real yet, so this is what makes
+  `add` actually functional today rather than a stub.
+- **Verified end-to-end**, not just unit-tested: ran the real built
+  `dist/index.js` against a scratch npm project. `init` wrote real files
+  and installed real npm packages; `add field` pulled in `input`
+  automatically and skipped already-written shared files; `add button
+  badge` correctly deduped `lib/with-icon-size.tsx`; every written file
+  diffed byte-identical against its `packages/registry` source.
+- Added a 17-test Vitest suite (`environment: "node"`) for the CLI's
+  logic (dependency resolution/dedup, `writeFileSafe`'s three outcomes,
+  package-manager detection, config round-trip).
+- Corrected two stale spots in `CLAUDE.md`: the "Code: just starting"
+  status line, and the `Radius` line's parenthetical hints (`radius-md`
+  was wrongly annotated "(inputs/buttons)" — real spec is `radius-sm`;
+  `radius-xl` was wrongly annotated "(modals)" — real spec is `radius-lg`).
+
+`pnpm lint` clean, `pnpm test` clean across both packages — **187 tests
+total** (170 registry + 17 CLI). `packages/cli` builds cleanly with tsup.
+
 ## Remaining
 
-_(none — queue complete)_
+Phase 4 (wire `apps/www/content/docs/components/*.mdx` to the real,
+now-built components — live previews, prop tables generated from TS
+types, a11y notes pulled from each component's doc comment) and Phase 5
+(dark mode toggle, copy-to-clipboard on code blocks, ⌘K command palette,
+OG image generator, changelog page, "New" badge system) per the original
+brief. Neither started.
 
 ## Blocked
 
@@ -791,7 +838,10 @@ _(none)_
 
 ## Exact resume point
 
-**Queue complete.** Tabs is fully done, committed, and pushed (commit:
-`feat(ui): add Tabs`). All 19 components built. No pending action —
-waiting for the user's next instruction on what to tackle next (Phase 2
-polish / Phase 3 CLI / Phase 4 docs site).
+**Phase 3 complete**, committed and pushed. Proceeding straight into
+Phase 4 (docs site) now, per the standing "continue automatically to the
+next phase unless told to stop" instruction from the very first message
+of this project — no further "continue" needed from the user for that
+transition. If interrupted before Phase 4's own entry below is marked
+complete, resume by reading Phase 4's section for exactly where it left
+off.

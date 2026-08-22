@@ -48,7 +48,7 @@ Full 50–950 steps for error/warning/success exist in Figma "Foundations / Colo
 Both Light and Dark mode mappings exist in `tokens.css` at repo root (or wherever it's scaffolded) — always bind to the semantic layer, never hardcode a primitive hex inside a component.
 
 **Spacing:** 4px base scale, `space-0` through `space-10xl`, plus micro tier `space-px` (1px) and `space-2xs` (2px).
-**Radius:** `radius-xs` 6 · `radius-sm` 8 · `radius-md` 10 (inputs/buttons) · `radius-lg` 14 (cards) · `radius-xl` 20 (modals) · `radius-full` 9999.
+**Radius:** `radius-xs` 6 (checkboxes, dropdown/menu items, tooltips) · `radius-sm` 8 (buttons, inputs, textareas, alerts) · `radius-md` 10 (dropdown/menu panels) · `radius-lg` 14 (modals) · `radius-xl` 20 (unused so far) · `radius-full` 9999 (pills, avatars, switches, radio/checkbox indicators). Corrected 2026-08-23 against the real Figma specs pulled while building all 19 free-tier components — the previous "(inputs/buttons)" on `radius-md` and "(modals)" on `radius-xl` didn't match what Figma actually specifies (buttons/inputs are `radius-sm`; modals are `radius-lg`).
 **Density (form-row components must align):** `sm` = 32px height · `md` = 40px · `lg` = 48px · `xl` = 56px. Button, Input, Textarea (min-height), Select all follow this exactly.
 
 ## Component API conventions — locked, follow exactly
@@ -111,9 +111,9 @@ Every interactive component needs: correct ARIA role, documented keyboard behavi
 ## Current status (update this section as work progresses)
 
 - Figma foundations: done (Colors, Typography & Spacing, Depth & Shape, Icons, Grid Layouts)
-- Figma base components built so far: Button, Badge, Input, Field wrapper, Textarea, Checkbox, Radio Group, Switch, Alert, Spinner, Divider, Skeleton, Progress Bar, Breadcrumbs, Tooltip, Dropdown Menu, Modal, Tabs, Avatar
-- Code: just starting — monorepo scaffold in progress
-- Docs site: Introduction/Installation/Theming/CLI pages exist; component-doc-page template proven on Avatar
+- Figma base components: all 19 free-tier components fully specced and built — Button, Avatar, Badge, Input, Field, Textarea, Checkbox, Radio Group, Switch, Alert, Spinner, Divider, Skeleton, Progress Bar, Breadcrumbs, Tooltip, Dropdown Menu, Modal, Tabs.
+- Code: all 19 components implemented in `packages/registry`, each with a vitest-axe test file (187 tests total across registry + CLI, all green) and a `registry.json` entry. CLI (`packages/cli`) has working `init` and `add` commands — `init` writes tokens.css/theme.css/cn.ts and installs core deps; `add <name...>` resolves `registryDependencies` and dedupes files/deps across a multi-name add, reading from an embedded snapshot of the registry (regenerated via `pnpm run sync`, which must be re-run whenever `packages/registry` or the token CSS changes — it is NOT automatic file-watching, just a pre-build/pre-test step).
+- Docs site: Introduction/Installation/Theming/CLI pages exist; component-doc-page template proven on Avatar. Not yet wired to the real components built above — `apps/www/content/docs/components/*.mdx` still predates them and needs a pass to hook up live previews/prop tables (tracked as the next phase).
 
 ## Working style
 
