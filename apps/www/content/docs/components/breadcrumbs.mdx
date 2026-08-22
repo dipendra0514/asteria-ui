@@ -1,6 +1,52 @@
 ---
 title: Breadcrumbs
-description: Coming soon.
+description: Navigation breadcrumb trail showing page hierarchy, composed of breadcrumb items with chevron separators.
 ---
 
-<ComingSoon name="Breadcrumbs" />
+<BreadcrumbsHero />
+
+## Installation
+
+<BreadcrumbsInstall />
+
+## Usage
+
+```tsx
+import { BreadcrumbItem, Breadcrumbs } from "@/components/ui/breadcrumbs";
+
+<Breadcrumbs>
+  <BreadcrumbItem href="/">Home</BreadcrumbItem>
+  <BreadcrumbItem href="/docs">Docs</BreadcrumbItem>
+  <BreadcrumbItem current>Installation</BreadcrumbItem>
+</Breadcrumbs>
+```
+
+`Breadcrumbs` auto-inserts a chevron separator between children — you never
+place separators manually.
+
+## API reference
+
+<BreadcrumbsPropsTable />
+
+## Accessibility
+
+<A11yCallout>
+  <ul>
+    <li>
+      <strong>Landmark.</strong> <code>&lt;nav aria-label=&quot;Breadcrumb&quot;&gt;</code>.
+    </li>
+    <li>
+      <strong>Structure.</strong> <code>ol</code>/<code>li</code> — every direct child of
+      the list, including each separator, is an <code>li</code>.
+    </li>
+    <li>
+      <strong>Current page.</strong> <code>aria-current=&quot;page&quot;</code>, rendered
+      as non-interactive text rather than a link.
+    </li>
+    <li>
+      <strong>Separators.</strong> Each is its own{" "}
+      <code>&lt;li role=&quot;presentation&quot; aria-hidden=&quot;true&quot;&gt;</code> —
+      satisfies both the list structure and the hidden-from-AT requirement at once.
+    </li>
+  </ul>
+</A11yCallout>

@@ -1,6 +1,77 @@
 ---
 title: Button
-description: Coming soon — Figma spec exists; this page is a nav stub until the next pass.
+description: Interactive button for actions and form submissions.
 ---
 
-<ComingSoon name="Button" />
+<ButtonHero />
+
+## Installation
+
+<ButtonInstall />
+
+## Usage
+
+```tsx
+import { Button } from "@/components/ui/button";
+
+<Button>Save changes</Button>
+<Button variant="secondary">Cancel</Button>
+```
+
+## Examples
+
+### Variants
+
+Primary, secondary, ghost, destructive, and link.
+
+<ButtonVariants />
+
+### Sizes
+
+sm 32px · md 40px · lg 48px · xl 56px.
+
+<ButtonSizes />
+
+### With icon
+
+`leadingIcon` accepts any element and sizes it automatically to match the
+button — 16px at sm/md, 20px at lg/xl. It's a decorative slot: the icon is
+marked `aria-hidden` for you.
+
+<ButtonWithIcon />
+
+### States
+
+`loading` shows a spinner, sets `aria-busy`, and disables the button —
+independent of the `disabled` prop, so a button can be disabled without
+being in a loading state.
+
+<ButtonStates />
+
+## API reference
+
+<ButtonPropsTable />
+
+## Accessibility
+
+<A11yCallout>
+  <ul>
+    <li>
+      <strong>Role.</strong> Native <code>&lt;button&gt;</code>, so{" "}
+      <code>role=&quot;button&quot;</code> and keyboard activation (Enter/Space) come from
+      the browser, not manual ARIA.
+    </li>
+    <li>
+      <strong>Focus.</strong> Visible <code>glow-focus</code> ring on Tab, via{" "}
+      <code>focus-visible</code> — never shown on a pointer click.
+    </li>
+    <li>
+      <strong>Disabled.</strong> The native <code>disabled</code> attribute prevents all
+      interaction, including from <code>loading</code>.
+    </li>
+    <li>
+      <strong>Loading.</strong> <code>aria-busy=&quot;true&quot;</code> announces the busy
+      state to screen readers while the spinner is visible.
+    </li>
+  </ul>
+</A11yCallout>

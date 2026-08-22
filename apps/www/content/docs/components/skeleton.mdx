@@ -1,6 +1,53 @@
 ---
 title: Skeleton
-description: Coming soon.
+description: Placeholder loading shape for content that has not yet loaded, as a text line, circle, or rectangle.
 ---
 
-<ComingSoon name="Skeleton" />
+<SkeletonHero />
+
+## Installation
+
+<SkeletonInstall />
+
+## Usage
+
+```tsx
+import { Skeleton } from "@/components/ui/skeleton";
+
+{isLoading ? <Skeleton className="h-4 w-32" /> : <p>{title}</p>}
+```
+
+## Examples
+
+### Variants
+
+<SkeletonVariants />
+
+### Composing a card placeholder
+
+<SkeletonCard />
+
+## API reference
+
+<SkeletonPropsTable />
+
+## Accessibility
+
+<A11yCallout>
+  <ul>
+    <li>
+      <strong>Decorative.</strong> <code>aria-hidden=&quot;true&quot;</code> — Skeleton
+      itself carries no meaning to assistive technology.
+    </li>
+    <li>
+      <strong>Loading container.</strong> Wrap skeletons in a container with{" "}
+      <code>aria-busy=&quot;true&quot;</code> while loading — that's the wrapping
+      container's responsibility, not Skeleton's, since it has no way to know when
+      loading actually finishes.
+    </li>
+    <li>
+      <strong>Announcing completion.</strong> Announce the swap to real content via a
+      live region elsewhere on the page.
+    </li>
+  </ul>
+</A11yCallout>

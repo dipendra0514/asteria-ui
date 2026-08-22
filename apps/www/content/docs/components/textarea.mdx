@@ -1,6 +1,57 @@
 ---
 title: Textarea
-description: Coming soon.
+description: Multi-line text input for longer form content, with an error state and resizable height.
 ---
 
-<ComingSoon name="Textarea" />
+<TextareaHero />
+
+## Installation
+
+<TextareaInstall />
+
+## Usage
+
+```tsx
+import { Textarea } from "@/components/ui/textarea";
+
+<Textarea placeholder="Write a message..." />
+```
+
+Unlike [Input](/docs/components/input), Textarea has no icon slots in its
+spec, so it's a single unwrapped `<textarea>` — no bordered wrapper div
+needed. Pair it with [Field](/docs/components/field) for a label and
+helper/error text.
+
+## Examples
+
+### States
+
+<TextareaStates />
+
+## API reference
+
+<TextareaPropsTable />
+
+## Accessibility
+
+<A11yCallout>
+  <ul>
+    <li>
+      <strong>Role.</strong> Native <code>&lt;textarea&gt;</code>, so{" "}
+      <code>role=&quot;textbox&quot;</code> with an implicit multiline hint is
+      automatic.
+    </li>
+    <li>
+      <strong>Label.</strong> Requires an associated label via{" "}
+      <a href="/docs/components/field">Field</a>, same as Input.
+    </li>
+    <li>
+      <strong>Error.</strong> The <code>error</code> prop sets{" "}
+      <code>aria-invalid=&quot;true&quot;</code> directly on the element.
+    </li>
+    <li>
+      <strong>Resize.</strong> Resizable via the native browser drag handle
+      (<code>resize-y</code>).
+    </li>
+  </ul>
+</A11yCallout>

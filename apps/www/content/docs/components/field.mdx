@@ -1,0 +1,66 @@
+---
+title: Field
+description: Form field wrapper combining label, helper text, and error message. Compose with Input, Textarea, and other form controls.
+---
+
+<FieldHero />
+
+## Installation
+
+<FieldInstall />
+
+## Usage
+
+```tsx
+import { Field } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+
+<Field label="Email" description="We'll never share your email.">
+  <Input placeholder="you@example.com" />
+</Field>
+```
+
+Field takes `label`/`description`/`error` as props rather than child slots —
+that's a deliberate match to how the real spec models it, not a shortcut.
+The one genuinely swappable part, the control itself, is composed in as
+`children` and gets `id`, `aria-describedby`, `aria-invalid`, and `error`
+wired onto it automatically.
+
+## Examples
+
+### Error state
+
+<FieldError />
+
+### With Textarea
+
+Field isn't Input-specific — it composes with any control that accepts
+`id`/`aria-describedby`/`aria-invalid`/`error`.
+
+<FieldWithTextarea />
+
+## API reference
+
+<FieldPropsTable />
+
+## Accessibility
+
+<A11yCallout>
+  <ul>
+    <li>
+      <strong>Label.</strong> Linked to the control via a generated{" "}
+      <code>id</code> and <code>htmlFor</code> — clicking the label focuses the
+      control.
+    </li>
+    <li>
+      <strong>Helper text.</strong> Wired into the control's{" "}
+      <code>aria-describedby</code> only when present, so there's never a
+      dangling reference to an element that doesn't exist.
+    </li>
+    <li>
+      <strong>Error.</strong> Sets <code>aria-invalid</code> on the control and
+      adds the error message's id to <code>aria-describedby</code> alongside
+      the description, if both are present.
+    </li>
+  </ul>
+</A11yCallout>

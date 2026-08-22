@@ -1,6 +1,55 @@
 ---
 title: Spinner
-description: Coming soon.
+description: Loading indicator for async operations, in sm, md, and lg sizes.
 ---
 
-<ComingSoon name="Spinner" />
+<SpinnerHero />
+
+## Installation
+
+<SpinnerInstall />
+
+## Usage
+
+```tsx
+import { Spinner } from "@/components/ui/spinner";
+
+{isLoading ? <Spinner /> : <Content />}
+```
+
+A static ring with one accent dot at a fixed corner, rotating as a whole via
+`animate-spin`. Distinct from Button's own internal loading spinner, which is
+a two-tone SVG arc sized to match Button's icon slots — two different
+components for two different jobs, not the same thing built twice.
+
+## Examples
+
+### Sizes
+
+<SpinnerSizes />
+
+## API reference
+
+<SpinnerPropsTable />
+
+## Accessibility
+
+<A11yCallout>
+  <ul>
+    <li>
+      <strong>Role.</strong> Renders as a native <code>&lt;output&gt;</code>, whose
+      implicit role is <code>status</code>.
+    </li>
+    <li>
+      <strong>Accessible name.</strong> <code>aria-label=&quot;Loading&quot;</code>.
+    </li>
+    <li>
+      <strong>Busy state.</strong> <code>aria-busy=&quot;true&quot;</code> on the
+      container.
+    </li>
+    <li>
+      <strong>Unmounting.</strong> Spinner has no "done" state of its own — swap it out
+      for real content (or an empty state) once loading finishes.
+    </li>
+  </ul>
+</A11yCallout>

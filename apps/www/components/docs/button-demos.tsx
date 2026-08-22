@@ -1,61 +1,78 @@
 "use client";
 
 import { Button } from "@asteria-ui/registry/ui/button";
-import { ComponentPreview } from "./component-preview";
+import { Plus } from "lucide-react";
+import { ComponentPlayground } from "./component-playground";
 
-const variants = [
-  "primary",
-  "secondary",
-  "ghost",
-  "destructive",
-  "link",
-] as const;
-
+const variants = ["primary", "secondary", "ghost", "destructive", "link"] as const;
 const sizes = ["sm", "md", "lg", "xl"] as const;
 
-export function ButtonPreview() {
+export function ButtonHero() {
   return (
-    <ComponentPreview title="Default">
+    <ComponentPlayground
+      code={`<Button>Button</Button>
+<Button variant="secondary">Secondary</Button>
+<Button variant="ghost">Ghost</Button>
+<Button variant="destructive">Destructive</Button>
+<Button variant="link">Link</Button>`}
+    >
       <Button>Button</Button>
       <Button variant="secondary">Secondary</Button>
       <Button variant="ghost">Ghost</Button>
       <Button variant="destructive">Destructive</Button>
       <Button variant="link">Link</Button>
-    </ComponentPreview>
+    </ComponentPlayground>
   );
 }
 
 export function ButtonVariants() {
   return (
-    <ComponentPreview title="Variants">
+    <ComponentPlayground
+      code={variants.map((v) => `<Button variant="${v}">${v}</Button>`).join("\n")}
+    >
       {variants.map((variant) => (
         <Button key={variant} variant={variant}>
           {variant.charAt(0).toUpperCase() + variant.slice(1)}
         </Button>
       ))}
-    </ComponentPreview>
+    </ComponentPlayground>
   );
 }
 
 export function ButtonSizes() {
   return (
-    <ComponentPreview title="Sizes">
+    <ComponentPlayground
+      code={sizes.map((s) => `<Button size="${s}">Button</Button>`).join("\n")}
+    >
       {sizes.map((size) => (
         <Button key={size} size={size}>
-          {size}
+          Button
         </Button>
       ))}
-    </ComponentPreview>
+    </ComponentPlayground>
+  );
+}
+
+export function ButtonWithIcon() {
+  return (
+    <ComponentPlayground
+      code={"<Button leadingIcon={<Plus />}>Add item</Button>"}
+    >
+      <Button leadingIcon={<Plus />}>Add item</Button>
+    </ComponentPlayground>
   );
 }
 
 export function ButtonStates() {
   return (
-    <ComponentPreview title="States">
+    <ComponentPlayground
+      code={`<Button>Default</Button>
+<Button disabled>Disabled</Button>
+<Button loading>Loading</Button>`}
+    >
       <Button>Default</Button>
       <Button disabled>Disabled</Button>
       <Button loading>Loading</Button>
-      <Button className="shadow-[var(--shadow-glow-focus)]">Focus glow</Button>
-    </ComponentPreview>
+    </ComponentPlayground>
   );
 }

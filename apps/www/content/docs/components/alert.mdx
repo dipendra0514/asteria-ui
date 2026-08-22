@@ -1,6 +1,53 @@
 ---
 title: Alert
-description: Coming soon.
+description: Contextual feedback message for user actions or system events, with optional dismiss and action.
 ---
 
-<ComingSoon name="Alert" />
+<AlertHero />
+
+## Installation
+
+<AlertInstall />
+
+## Usage
+
+```tsx
+import { Alert } from "@/components/ui/alert";
+
+<Alert variant="success" title="Saved" description="Your changes have been saved." />
+```
+
+## Examples
+
+### Variants
+
+<AlertVariants />
+
+### With action and dismiss
+
+<AlertWithActionAndDismiss />
+
+## API reference
+
+<AlertPropsTable />
+
+## Accessibility
+
+<A11yCallout>
+  <ul>
+    <li>
+      <strong>Role is variant-dependent.</strong>{" "}
+      <code>warning</code>/<code>error</code> use{" "}
+      <code>role=&quot;alert&quot;</code> (assertive, interrupting) —{" "}
+      <code>info</code>/<code>success</code> use{" "}
+      <code>role=&quot;status&quot;</code> (polite). This is computed automatically from
+      the <code>variant</code> prop, not something you set yourself.
+    </li>
+    <li>
+      <strong>Icon.</strong> Decorative, <code>aria-hidden</code>.
+    </li>
+    <li>
+      <strong>Dismiss button.</strong> <code>aria-label=&quot;Dismiss&quot;</code>.
+    </li>
+  </ul>
+</A11yCallout>

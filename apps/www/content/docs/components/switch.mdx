@@ -1,6 +1,48 @@
 ---
 title: Switch
-description: Coming soon.
+description: Toggle switch for on/off binary settings, built on Radix UI.
 ---
 
-<ComingSoon name="Switch" />
+<SwitchHero />
+
+## Installation
+
+<SwitchInstall />
+
+## Usage
+
+```tsx
+import { Switch } from "@/components/ui/switch";
+
+<Switch label="Email notifications" />
+```
+
+## Examples
+
+### States
+
+<SwitchStates />
+
+## API reference
+
+<SwitchPropsTable />
+
+## Accessibility
+
+<A11yCallout>
+  <ul>
+    <li>
+      <strong>Role.</strong> <code>role=&quot;switch&quot;</code> with{" "}
+      <code>aria-checked</code> true/false — provided by Radix.
+    </li>
+    <li>
+      <strong>Keyboard.</strong> Space toggles.
+    </li>
+    <li>
+      <strong>Label.</strong> Clicking the label toggles the switch.
+    </li>
+    <li>
+      <strong>Focus.</strong> Visible <code>glow-focus</code> ring on the track.
+    </li>
+  </ul>
+</A11yCallout>

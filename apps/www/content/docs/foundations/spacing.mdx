@@ -1,6 +1,18 @@
 ---
 title: Spacing
-description: Coming soon.
+description: 4px base scale, plus a micro tier most systems skip.
 ---
 
-<ComingSoon name="Spacing" />
+A 4px base scale, with two micro tiers below it (`space-px` and `space-2xs`)
+for the 1–2px adjustments a 4px grid alone can't express cleanly — hairline
+borders, icon-to-label gaps in dense chrome.
+
+<SpacingScale />
+
+## Usage
+
+Spacing tokens aren't exposed as arbitrary Tailwind values — use the
+matching standard utility instead (`gap-1` = 4px = `space-xs`, `p-4` = 16px =
+`space-xl`, etc.), since Tailwind's own 4px-based scale already lines up
+with these steps one-to-one. The token names above exist for the Figma ↔
+code mapping, not as a separate utility set to memorize.

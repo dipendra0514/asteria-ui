@@ -1,6 +1,50 @@
 ---
 title: Checkbox
-description: Coming soon.
+description: Selectable checkbox for boolean or indeterminate values, built on Radix UI.
 ---
 
-<ComingSoon name="Checkbox" />
+<CheckboxHero />
+
+## Installation
+
+<CheckboxInstall />
+
+## Usage
+
+```tsx
+import { Checkbox } from "@/components/ui/checkbox";
+
+<Checkbox label="Accept terms and conditions" />
+```
+
+## Examples
+
+### States
+
+<CheckboxStates />
+
+## API reference
+
+<CheckboxPropsTable />
+
+## Accessibility
+
+<A11yCallout>
+  <ul>
+    <li>
+      <strong>Role.</strong> <code>role=&quot;checkbox&quot;</code> with{" "}
+      <code>aria-checked</code> reflecting true / false / mixed — provided by Radix.
+    </li>
+    <li>
+      <strong>Keyboard.</strong> Space toggles. Radix already handles focus and
+      keyboard behavior; no manual ARIA wiring needed on top of it.
+    </li>
+    <li>
+      <strong>Label.</strong> Clicking the label toggles the checkbox (linked via a
+      generated <code>id</code>/<code>htmlFor</code>).
+    </li>
+    <li>
+      <strong>Focus.</strong> Visible <code>glow-focus</code> ring on the box itself.
+    </li>
+  </ul>
+</A11yCallout>

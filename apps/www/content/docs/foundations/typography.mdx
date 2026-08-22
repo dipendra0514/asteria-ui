@@ -1,6 +1,27 @@
 ---
 title: Typography
-description: Coming soon.
+description: Role-based type scale — ui-*, body-*, display-* — not generic sm/md/lg.
 ---
 
-<ComingSoon name="Typography" />
+Type roles are named for what they're for, not their size. `ui-*` is chrome
+(buttons, labels, form controls), `body-*` is reading copy, `display-*` is
+headings. Every step bakes in its own line-height and letter-spacing — never
+override those with a separate `leading-*`/`tracking-*` utility.
+
+<TypeScale />
+
+## Usage
+
+```tsx
+<p className="text-ui-md font-medium text-fg-primary">Form label</p>
+<p className="text-body-md text-fg-secondary">Paragraph copy.</p>
+<h1 className="text-display-lg font-semibold text-fg-primary">Page heading</h1>
+```
+
+`ui-*` letter-spacing is a fixed `-0.1px` at every size (confirmed across
+Button, Badge, Field, and Input) — not proportional to font-size, so it's
+baked into the `text-ui-*` utilities in `theme.css` rather than left to a
+separate `tracking-*` class, which is em-relative and would drift per size.
+
+Font family is Inter throughout: `--font-sans: "Inter", ui-sans-serif,
+system-ui, sans-serif`.

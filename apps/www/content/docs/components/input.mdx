@@ -1,6 +1,66 @@
 ---
 title: Input
-description: Coming soon.
+description: Text input field for forms and data entry, with leading/trailing icon slots and an error state.
 ---
 
-<ComingSoon name="Input" />
+<InputHero />
+
+## Installation
+
+<InputInstall />
+
+## Usage
+
+```tsx
+import { Input } from "@/components/ui/input";
+
+<Input placeholder="you@example.com" />
+```
+
+Input renders as a bordered wrapper around a plain `<input>` (so icon slots
+can sit inside the same border). Pair it with [Field](/docs/components/field)
+for a label, helper text, and error message wired up with the right ARIA
+attributes — Input itself is deliberately just the control.
+
+## Examples
+
+### Sizes
+
+<InputSizes />
+
+### With icons
+
+<InputWithIcons />
+
+### States
+
+<InputStates />
+
+## API reference
+
+<InputPropsTable />
+
+## Accessibility
+
+<A11yCallout>
+  <ul>
+    <li>
+      <strong>Role.</strong> Native <code>&lt;input&gt;</code>, so{" "}
+      <code>role=&quot;textbox&quot;</code> is implicit.
+    </li>
+    <li>
+      <strong>Label.</strong> Input has no label of its own — it requires an
+      associated label via <a href="/docs/components/field">Field</a>.
+    </li>
+    <li>
+      <strong>Error.</strong> The <code>error</code> prop sets{" "}
+      <code>aria-invalid=&quot;true&quot;</code> on the real input, which drives the
+      error border via CSS <code>:has()</code> on the wrapper.
+    </li>
+    <li>
+      <strong>Focus.</strong> The wrapper shows the <code>glow-focus</code> ring on{" "}
+      <code>focus-within</code>, so focusing the inner input rings the whole
+      bordered box, not just the text.
+    </li>
+  </ul>
+</A11yCallout>

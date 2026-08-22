@@ -1,6 +1,81 @@
 ---
 title: Modal
-description: Coming soon.
+description: Dialog overlay for confirmations, forms, and focused tasks, built on Radix UI.
 ---
 
-<ComingSoon name="Modal" />
+<ModalHero />
+
+## Installation
+
+<ModalInstall />
+
+## Usage
+
+```tsx
+import {
+  Modal,
+  ModalBody,
+  ModalClose,
+  ModalContent,
+  ModalDescription,
+  ModalFooter,
+  ModalHeader,
+  ModalTitle,
+  ModalTrigger,
+} from "@/components/ui/modal";
+
+<Modal>
+  <ModalTrigger asChild>
+    <Button variant="destructive">Delete item</Button>
+  </ModalTrigger>
+  <ModalContent>
+    <ModalHeader>
+      <ModalTitle>Delete item?</ModalTitle>
+      <ModalClose />
+    </ModalHeader>
+    <ModalBody>
+      <ModalDescription>This action cannot be undone.</ModalDescription>
+    </ModalBody>
+    <ModalFooter>
+      <Button variant="secondary">Cancel</Button>
+      <Button variant="destructive">Confirm</Button>
+    </ModalFooter>
+  </ModalContent>
+</Modal>
+```
+
+The close button sits inside `ModalHeader` as a flex sibling of the title
+(`ModalTitle` is `flex-1`, `ModalClose` is `shrink-0`) — that's what the real
+spec shows, not the more common absolutely-positioned-corner-X pattern. The
+overlay backdrop is tinted `brand-900` at 60% rather than plain black,
+extending the brand-tinted-shadow principle to the app's other dark surface.
+
+## API reference
+
+<ModalPropsTable />
+
+## Accessibility
+
+<A11yCallout>
+  <ul>
+    <li>
+      <strong>Role.</strong> <code>role=&quot;dialog&quot;</code> with{" "}
+      <code>aria-modal=&quot;true&quot;</code> — set explicitly on{" "}
+      <code>ModalContent</code> rather than left to Radix's default, since the
+      installed Radix version doesn't set it automatically (verified directly by
+      inspecting the rendered DOM, not assumed).
+    </li>
+    <li>
+      <strong>Labelling.</strong> <code>aria-labelledby</code> points at{" "}
+      <code>ModalTitle</code>, <code>aria-describedby</code> at{" "}
+      <code>ModalDescription</code> — wired automatically by Radix.
+    </li>
+    <li>
+      <strong>Focus.</strong> Trapped within the modal while open.
+    </li>
+    <li>
+      <strong>Dismiss.</strong> Escape closes it, as does clicking{" "}
+      <code>ModalClose</code> or the overlay.
+    </li>
+  </ul>
+</A11yCallout>

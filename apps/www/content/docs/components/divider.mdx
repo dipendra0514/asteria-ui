@@ -1,6 +1,48 @@
 ---
 title: Divider
-description: Coming soon.
+description: Visual separator between content sections, horizontal or vertical with an optional label.
 ---
 
-<ComingSoon name="Divider" />
+<DividerHero />
+
+## Installation
+
+<DividerInstall />
+
+## Usage
+
+```tsx
+import { Divider } from "@/components/ui/divider";
+
+<Divider />
+<Divider label="OR" />
+```
+
+## Examples
+
+### With a label
+
+<DividerWithLabel />
+
+### Vertical
+
+<DividerVertical />
+
+## API reference
+
+<DividerPropsTable />
+
+## Accessibility
+
+<A11yCallout>
+  <ul>
+    <li>
+      <strong>Role.</strong> <code>role=&quot;separator&quot;</code>, with{" "}
+      <code>aria-orientation</code> set for vertical dividers.
+    </li>
+    <li>
+      <strong>Non-interactive.</strong> A structural separator (not an interactive/resizable
+      one) correctly has no <code>tabIndex</code> — it's decorative by default.
+    </li>
+  </ul>
+</A11yCallout>

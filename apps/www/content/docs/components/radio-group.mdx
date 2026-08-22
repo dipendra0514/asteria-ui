@@ -1,6 +1,51 @@
 ---
 title: Radio Group
-description: Coming soon.
+description: Group of mutually exclusive radio options, built on Radix UI.
 ---
 
-<ComingSoon name="Radio Group" />
+<RadioGroupHero />
+
+## Installation
+
+<RadioGroupInstall />
+
+## Usage
+
+```tsx
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+
+<RadioGroup defaultValue="free" aria-label="Plan">
+  <RadioGroupItem value="free" label="Free" />
+  <RadioGroupItem value="pro" label="Pro" />
+</RadioGroup>
+```
+
+## Examples
+
+### Disabled
+
+<RadioGroupDisabled />
+
+## API reference
+
+<RadioGroupPropsTable />
+
+## Accessibility
+
+<A11yCallout>
+  <ul>
+    <li>
+      <strong>Role.</strong> <code>role=&quot;radiogroup&quot;</code>, each item{" "}
+      <code>role=&quot;radio&quot;</code> — provided by Radix.
+    </li>
+    <li>
+      <strong>Keyboard.</strong> Arrow keys move roving focus between items; Space (or a
+      click) selects the focused one. In this Radix version, arrow-key navigation moves
+      focus without auto-selecting — verified directly rather than assumed, since some
+      Radix components (like Tabs) do auto-select on arrow-key move and some don't.
+    </li>
+    <li>
+      <strong>Label.</strong> Clicking a label selects that item.
+    </li>
+  </ul>
+</A11yCallout>

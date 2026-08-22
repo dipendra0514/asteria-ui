@@ -1,6 +1,58 @@
 ---
 title: Badge
-description: Coming soon.
+description: Status label for categories, counts, and metadata, with an optional dot indicator and dismiss action.
 ---
 
-<ComingSoon name="Badge" />
+<BadgeHero />
+
+## Installation
+
+<BadgeInstall />
+
+## Usage
+
+```tsx
+import { Badge } from "@/components/ui/badge";
+
+<Badge variant="success">Active</Badge>
+<Badge dismissible onDismiss={() => remove(tag)}>Frontend</Badge>
+```
+
+## Examples
+
+### Sizes
+
+<BadgeSizes />
+
+### With a status dot
+
+<BadgeWithDot />
+
+### Dismissible
+
+<BadgeDismissible />
+
+## API reference
+
+<BadgePropsTable />
+
+## Accessibility
+
+<A11yCallout>
+  <ul>
+    <li>
+      <strong>Root element.</strong> Renders as a native <code>&lt;output&gt;</code>,
+      whose implicit ARIA role genuinely is <code>status</code> — no explicit{" "}
+      <code>role</code> attribute needed.
+    </li>
+    <li>
+      <strong>Dismiss button.</strong>{" "}
+      <code>role=&quot;button&quot;</code> with{" "}
+      <code>aria-label=&quot;Remove&quot;</code>, and its own{" "}
+      <code>glow-focus</code> ring.
+    </li>
+    <li>
+      <strong>Dot indicator.</strong> Purely decorative — <code>aria-hidden</code>.
+    </li>
+  </ul>
+</A11yCallout>

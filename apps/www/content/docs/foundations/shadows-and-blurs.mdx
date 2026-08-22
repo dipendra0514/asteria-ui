@@ -1,6 +1,38 @@
 ---
 title: Shadows & Blurs
-description: Coming soon.
+description: Brand-tinted shadows — never flat black — plus the signature glow-focus ring.
 ---
 
-<ComingSoon name="Shadows & Blurs" />
+Every shadow in the system is tinted with `brand-900` (`#2E377D`) at low
+opacity instead of black. It's subtle, but it's part of what makes the
+brand feel considered rather than a default Tailwind theme.
+
+<ShadowScale />
+
+## Glow focus
+
+The signature focus ring, used on every interactive component: `brand-500`
+at 24% opacity, 4px spread, zero blur, zero offset. Not a hard 2px outline.
+This is non-negotiable — every interactive component must use it.
+
+<div
+  className="not-prose my-6 flex size-16 items-center justify-center rounded-md border border-border-default bg-bg-primary"
+  style={{ boxShadow: "0 0 0 4px rgb(92 116 235 / 0.24)" }}
+>
+  <span className="font-mono text-ui-xs text-fg-tertiary">focus</span>
+</div>
+
+```css
+--shadow-glow-focus: 0 0 0 4px rgb(92 116 235 / 0.24);
+```
+
+Applied via `focus-visible:shadow-[var(--shadow-glow-focus)]` (or the
+`focus-glow` utility defined in `theme.css`), never a `focus:outline` or
+`ring-*` utility.
+
+## Blur
+
+<BlurScale />
+
+Used sparingly — backdrop blur behind modals/overlays, not as a general
+design flourish.

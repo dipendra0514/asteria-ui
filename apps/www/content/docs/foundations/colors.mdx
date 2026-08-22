@@ -1,6 +1,77 @@
 ---
 title: Colors
-description: Coming soon.
+description: Primitive color scales and the semantic tokens components actually bind to.
 ---
 
-<ComingSoon name="Colors" />
+Two layers, always. Primitives are raw 50–950 scales; the semantic layer
+(`bg-*`, `fg-*`, `border-*`) is what components reference. Never hardcode a
+primitive hex inside a component — bind to the semantic token so light/dark
+theming and re-branding stay a token remap, not a component edit.
+
+## Primitive scales
+
+<BrandScale />
+
+<GrayScale />
+
+<ErrorScale />
+
+<WarningScale />
+
+<SuccessScale />
+
+## Semantic tokens
+
+Each semantic token maps to a primitive step, and that mapping flips between
+light and dark mode — the token name never changes, only what it points to.
+
+### Backgrounds
+
+<ColorSwatch token="bg-primary" hex="#FFFFFF" />
+<ColorSwatch token="bg-secondary" hex="#F9FAFB" />
+<ColorSwatch token="bg-tertiary" hex="#F2F4F7" />
+<ColorSwatch token="bg-brand-solid" hex="#4658DE" />
+<ColorSwatch token="bg-brand-subtle" hex="#EFF3FE" />
+<ColorSwatch token="bg-error-solid" hex="#D92D20" />
+<ColorSwatch token="bg-error-subtle" hex="#FEF3F2" />
+<ColorSwatch token="bg-warning-solid" hex="#DC6803" />
+<ColorSwatch token="bg-warning-subtle" hex="#FFFAEB" />
+<ColorSwatch token="bg-success-solid" hex="#079455" />
+<ColorSwatch token="bg-success-subtle" hex="#ECFDF3" />
+
+### Foreground (text)
+
+<ColorSwatch token="fg-primary" hex="#101828" />
+<ColorSwatch token="fg-secondary" hex="#475467" />
+<ColorSwatch token="fg-tertiary" hex="#667085" />
+<ColorSwatch token="fg-disabled" hex="#98A2B3" />
+<ColorSwatch token="fg-brand" hex="#4658DE" />
+<ColorSwatch token="fg-on-brand" hex="#FFFFFF" />
+<ColorSwatch token="fg-error" hex="#D92D20" />
+<ColorSwatch token="fg-warning" hex="#DC6803" />
+<ColorSwatch token="fg-success" hex="#079455" />
+
+### Borders
+
+<ColorSwatch token="border-default" hex="#E4E7EC" />
+<ColorSwatch token="border-strong" hex="#D0D5DD" />
+<ColorSwatch token="border-brand" hex="#4658DE" />
+<ColorSwatch token="border-error" hex="#D92D20" />
+<ColorSwatch token="border-warning" hex="#DC6803" />
+<ColorSwatch token="border-success" hex="#079455" />
+
+## Focus ring
+
+The signature `glow-focus` ring used on every interactive component's focus
+state — `brand-500` at 24% opacity, 4px spread, zero blur or offset. Not a
+hard outline.
+
+<div
+  className="not-prose my-6 flex size-16 items-center justify-center rounded-md border border-border-default"
+  style={{ boxShadow: "0 0 0 4px rgb(92 116 235 / 0.24)" }}
+>
+  <span className="font-mono text-ui-xs text-fg-tertiary">tab me</span>
+</div>
+
+Full 50–950 steps for every scale live in `tokens.css` at the repo root —
+the values above are the semantic aliases components actually use.

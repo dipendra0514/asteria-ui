@@ -6,6 +6,7 @@
     "button",
     "badge",
     "input",
+    "field",
     "textarea",
     "checkbox",
     "radio-group",

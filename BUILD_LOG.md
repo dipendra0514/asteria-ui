@@ -819,3 +819,104 @@ tests + 17 CLI tests = 187 total). `packages/cli` builds cleanly with
 
 **Status: Phase 3 (CLI) complete.** Phase 4 (wiring the docs site to the
 now-real components) and Phase 5 (parity features) remain.
+
+---
+
+## Phase 4 — Docs site: COMPLETE
+
+User said "continye" (typo for "continue") after Phase 3's completion
+report; per the standing "continue automatically to the next phase unless
+told to stop" instruction, this meant proceeding straight to Phase 4
+(wiring `apps/www` to the 19 real, now-built components) without further
+prompting.
+
+**Foundations pages** (`content/docs/foundations/*.mdx`) — rewrote 5 of 6
+with real data pulled from `tokens.css`/`theme.css`: Colors (Brand/Gray/
+Error/Warning/Success scales + full semantic-token listing + a live
+`glow-focus` demo), Typography, Spacing, Radius, Shadows & Blurs. Extended
+`components/docs/foundation-scales.tsx` with the new scale components
+(`TypeScale`, `SpacingScale`, `RadiusScale`, `ShadowScale`, `BlurScale`),
+each driven by literal data arrays matching `theme.css` exactly rather
+than re-deriving values by hand per page.
+
+**Grid Layouts page left as its existing "Coming soon" stub — deliberate,
+not an oversight.** Attempted a live Figma pull via `search_design_system`
+for the Grid Layouts foundation; it only returns matches from
+published/attached libraries, not local unpublished file content (same
+failure mode hit once before, during the very first Button investigation
+early in this project). Rather than invent grid-column/gutter/breakpoint
+values with no source, left the page honest about the gap per CLAUDE.md's
+"never approximate a hex/spec value, stop and ask rather than guess" rule
+— there's no one to ask overnight, so "leave it truthfully unbuilt" is the
+correct default, not "guess plausible numbers."
+
+**Component doc pages** — for all 18 non-Avatar components (Avatar's page
+already existed as the proven template from an earlier session), created
+per component: a `{name}-demos.tsx` (using the existing `ComponentPlayground`
+preview/code-toggle pattern), a `{name}-props-table.tsx` (using
+`definePropDefs<RealComponentProps>()` — a small helper added in
+`lib/prop-defs.ts` that constrains prop-row `name`s to real `keyof T` at
+compile time, so a props table can't silently drift from the actual TS
+interface), and rewrote `content/docs/components/{name}.mdx` (Installation/
+Usage/Examples/API reference/Accessibility, each `<A11yCallout>` populated
+from that component's real JSDoc a11y note rather than freshly written
+prose). `Field` got a net-new `.mdx` page — it had none before this phase.
+Extended `registry-install.tsx` with a `{Name}Install` export per
+component (all 19, including Avatar, now present) — each renders the
+existing `RegistryInstall` (CLI tab + a Manual tab that reads the actual
+current registry source file via `node:fs` at render time, never a stale
+copy) with that component's real `files` list matching `registry.json`.
+
+**Two real bugs found and fixed during the first full-site build, not
+caught while individual files were being written:**
+
+1. `packages/registry/package.json`'s `exports` map only listed
+   `./ui/button`, `./ui/avatar`, and `./lib/cn` — a leftover from Phase 0/
+   early Phase 2 that nobody had gone back to extend as the other 17
+   components were added, since nothing outside `packages/registry`
+   itself had ever imported them by package-subpath before. The first
+   `pnpm run build` in `apps/www` failed on `Module not found: Package
+   path ./ui/alert is not exported...` (and 4 others) the moment the new
+   demo files tried `import { Alert } from "@asteria-ui/registry/ui/alert"`.
+   Fixed by adding all 16 missing `./ui/*` entries plus
+   `./lib/with-icon-size`, matching the same one-line-per-file pattern as
+   the two that already existed.
+2. `apps/www/package.json` never listed `lucide-react` as a direct
+   dependency — it was only ever installed inside `packages/registry`,
+   and Next's type-checking pass failed on `Cannot find module
+   'lucide-react'` the moment a demo file imported an icon directly (e.g.
+   `button-demos.tsx`'s `<Plus />` for the leading-icon example). Added
+   `lucide-react` to `apps/www`'s own `dependencies` at the same pinned
+   `^1.33.0` range as the registry package, then `pnpm install` at the
+   workspace root to link it in.
+
+Both are the kind of gap that only a real `next build` surfaces — neither
+would show up from reading any single file in isolation, which is why this
+phase's closing step (full build + lint + test, not just "the new files
+look right") mattered.
+
+**Mechanical wiring, done last:** registered every new demo/props-table/
+install export in `mdx-components.tsx`'s `getMDXComponents()` (previously
+only had Avatar's); added `"field"` to `content/docs/components/meta.json`'s
+`pages` array (previously 18 entries, missing the net-new Field page).
+
+**Lint:** `pnpm lint` (Biome, root) found 3 `noUnusedTemplateLiteral`
+findings in newly-written demo files (`button-demos.tsx`,
+`divider-demos.tsx`, `spinner-demos.tsx` — template literals with no
+actual interpolation). Applied Biome's own suggested fix
+(`--write --unsafe` on just those 3 files) rather than hand-editing;
+re-ran `pnpm lint` clean afterward.
+
+**Final verification, run in full after all wiring was in place:**
+- `pnpm run build` inside `apps/www`: compiles cleanly, 33 static pages
+  generated (was 32 before this phase added the `field` page).
+- `pnpm lint` (root): clean, 133 files checked.
+- `pnpm test` (root, via Turborepo): clean — 170 registry tests + 17 CLI
+  tests, 187 total, unchanged from Phase 3 (Phase 4 touched no component
+  logic, only docs-site wiring, so no new component tests were expected
+  or needed here).
+
+**Status: Phase 4 (docs site) complete.** Phase 5 (dark mode toggle,
+copy-to-clipboard on code blocks, ⌘K command palette, OG image generator,
+changelog page, "New" badge system) is the only remaining phase from the
+original brief.

@@ -1,6 +1,26 @@
 ---
 title: Radius
-description: Coming soon.
+description: Squircle-leaning steps — softer and larger than a typical Tailwind kit.
 ---
 
-<ComingSoon name="Radius" />
+Softer, larger steps than most systems default to — this is one of the
+things that makes Asteria not read as "generic Tailwind kit."
+
+<RadiusScale />
+
+## Where each step is actually used
+
+Confirmed against the real Figma spec for every component built so far —
+not guessed:
+
+- **`radius-xs` (6px)** — checkboxes, dropdown/menu items, tooltips
+- **`radius-sm` (8px)** — buttons, inputs, textareas, alerts, badges
+- **`radius-md` (10px)** — dropdown/menu panels
+- **`radius-lg` (14px)** — modals
+- **`radius-xl` (20px)** — not yet used by any built component
+- **`radius-full` (9999px)** — pills, avatars, switches, radio/checkbox indicators
+
+An earlier draft of this page (and of `CLAUDE.md`) suggested `radius-md`
+was for "inputs/buttons" and `radius-xl` for "modals" — neither held up
+once the real specs were pulled from Figma. Buttons and inputs are
+`radius-sm`; modals are `radius-lg`.

@@ -1,6 +1,61 @@
 ---
 title: Dropdown Menu
-description: Coming soon.
+description: Contextual menu with selectable items and keyboard navigation, built on Radix UI.
 ---
 
-<ComingSoon name="Dropdown Menu" />
+<DropdownMenuHero />
+
+## Installation
+
+<DropdownMenuInstall />
+
+## Usage
+
+```tsx
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
+<DropdownMenu>
+  <DropdownMenuTrigger asChild>
+    <Button variant="secondary">Open menu</Button>
+  </DropdownMenuTrigger>
+  <DropdownMenuContent>
+    <DropdownMenuItem>Edit</DropdownMenuItem>
+    <DropdownMenuItem destructive>Delete</DropdownMenuItem>
+  </DropdownMenuContent>
+</DropdownMenu>
+```
+
+Hover and keyboard focus share one unified highlighted state
+(`data-[highlighted]:bg-bg-secondary-hover`) — Radix moves real DOM focus for
+both, by design, so there's no clean way to give them different backgrounds
+through CSS alone. The `glow-focus` ring is layered on top via
+`focus-visible`, which correctly shows only for real keyboard-driven focus —
+the part that actually matters for accessibility.
+
+## API reference
+
+<DropdownMenuPropsTable />
+
+## Accessibility
+
+<A11yCallout>
+  <ul>
+    <li>
+      <strong>Roles.</strong> <code>role=&quot;menu&quot;</code>, items{" "}
+      <code>role=&quot;menuitem&quot;</code>.
+    </li>
+    <li>
+      <strong>Keyboard.</strong> Arrow keys navigate, Enter/Space selects, Escape
+      closes.
+    </li>
+    <li>
+      <strong>Focus.</strong> Trapped within the open menu; a visible{" "}
+      <code>glow-focus</code> ring shows for keyboard-driven focus specifically.
+    </li>
+  </ul>
+</A11yCallout>

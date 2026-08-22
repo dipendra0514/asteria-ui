@@ -1,6 +1,69 @@
 ---
 title: Tooltip
-description: Coming soon.
+description: Informational popup that appears on hover or focus, built on Radix UI.
 ---
 
-<ComingSoon name="Tooltip" />
+<TooltipHero />
+
+## Installation
+
+<TooltipInstall />
+
+## Usage
+
+```tsx
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+
+<TooltipProvider>
+  <Tooltip>
+    <TooltipTrigger asChild>
+      <Button variant="secondary">Hover me</Button>
+    </TooltipTrigger>
+    <TooltipContent>Helpful info</TooltipContent>
+  </Tooltip>
+</TooltipProvider>
+```
+
+A dark inverted surface (`bg-fg-primary` background, `text-bg-primary` text)
+— a deliberate surface inversion, not a mistake. Uses Radix's own `Arrow`
+primitive rather than a hand-rolled CSS triangle, since it measures and
+positions itself correctly across all four sides for free.
+
+## Examples
+
+### Sides
+
+<TooltipSides />
+
+## API reference
+
+<TooltipPropsTable />
+
+## Accessibility
+
+<A11yCallout>
+  <ul>
+    <li>
+      <strong>Role.</strong> <code>role=&quot;tooltip&quot;</code>, set by Radix.
+    </li>
+    <li>
+      <strong>Trigger.</strong> Shows on hover or keyboard focus.
+    </li>
+    <li>
+      <strong>Dismiss.</strong> Escape closes it.
+    </li>
+    <li>
+      <strong>Linking.</strong> Connected to its trigger via{" "}
+      <code>aria-describedby</code>, handled by Radix.
+    </li>
+    <li>
+      <strong>Not interactive.</strong> Tooltip content is not focusable and
+      shouldn't contain interactive elements.
+    </li>
+  </ul>
+</A11yCallout>

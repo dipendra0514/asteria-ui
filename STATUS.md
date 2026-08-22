@@ -823,14 +823,46 @@ prompting.
 `pnpm lint` clean, `pnpm test` clean across both packages — **187 tests
 total** (170 registry + 17 CLI). `packages/cli` builds cleanly with tsup.
 
+## Phase 4 — Docs site: COMPLETE
+
+User said "continye" (typo for "continue") after Phase 3's report; per the
+standing "continue automatically to the next phase unless told to stop"
+instruction, this meant proceeding straight into Phase 4 without further
+prompting.
+
+- Rewrote 5 of 6 Foundations pages (Colors, Typography, Spacing, Radius,
+  Shadows & Blurs) with real data from `tokens.css`/`theme.css`. Left
+  Grid Layouts as its existing "Coming soon" stub, deliberately — Figma's
+  Grid Layouts foundation isn't retrievable (`search_design_system` only
+  returns generic published-library results, not local file content),
+  and CLAUDE.md says stop and ask rather than guess a spec; nobody to ask
+  overnight, so it stays honestly unbuilt.
+- Wrote demos + props-table + `.mdx` doc page for all 18 non-Avatar
+  components (Avatar's page was the pre-existing proven template) and
+  extended `registry-install.tsx` with a matching `{Name}Install` export
+  for each. `Field` got a net-new `.mdx` page (had none before).
+- Found and fixed two real bugs, both only surfaced by an actual `next
+  build` (not visible from reading any single new file): (1)
+  `packages/registry/package.json`'s `exports` map was stale since
+  Phase 0/early Phase 2 — only `./ui/button`, `./ui/avatar`, `./lib/cn`
+  were listed; added the other 16 `./ui/*` entries + `./lib/with-icon-size`.
+  (2) `apps/www/package.json` never had `lucide-react` as its own
+  dependency (only `packages/registry` had it); added it and reinstalled.
+- Registered every new demo/props-table/install export in
+  `mdx-components.tsx` (previously only had Avatar's); added `"field"` to
+  `content/docs/components/meta.json`.
+- Fixed 3 Biome `noUnusedTemplateLiteral` findings in new demo files via
+  Biome's own `--write --unsafe` fix.
+- Final verification: `apps/www` builds clean (33 static pages, was 32
+  before Field's page), `pnpm lint` clean (133 files), `pnpm test` clean
+  (187 total: 170 registry + 17 CLI, unchanged — Phase 4 touched no
+  component logic).
+
 ## Remaining
 
-Phase 4 (wire `apps/www/content/docs/components/*.mdx` to the real,
-now-built components — live previews, prop tables generated from TS
-types, a11y notes pulled from each component's doc comment) and Phase 5
-(dark mode toggle, copy-to-clipboard on code blocks, ⌘K command palette,
-OG image generator, changelog page, "New" badge system) per the original
-brief. Neither started.
+Phase 5 (dark mode toggle, copy-to-clipboard on code blocks, ⌘K command
+palette, OG image generator, changelog page, "New" badge system) per the
+original brief. Not started.
 
 ## Blocked
 
@@ -838,10 +870,9 @@ _(none)_
 
 ## Exact resume point
 
-**Phase 3 complete**, committed and pushed. Proceeding straight into
-Phase 4 (docs site) now, per the standing "continue automatically to the
-next phase unless told to stop" instruction from the very first message
-of this project — no further "continue" needed from the user for that
-transition. If interrupted before Phase 4's own entry below is marked
-complete, resume by reading Phase 4's section for exactly where it left
-off.
+**Phase 4 complete.** About to commit and push all of Phase 4's changes
+to `origin main`, then proceed straight into Phase 5 per the standing
+"continue automatically to the next phase unless told to stop"
+instruction — no further "continue" needed from the user for that
+transition. If interrupted before Phase 5's own entry is written, resume
+by starting Phase 5 fresh (nothing in it has been started yet).

@@ -1,6 +1,52 @@
 ---
 title: Progress Bar
-description: Coming soon.
+description: Determinate progress indicator showing completion percentage, in sm and md sizes.
 ---
 
-<ComingSoon name="Progress Bar" />
+<ProgressBarHero />
+
+## Installation
+
+<ProgressBarInstall />
+
+## Usage
+
+```tsx
+import { ProgressBar } from "@/components/ui/progress-bar";
+
+<ProgressBar value={60} label="Uploading file" />
+```
+
+`label` is required, not optional — a progress bar with no description of
+what's progressing is a real accessibility gap, so it's baked into the type
+rather than left as something to remember.
+
+## Examples
+
+### Sizes
+
+<ProgressBarSizes />
+
+## API reference
+
+<ProgressBarPropsTable />
+
+## Accessibility
+
+<A11yCallout>
+  <ul>
+    <li>
+      <strong>Role.</strong> <code>role=&quot;progressbar&quot;</code>, with{" "}
+      <code>aria-valuenow</code>/<code>aria-valuemin</code>/
+      <code>aria-valuemax</code> reflecting the current value.
+    </li>
+    <li>
+      <strong>Accessible name.</strong> <code>aria-label</code> from the required{" "}
+      <code>label</code> prop.
+    </li>
+    <li>
+      <strong>Non-interactive.</strong> A determinate progress display isn't an
+      interactive control, so it correctly has no <code>tabIndex</code>.
+    </li>
+  </ul>
+</A11yCallout>
