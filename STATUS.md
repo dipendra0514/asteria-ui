@@ -944,8 +944,47 @@ defines.
 
 _(none)_
 
+## Post-Phase-5 work
+
+Since Phase 5, the user has directed several targeted follow-ups
+(re-verified per CLAUDE.md's Figma-source-of-truth rule, not assumed):
+GitHub repo link corrections, an `AvatarAddButton` addition (a genuinely
+new Figma-specced sub-component), a Button re-audit (found and fixed a
+real Secondary-border-color drift), and a Badge re-audit (confirmed
+correct, no changes needed). See `BUILD_LOG.md` for each.
+
+## Rebrand — Part 1 of 2: brand color, indigo → true blue: COMPLETE
+
+User-directed: the brand read too purple/indigo; replaced the entire
+`brand-*` primitive scale with a true-blue scale (new `brand-600 =
+#2450EA`, was `#4658DE`) everywhere it appeared — `tokens.css` (11
+primitives + 6 shadow definitions + `shadow-glow-focus`), `globals.css`
+(Fumadocs' `--color-fd-primary`, switched to `var(--brand-600)` instead
+of a hardcoded literal), `CLAUDE.md`, 2 Foundations `.mdx` pages, the
+`foundation-scales.tsx` data + a decorative SVG pattern, `avatar-demos.tsx`'s
+demo portrait fills, and `opengraph-image.tsx` (literal hex/rgba, since
+`next/og` can't resolve CSS vars). `modal.tsx`/`button.tsx` needed no
+changes — they already reference `var(--brand-900)`/`var(--brand-800)`,
+not literals. Measured WCAG AA contrast for `fg-brand` on `bg-primary`:
+**6.16:1 light, 5.70:1 dark** — both pass. Full file list and the
+before/after scale are in `BUILD_LOG.md`. `pnpm lint`/`pnpm test` clean,
+`apps/www` builds clean (36 pages). Committed and pushed.
+
+## Rebrand — Part 2 of 2: light-first docs layout + theme toggle
+
+Not started yet. Per the user's brief: default to light mode with a
+persisting toggle (`next-themes` or equivalent), a documentation-first
+layout (720–760px content column, generous whitespace, subtle 1px
+border separators, `display/*`/`body/*`/`ui/*` type hierarchy, sticky
+header with logo/search/theme-toggle/GitHub), a cleaner sidebar
+active-nav treatment (brand @ 8–10% opacity fill or a 2px left accent,
+tested in both modes), full dogfooding of `packages/registry/ui`
+components across the docs site itself (logging any real component gap
+to `BUILD_LOG.md` rather than working around it), and a light/dark
+toggle inside each component doc page's own preview frame.
+
 ## Exact resume point
 
-**Phase 5 complete — all 5 phases from the original brief are done.**
-About to commit and push Phase 5's changes to `origin main`. No further
-autonomous phase exists to continue into; next steps are the user's call.
+**Part 1 (brand color) complete, committed and pushed.** Starting Part 2
+(docs site layout + theme toggle) now, per the user's "work sequentially
+— finish and commit part 1 before starting part 2" instruction.

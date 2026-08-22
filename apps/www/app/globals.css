@@ -9,11 +9,11 @@
 
 /* Asteria accent — brand/600 for Fumadocs active nav / primary */
 :root {
-  --color-fd-primary: #4658de;
+  --color-fd-primary: var(--brand-600);
   --color-fd-primary-foreground: #ffffff;
 }
 
 .dark {
-  --color-fd-primary: #4658de;
+  --color-fd-primary: var(--brand-600);
   --color-fd-primary-foreground: #ffffff;
 }

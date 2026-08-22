@@ -17,9 +17,9 @@ Use these exactly — don't guess or reconstruct a repo URL from the package nam
 ## Brand identity — do not deviate without being told
 
 - **Name:** Asteria UI · **Tagline:** "Open-source components for React & Tailwind"
-- **Brand color:** indigo-leaning blue, `brand-600 = #4658DE`
+- **Brand color:** true blue, `brand-600 = #2450EA`. Corrected 2026-08-22 from an earlier indigo-leaning blue (`#4658DE`) that read too purple — see BUILD_LOG.md for the full before/after scale and contrast verification.
 - **Signature visual language** (what makes this NOT a generic Tailwind kit):
-  1. **Brand-tinted shadows** — shadows use `brand-900` (`#2E377D`) instead of black, low opacity
+  1. **Brand-tinted shadows** — shadows use `brand-900` (`#1E3485`) instead of black, low opacity
   2. **`glow-focus`** — signature focus ring: 4px spread, `brand-500` @ 24%, zero blur/offset. Every interactive component's focus state uses this. Not a hard 2px outline. This is non-negotiable — it's the whole point of the brand.
   3. **Squircle-leaning radius** — softer/larger than typical: 6/8/10/14/20px steps
   4. Role-based type naming: `ui-*`, `body-*`, `display-*` (not generic sm/md/lg for type)
@@ -29,10 +29,10 @@ Use these exactly — don't guess or reconstruct a repo URL from the package nam
 
 ```css
 /* Brand */
---brand-50: #EFF3FE;  --brand-100: #E0E7FD; --brand-200: #C6D3FB;
---brand-300: #A3B6F8; --brand-400: #7D93F2; --brand-500: #5C74EB;
---brand-600: #4658DE; --brand-700: #3A46C4; --brand-800: #313B9E;
---brand-900: #2E377D; --brand-950: #1C2049;
+--brand-50: #EFF4FF;  --brand-100: #DBE5FE; --brand-200: #BFD0FE;
+--brand-300: #93B0FD; --brand-400: #6187F9; --brand-500: #3B63F5;
+--brand-600: #2450EA; --brand-700: #1C3FD1; --brand-800: #1E37A9;
+--brand-900: #1E3485; --brand-950: #172152;
 
 /* Gray */
 --gray-50: #F9FAFB;  --gray-100: #F2F4F7; --gray-200: #E4E7EC;

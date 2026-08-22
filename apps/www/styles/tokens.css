@@ -17,18 +17,18 @@
   --base-white: #ffffff;
   --base-black: #000000;
 
-  /* brand — indigo-leaning blue; brand/600 is primary */
-  --brand-50: #eff3fe;
-  --brand-100: #e0e7fd;
-  --brand-200: #c6d3fb;
-  --brand-300: #a3b6f8;
-  --brand-400: #7d93f2;
-  --brand-500: #5c74eb;
-  --brand-600: #4658de;
-  --brand-700: #3a46c4;
-  --brand-800: #313b9e;
-  --brand-900: #2e377d;
-  --brand-950: #1c2049;
+  /* brand — true blue; brand/600 is primary */
+  --brand-50: #eff4ff;
+  --brand-100: #dbe5fe;
+  --brand-200: #bfd0fe;
+  --brand-300: #93b0fd;
+  --brand-400: #6187f9;
+  --brand-500: #3b63f5;
+  --brand-600: #2450ea;
+  --brand-700: #1c3fd1;
+  --brand-800: #1e37a9;
+  --brand-900: #1e3485;
+  --brand-950: #172152;
 
   /* gray — cool bias to harmonize with brand */
   --gray-50: #f9fafb;
@@ -165,18 +165,18 @@
      EFFECTS — brand-tinted shadows (never flat black)
      ============================================================ */
 
-  --shadow-xs: 0 1px 2px rgb(46 55 125 / 0.06);
-  --shadow-sm: 0 1px 3px rgb(46 55 125 / 0.1), 0 1px 2px rgb(46 55 125 / 0.06);
-  --shadow-md: 0 4px 6px -1px rgb(46 55 125 / 0.1), 0 2px 4px -2px
-    rgb(46 55 125 / 0.06);
-  --shadow-lg: 0 10px 15px -3px rgb(46 55 125 / 0.1), 0 4px 6px -4px
-    rgb(46 55 125 / 0.05);
-  --shadow-xl: 0 20px 25px -5px rgb(46 55 125 / 0.1), 0 8px 10px -6px
-    rgb(46 55 125 / 0.05);
-  --shadow-2xl: 0 25px 50px -12px rgb(46 55 125 / 0.22);
+  --shadow-xs: 0 1px 2px rgb(30 52 133 / 0.06);
+  --shadow-sm: 0 1px 3px rgb(30 52 133 / 0.1), 0 1px 2px rgb(30 52 133 / 0.06);
+  --shadow-md: 0 4px 6px -1px rgb(30 52 133 / 0.1), 0 2px 4px -2px
+    rgb(30 52 133 / 0.06);
+  --shadow-lg: 0 10px 15px -3px rgb(30 52 133 / 0.1), 0 4px 6px -4px
+    rgb(30 52 133 / 0.05);
+  --shadow-xl: 0 20px 25px -5px rgb(30 52 133 / 0.1), 0 8px 10px -6px
+    rgb(30 52 133 / 0.05);
+  --shadow-2xl: 0 25px 50px -12px rgb(30 52 133 / 0.22);
 
   /* glow-focus: brand/500 @ 24%, 4px spread, zero blur/offset */
-  --shadow-glow-focus: 0 0 0 4px rgb(92 116 235 / 0.24);
+  --shadow-glow-focus: 0 0 0 4px rgb(59 99 245 / 0.24);
 
   --blur-sm: 8px;
   --blur-md: 16px;

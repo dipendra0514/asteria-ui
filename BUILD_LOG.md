@@ -1150,3 +1150,79 @@ size (12px sm / 14px md), and font (`ui-xs`/`ui-sm`) all matched
 `packages/registry/ui/badge.tsx` precisely. The original inference was
 correct — this just converts "inferred, not directly checked" into
 "directly confirmed" for the record.
+
+---
+
+## Part 1 — Brand color correction: indigo → true blue
+
+User-directed correction: the brand color read too purple/indigo;
+replaced the entire `brand-*` primitive scale with a true-blue scale
+across every place it appeared.
+
+**New scale** (was → now):
+```
+brand-50:  #EFF3FE → #EFF4FF   brand-600: #4658DE → #2450EA
+brand-100: #E0E7FD → #DBE5FE   brand-700: #3A46C4 → #1C3FD1
+brand-200: #C6D3FB → #BFD0FE   brand-800: #313B9E → #1E37A9
+brand-300: #A3B6F8 → #93B0FD   brand-900: #2E377D → #1E3485
+brand-400: #7D93F2 → #6187F9   brand-950: #1C2049 → #172152
+brand-500: #5C74EB → #3B63F5
+```
+
+**Files changed:**
+- `apps/www/styles/tokens.css` — the 11 `--brand-*` primitives; the 6
+  brand-tinted shadow definitions (`rgb(46 55 125 ...)` → `rgb(30 52
+  133 ...)`, i.e. old/new `brand-900` as rgb); `--shadow-glow-focus`
+  (`rgb(92 116 235 / 0.24)` → `rgb(59 99 245 / 0.24)`, old/new
+  `brand-500` as rgb).
+- `apps/www/app/globals.css` — Fumadocs' `--color-fd-primary` was a
+  hardcoded `#4658de` literal (not referencing `tokens.css` at all);
+  changed to `var(--brand-600)` so it can never drift from the token
+  again, rather than just swapping in a new literal.
+- `CLAUDE.md` — the brand-color line, the brand-tinted-shadow line, and
+  the full primitive scale block in "Design tokens."
+- `apps/www/content/docs/foundations/colors.mdx` — `<ColorSwatch>` hex
+  props for `bg-brand-solid`/`bg-brand-subtle`/`fg-brand`/`border-brand`,
+  and the focus-ring demo's literal `boxShadow` rgb.
+- `apps/www/content/docs/foundations/shadows-and-blurs.mdx` — the
+  `brand-900` hex mentioned in prose, and 2 demo `boxShadow` rgb values
+  + 1 code sample's `--shadow-glow-focus` value.
+- `apps/www/components/docs/foundation-scales.tsx` — the `brand` swatch
+  data array; the 6 `shadowScale` rgb strings; a decorative dual-dot SVG
+  pattern's URL-encoded `%234658DE` (Skeleton foundations demo); and the
+  "indigo-leaning" description text.
+- `apps/www/components/docs/avatar-demos.tsx` — 4 decorative demo-portrait
+  SVG fills (`maya`/`rio`/`ken`/`ana`), previously brand-600/700/800/500.
+- `apps/www/app/opengraph-image.tsx` — background color (`brand-950`),
+  radial-gradient accent (`brand-500` as rgba), logo mark fill
+  (`brand-500`), and tagline text color (`brand-200`) — all literal hex/
+  rgba since `next/og`'s `ImageResponse` can't resolve CSS variables.
+
+**Deliberately NOT changed:**
+- `packages/registry/ui/modal.tsx` (`bg-[var(--brand-900)]/60` overlay
+  scrim) and `packages/registry/ui/button.tsx` (`active:text-[var(--brand-800)]`
+  on the Link variant) — both already reference the CSS variable, not a
+  literal hex, so they inherit the new scale automatically with zero
+  code change.
+- `STATUS.md`/`BUILD_LOG.md`'s own prior entries — historical record of
+  what was true when written; not rewritten to pretend the old palette
+  was something else.
+- The dark-mode semantic mappings `fg-brand`/`focus-ring` →
+  `var(--brand-400)` and `bg-brand-subtle` → `var(--brand-950)` in
+  `tokens.css` — the user's brief listed these as things to "fix," but
+  they were already wired to exactly those variables (just resolving to
+  the old hex values before this change). No structural edit was needed
+  there; they now resolve to the new hex automatically via the primitive
+  swap above. Noted here rather than silently claiming a fix that wasn't
+  actually necessary.
+
+**WCAG AA contrast — measured, not assumed** (standard relative-luminance
+formula, verified with an independent script, not just eyeballed):
+- Light: `fg-brand` (`#2450EA`) on `bg-primary` (`#FFFFFF`) → **6.16:1**
+- Dark: `fg-brand` (`#6187F9`) on `bg-primary` (`#0C111D`) → **5.70:1**
+
+Both comfortably clear the 4.5:1 AA threshold for normal text in both
+modes.
+
+`pnpm lint` clean, `pnpm test` clean (178 registry + 17 CLI, unchanged —
+no component logic touched), `apps/www` builds clean (36 static pages).

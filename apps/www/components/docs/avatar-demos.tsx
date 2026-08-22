@@ -15,10 +15,10 @@ const portrait = (fill: string) =>
     `<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80"><rect width="80" height="80" fill="${fill}"/><circle cx="40" cy="30" r="14" fill="#ffffff" fill-opacity="0.9"/><ellipse cx="40" cy="72" rx="24" ry="20" fill="#ffffff" fill-opacity="0.9"/></svg>`,
   )}`;
 
-const maya = portrait("#4658DE");
-const rio = portrait("#3A46C4");
-const ken = portrait("#313B9E");
-const ana = portrait("#5C74EB");
+const maya = portrait("#2450EA");
+const rio = portrait("#1C3FD1");
+const ken = portrait("#1E37A9");
+const ana = portrait("#3B63F5");
 
 export function AvatarHero() {
   return (

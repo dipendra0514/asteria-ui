@@ -1,17 +1,17 @@
 import { ColorScale } from "./color-scale";
 
 const brand = [
-  ["50", "#EFF3FE"],
-  ["100", "#E0E7FD"],
-  ["200", "#C6D3FB"],
-  ["300", "#A3B6F8"],
-  ["400", "#7D93F2"],
-  ["500", "#5C74EB"],
-  ["600", "#4658DE"],
-  ["700", "#3A46C4"],
-  ["800", "#313B9E"],
-  ["900", "#2E377D"],
-  ["950", "#1C2049"],
+  ["50", "#EFF4FF"],
+  ["100", "#DBE5FE"],
+  ["200", "#BFD0FE"],
+  ["300", "#93B0FD"],
+  ["400", "#6187F9"],
+  ["500", "#3B63F5"],
+  ["600", "#2450EA"],
+  ["700", "#1C3FD1"],
+  ["800", "#1E37A9"],
+  ["900", "#1E3485"],
+  ["950", "#172152"],
 ].map(([step, hex]) => ({
   step,
   hex,
@@ -94,7 +94,7 @@ export function BrandScale() {
   return (
     <ColorScale
       name="Brand"
-      description="Modern indigo-leaning blue. brand/600 is the primary brand color."
+      description="True blue. brand/600 is the primary brand color."
       swatches={brand}
     />
   );
@@ -236,12 +236,12 @@ export function RadiusScale() {
 }
 
 const shadowScale = [
-  ["xs", "0 1px 2px rgb(46 55 125 / 0.06)"],
-  ["sm", "0 1px 3px rgb(46 55 125 / 0.1), 0 1px 2px rgb(46 55 125 / 0.06)"],
-  ["md", "0 4px 6px -1px rgb(46 55 125 / 0.1), 0 2px 4px -2px rgb(46 55 125 / 0.06)"],
-  ["lg", "0 10px 15px -3px rgb(46 55 125 / 0.1), 0 4px 6px -4px rgb(46 55 125 / 0.05)"],
-  ["xl", "0 20px 25px -5px rgb(46 55 125 / 0.1), 0 8px 10px -6px rgb(46 55 125 / 0.05)"],
-  ["2xl", "0 25px 50px -12px rgb(46 55 125 / 0.22)"],
+  ["xs", "0 1px 2px rgb(30 52 133 / 0.06)"],
+  ["sm", "0 1px 3px rgb(30 52 133 / 0.1), 0 1px 2px rgb(30 52 133 / 0.06)"],
+  ["md", "0 4px 6px -1px rgb(30 52 133 / 0.1), 0 2px 4px -2px rgb(30 52 133 / 0.06)"],
+  ["lg", "0 10px 15px -3px rgb(30 52 133 / 0.1), 0 4px 6px -4px rgb(30 52 133 / 0.05)"],
+  ["xl", "0 20px 25px -5px rgb(30 52 133 / 0.1), 0 8px 10px -6px rgb(30 52 133 / 0.05)"],
+  ["2xl", "0 25px 50px -12px rgb(30 52 133 / 0.22)"],
 ] as const;
 
 export function ShadowScale() {
@@ -272,7 +272,7 @@ export function BlurScale() {
       {blurScale.map(([step, px]) => (
         <div key={step} className="relative flex size-20 items-center justify-center overflow-hidden rounded-lg bg-bg-brand-subtle">
           <div
-            className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20width=%2740%27%20height=%2740%27%3E%3Ccircle%20cx=%2710%27%20cy=%2710%27%20r=%278%27%20fill=%27%234658DE%27/%3E%3Ccircle%20cx=%2730%27%20cy=%2730%27%20r=%278%27%20fill=%27%23079455%27/%3E%3C/svg%3E')] bg-repeat"
+            className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20width=%2740%27%20height=%2740%27%3E%3Ccircle%20cx=%2710%27%20cy=%2710%27%20r=%278%27%20fill=%27%232450EA%27/%3E%3Ccircle%20cx=%2730%27%20cy=%2730%27%20r=%278%27%20fill=%27%23079455%27/%3E%3C/svg%3E')] bg-repeat"
             style={{ filter: `blur(${px})` }}
           />
           <p className="relative z-10 font-mono text-ui-xs font-semibold text-fg-primary">
